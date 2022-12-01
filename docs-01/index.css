@@ -1,3 +1,19 @@
+:root {
+    --gray:  rgba(43, 42, 51, 1.0);
+    --purple: #d1c5fc;
+    --white: #ffffff;
+}
+
+body {
+    background-color: var(--gray);
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
 a {
     position: relative;
     padding: 20px 50px;
@@ -66,4 +82,46 @@ a:hover .liquid {
     100% {
         transform: translate(-50%, -75%) rotate(360deg);
     }
+}
+
+.input-group {
+    position: relative;
+}
+
+.input {
+    margin: 10px;
+    padding: 10px;
+    width: 300px;
+    border: none;
+    border-radius: 4px;
+    font: inherit;
+    color: var(--white);
+    background-color: transparent;
+    outline: 2px solid var(--white);
+}
+
+.input-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--white);
+    transform: translate(20px, 20px);
+    transition: transform 0.25s;
+}
+
+.input,
+.input-label {
+    cursor: text;
+}
+
+.input:focus+.input-label,
+.input:valid+.input-label {
+    transform: translate(20px, -5px) scale(0.8);
+    color: var(--purple);
+    padding-inline: 5px;
+    background-color: var(--gray);
+}
+
+.input:is(:focus, :valid) {
+    outline-color: var(--purple);
 }
