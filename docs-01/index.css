@@ -1,7 +1,7 @@
 :root {
-    --gray:  rgba(43, 42, 51, 1.0);
-    --purple: #d1c5fc;
-    --white: #ffffff;
+    --gray: rgba(43, 42, 51, 1.0);
+    --purple: rgba(209, 197, 252, 1.0);
+    --white: rgba(255, 255, 255, 1.0);
 }
 
 body {
@@ -29,7 +29,7 @@ a {
 
 a span {
     position: relative;
-    color:#fff;
+    color: #fff;
     font-size: 20px;
     font-family: Arial;
     letter-spacing: 4px;
@@ -79,9 +79,50 @@ a:hover .liquid {
     0% {
         transform: translate(-50%, -75%) rotate(0deg);
     }
+
     100% {
         transform: translate(-50%, -75%) rotate(360deg);
     }
+}
+
+.folder {
+    position: absolute;
+    display: block;
+    background-color: var(--white);
+    height: 600px;
+    width: 900px;
+    border-radius: 25px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+}
+
+.folder::before {
+    content: "";
+    position: absolute;
+    background-color: transparent;
+    height: 300px;
+    width: 250px;
+    border-bottom-right-radius: 25px;
+    top: 0%;
+    left: 30px;
+    transform: translate(0%, -100%);
+    box-shadow: 0px 30px 0px 0px var(--white);
+    padding: 10px;
+}
+
+.folder .tab {
+    position: absolute;
+    display: block;
+    background-color: var(--white);
+    border-radius: 25px;
+    top: -7%;
+    left: 100%;
+    transform: translate(-100%, 0%);
+    height: 300px;
+    width: 600px;
+    padding: 10px;
 }
 
 .input-group {

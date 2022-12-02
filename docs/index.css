@@ -1,17 +1,98 @@
 :root {
-    --gray:  rgba(43, 42, 51, 1.0);
-    --green-01:  rgba(1, 56, 0, 0.5);
-    --green-02:  rgba(2, 141, 0, 0.5);
-    --white-01: rgba(255, 255, 255, 1.0);
+    --black: rgba(0, 0, 0, 1.0);
+    --blue: rgba(27, 102, 133, 1.0);
+    --orange: rgba(251, 112, 115, 1.0);
+    --purple: rgba(114, 86, 135, 1.0);
+    --white: rgba(255, 255, 255, 1.0);
+
+    --gray: rgba(43, 42, 51, 1.0);
+    --green-01: rgba(1, 56, 0, 0.0);
+    --green-02: rgba(2, 141, 0, 0.5);
     --white-02: rgba(255, 255, 255, 0.25);
     --font: "Times New Roman", Times, serif;
 }
 
 body {
-    background-color: var(--gray);
+    background-color: var(--blue);
+    background-image: url("background.jpg");
+    background-repeat: no-repeat;
+    background-position: top left;
+    background-size: 100%;
 }
 
-hr {
+.folder {
+    position: absolute;
+    display: block;
+    background-color: var(--white);
+    height: 600px;
+    width: 900px;
+    border-radius: 25px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+}
+
+.folder::before {
+    content: "";
+    position: absolute;
+    background-color: transparent;
+    height: 300px;
+    width: 250px;
+    border-bottom-right-radius: 25px;
+    top: 0%;
+    left: 30px;
+    transform: translate(0%, -100%);
+    box-shadow: 0px 30px 0px 0px var(--white);
+    padding: 10px;
+}
+
+.folder .tab {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    background-color: var(--white);
+    border-radius: 25px;
+    top: -7%;
+    left: 100%;
+    transform: translate(-100%, 0%);
+    height: 300px;
+    width: 600px;
+    padding: 10px;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+button {
+    color: var(--orange);
+    transition: 0.25s;
+    background: none;
+    border: transparent;
+    width: 150px;
+    border-radius: 15px;
+    padding: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.slide {
+    font-family: 'Trebuchet MS';
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.slide:hover,
+.slide:focus {
+    color: var(--white);
+    box-shadow: inset 150px 0 0 0 var(--purple);
+}
+
+/* hr {
     color: var(--white-01);
     opacity: 0.25;
 }
@@ -48,7 +129,7 @@ p {
 }
 
 .grid-container-01 {
-    background-color: var(--gray);
+    background-color: transparent;
     border-radius: 5px;
     display: grid;
     gap: 10px;
@@ -74,37 +155,37 @@ p {
     transition-property: all;
 }
 
-.grid-container-02:hover .grid-item{
+.grid-container-02:hover .grid-item {
     color: var(--gray);
     transition-duration: 2s;
     transition-property: all;
 }
 
-.grid-container-02:hover p{
+.grid-container-02:hover p {
     color: var(--gray);
     transition-duration: 2s;
     transition-property: all;
 }
 
-.grid-container-02:hover ul{
+.grid-container-02:hover ul {
     color: var(--gray);
     transition-duration: 2s;
     transition-property: all;
 }
 
-.grid-container-02:hover h1{
+.grid-container-02:hover h1 {
     color: var(--gray);
     transition-duration: 2s;
     transition-property: all;
 }
 
-.grid-container-02:hover h2{
+.grid-container-02:hover h2 {
     color: var(--gray);
     transition-duration: 2s;
     transition-property: all;
 }
 
-.grid-container-02:hover h3{
+.grid-container-02:hover h3 {
     color: var(--gray);
     transition-duration: 2s;
     transition-property: all;
@@ -144,4 +225,4 @@ p {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-}
+} */
