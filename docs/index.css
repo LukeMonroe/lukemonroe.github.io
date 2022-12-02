@@ -33,17 +33,16 @@ body {
     padding: 10px;
 }
 
-.folder::before {
+.folder .tab::before {
     content: "";
     position: absolute;
     background-color: transparent;
-    height: 300px;
-    width: 250px;
-    border-bottom-right-radius: 25px;
+    height: 23px;
+    width: 20px;
+    border-bottom-right-radius: 20px;
     top: 0%;
-    left: 30px;
-    transform: translate(0%, -100%);
-    box-shadow: 0px 30px 0px 0px var(--white);
+    right: 100%;
+    box-shadow: 0px 20px 0px 0px var(--white);
     padding: 10px;
 }
 
