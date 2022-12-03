@@ -139,9 +139,37 @@ body {
     padding: 10px;
 }
 
+.folder .container-about .container-box {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    height: 100%;
+}
+
+.folder .container-about .container-box .box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--purple);
+    border-radius: 15px;
+    width: 90%;
+    height: 90%;
+    margin: auto;
+}
+
+.folder .container-about .container-box .box:hover {
+    background-color: var(--gray-dark);
+    color: var(--white);
+    box-shadow: 5px 5px 0 0 var(--purple);
+    transform: translate(-2%, -2%);
+    transition: 0.25s;
+}
+
 button {
     color: var(--orange);
-    transition: 0.25s;
     background: none;
     border: transparent;
     width: 150px;
@@ -160,6 +188,7 @@ button {
 .slide:focus {
     color: var(--white);
     box-shadow: inset 150px 0 0 0 var(--purple);
+    transition: 0.25s;
 }
 
 /* hr {
