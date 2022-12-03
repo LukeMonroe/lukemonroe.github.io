@@ -4,71 +4,118 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="index.css">
+    <script src="index.js"></script>
 </head>
 
-<body>
-
+<body onload="openTab(event, 'about')">
     <div class="folder">
         <div class="tab">
-            <button class="slide"><b>About</b></button>
-            <button class="slide"><b>Education</b></button>
-            <button class="slide"><b>Experience</b></button>
-            <button class="slide"><b>Skills</b></button>
+            <button class="slide" onclick="openTab(event, 'about')"><b>About</b></button>
+            <button class="slide" onclick="openTab(event, 'education')"><b>Education</b></button>
+            <button class="slide" onclick="openTab(event, 'experience')"><b>Experience</b></button>
+            <button class="slide" onclick="openTab(event, 'skills')"><b>Skills</b></button>
         </div>
-        <div class="container-information">
-            <div class="image"> </div>
-            <div class="title"><b>Luke Monroe</b></div>
-            <div class="role">Software Developer</div>
-            <div class="text"></div>
-            <div class="text"></div>
-            <div class="text"></div>
-            <div class="text">Twenty Three</div>
-            <div class="text">Oak Park, MI</div>
-            <div class="text">luke.monroe.work@gmail.com</div>
-            <div class="text">810-772-0400</div>
+        <div id="about" class="tabcontent">
+            <div class="container-information">
+                <div class="image"> </div>
+                <div class="title"><b>Luke Monroe</b></div>
+                <div class="role">Software Developer</div>
+                <div class="text"></div>
+                <div class="text"></div>
+                <div class="text"></div>
+                <div class="text">Twenty Three</div>
+                <div class="text">Oak Park, MI</div>
+                <div class="text">luke.monroe.work@gmail.com</div>
+                <div class="text">810-772-0400</div>
+            </div>
+            <div class="container-about">
+                <div class="title"><b>About Me</b></div>
+                <div class="text"></div>
+                <div class="text"></div>
+                <div class="text">
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                </div>
+                <div class="text">
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                </div>
+                <div class="title"><b>What I'm Doing</b></div>
+                <div class="text"></div>
+                <div class="text"></div>
+                <div class="text">
+                    This is some text about what I'm doing.
+                    This is some text about what I'm doing.
+                    This is some text about what I'm doing.
+                    This is some text about what I'm doing.
+                    This is some text about what I'm doing.
+                    This is some text about what I'm doing.
+                </div>
+            </div>
         </div>
-        <div class="container-about">
-            <div class="title"><b>About Me</b></div>
-            <div class="text"></div>
-            <div class="text"></div>
-            <div class="text">
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
+        <div id="education" class="tabcontent">
+            <div class="container-about">
+                <div class="title"><b>Education</b></div>
+                <div class="text"></div>
+                <div class="text"></div>
+                <div class="text">
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                </div>
             </div>
-            <div class="text">
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
-                This is some text about me.
+        </div>
+        <div id="experience" class="tabcontent">
+            <div class="container-about">
+                <div class="title"><b>Experience</b></div>
+                <div class="text"></div>
+                <div class="text"></div>
+                <div class="text">
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                </div>
             </div>
-            <div class="title"><b>What I'm Doing</b></div>
-            <div class="text"></div>
-            <div class="text"></div>
-            <div class="text">
-                This is some text about what I'm doing.
-                This is some text about what I'm doing.
-                This is some text about what I'm doing.
-                This is some text about what I'm doing.
-                This is some text about what I'm doing.
-                This is some text about what I'm doing.
+        </div>
+        <div id="skills" class="tabcontent">
+            <div class="container-about">
+                <div class="title"><b>Skills</b></div>
+                <div class="text"></div>
+                <div class="text"></div>
+                <div class="text">
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                    This is some text about me.
+                </div>
             </div>
         </div>
     </div>
