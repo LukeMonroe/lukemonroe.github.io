@@ -30,10 +30,10 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-height: 500px;
+    min-height: 600px;
     min-width: 750px;
     max-height: 1000px;
-    max-width: 1500px;
+    max-width: 1200px;
     padding: 10px;
 }
 
@@ -51,10 +51,10 @@ body {
     right: 0%;
     height: 5vh;
     width: 50vw;
-    min-height: 25px;
+    min-height: 30px;
     min-width: 500px;
     max-height: 50px;
-    max-width: 1000px;
+    max-width: 800px;
     padding: 10px;
 }
 
@@ -69,7 +69,7 @@ body {
     font-size: 15px;
     height: 100%;
     width: 240px;
-    margin: 5px;
+    margin-right: 5px;
 }
 
 .folder .container-information .image {
@@ -118,7 +118,7 @@ body {
     font-size: 15px;
     height: 100%;
     width: 100%;
-    margin: 5px;
+    margin-left: 5px;
 }
 
 .folder .container-about .title {
@@ -127,7 +127,7 @@ body {
     font-size: 25px;
     text-transform: uppercase;
     padding: 10px;
-    top: 5%;
+    top: 3%;
     left: 5%;
 }
 
@@ -145,6 +145,7 @@ body {
     grid-template-columns: 1fr 1fr;
     width: 100%;
     height: 100%;
+    margin-bottom: 5px;
 }
 
 .folder .container-about .container-box .box {
@@ -164,7 +165,7 @@ body {
     background-color: var(--gray-dark);
     color: var(--white);
     box-shadow: 5px 5px 0 0 var(--purple);
-    transform: translate(-2%, -2%);
+    transform: translate(-3%, -3%);
     transition: 0.25s;
 }
 
