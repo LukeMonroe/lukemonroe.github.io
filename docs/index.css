@@ -20,7 +20,8 @@ body {
 
 .folder {
     position: absolute;
-    display: block;
+    display: flex;
+    flex-direction: row;
     background-color: var(--white);
     height: 65vh;
     width: 85vw;
@@ -57,7 +58,7 @@ body {
     padding: 10px;
 }
 
-.folder .container {
+.folder .container-information {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -68,9 +69,10 @@ body {
     font-size: 15px;
     height: 100%;
     width: 240px;
+    margin: 5px;
 }
 
-.folder .container .image {
+.folder .container-information .image {
     position: relative;
     display: block;
     background-image: url("placeholder.jpg");
@@ -82,7 +84,7 @@ body {
     margin: 20px;
 }
 
-.folder .container .title {
+.folder .container-information .title {
     position: relative;
     display: block;
     font-size: 25px;
@@ -90,7 +92,7 @@ body {
     padding: 10px;
 }
 
-.folder .container .role {
+.folder .container-information .role {
     position: relative;
     display: block;
     background-color: var(--purple);
@@ -99,9 +101,41 @@ body {
     padding: 10px;
 }
 
-.folder .container .text {
+.folder .container-information .text {
     position: relative;
     display: block;
+    padding: 10px;
+}
+
+.folder .container-about {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    border-radius: 25px;
+    background-color: var(--gray-light);
+    color: var(--gray-dark);
+    font-size: 15px;
+    height: 100%;
+    width: 100%;
+    margin: 5px;
+}
+
+.folder .container-about .title {
+    position: relative;
+    display: block;
+    font-size: 25px;
+    text-transform: uppercase;
+    padding: 10px;
+    top: 5%;
+    left: 5%;
+}
+
+.folder .container-about .text {
+    position: relative;
+    display: block;
+    max-width: 90%;
+    left: 5%;
     padding: 10px;
 }
 
