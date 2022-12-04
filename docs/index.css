@@ -225,17 +225,21 @@ body {
     display: block;
     font-size: 25px;
     text-transform: uppercase;
-    padding: 30px;
-    top: 5%;
+    top: 0%;
     left: 5%;
+    max-width: 95%;
+    margin-top: 100px;
 }
 
 .folder .container-education .text {
     position: relative;
     display: block;
-    max-width: 90%;
-    left: 5%;
-    padding: 10px;
+    font-size: 20px;
+    text-transform: uppercase;
+    top: 0%;
+    left: 15%;
+    max-width: 85%;
+    margin-top: 30px;
 }
 
 button {
