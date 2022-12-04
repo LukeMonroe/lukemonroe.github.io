@@ -34,7 +34,7 @@ body {
     transform: translate(-50%, -50%);
     min-height: 600px;
     min-width: 750px;
-    max-height: 1000px;
+    max-height: 800px;
     max-width: 1200px;
 }
 
@@ -54,7 +54,7 @@ body {
     width: 50vw;
     min-height: 30px;
     min-width: 500px;
-    max-height: 50px;
+    max-height: 40px;
     max-width: 800px;
     padding: 10px;
 }
