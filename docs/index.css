@@ -223,23 +223,39 @@ body {
 .folder .container-education .title {
     position: relative;
     display: block;
+    overflow: hidden;
     font-size: 25px;
     text-transform: uppercase;
+    white-space: nowrap;
     top: 0%;
     left: 5%;
     max-width: 95%;
     margin-top: 100px;
+    animation: typewriter-effect 5s steps(100, jump-end) 0s 1 normal both;
 }
 
 .folder .container-education .text {
     position: relative;
     display: block;
+    overflow: hidden;
     font-size: 20px;
     text-transform: uppercase;
+    white-space: nowrap;
     top: 0%;
     left: 12%;
     max-width: 88%;
     margin-top: 30px;
+    animation: typewriter-effect 5s steps(100, jump-end) 3s 1 normal both;
+}
+
+@keyframes typewriter-effect {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 88%;
+    }
 }
 
 button {
