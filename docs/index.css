@@ -368,6 +368,44 @@ body {
     transition: 0.25s;
 }
 
+.folder .container-contact {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    border-radius: 25px;
+    background-color: var(--gray-light);
+    color: var(--gray-dark);
+    font-size: 15px;
+    height: 100%;
+    width: 100%;
+}
+
+.folder .container-contact .title {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    font-size: 25px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    top: 0%;
+    left: 5%;
+    max-width: 95%;
+}
+
+.folder .container-contact .text {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    font-size: 17px;
+    white-space: nowrap;
+    top: 0%;
+    left: 12%;
+    max-width: 88%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 button {
     color: var(--orange);
     background: none;
