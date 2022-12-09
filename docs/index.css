@@ -372,7 +372,7 @@ body {
     position: absolute;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
     border-radius: 25px;
     background-color: var(--gray-light);
     color: var(--gray-dark);
@@ -406,47 +406,105 @@ body {
     margin-bottom: 5px;
 }
 
-.folder .container-contact .input-group {
+.folder .container-contact form .text-box {
     position: relative;
+    left: 5%;
     margin: 50px;
 }
 
-.folder .container-contact .input {
-    margin: 10px;
-    padding: 10px;
-    width: 400px;
-    border: none;
+.folder .container-contact form .text-box input {
+    position: relative;
     border-radius: 4px;
-    color: var(--white);
-    background-color: var(--gray-light);
+    border: none;
     outline: 2px solid var(--white);
+    background-color: transparent;
+    color: var(--gray-dark);
+    width: 40%;
+    padding: 10px;
 }
 
-.folder .container-contact .input-label {
+.folder .container-contact form .text-box input:focus {
+    outline-color: var(--orange);
+}
+
+.folder .container-contact form .text-box label {
     position: absolute;
-    top: 0;
-    left: 0;
-    color: var(--white);
-    transform: translate(20px, 20px);
-    transition: transform 0.25s;
+    bottom: 107%;
+    left: 20px;
 }
 
-.folder .container-contact .input,
-.folder .container-contact .input-label {
+.folder .container-contact form .text-box input,
+.folder .container-contact form .text-box label {
     cursor: text;
 }
 
-.input:focus+.input-label,
-.input:valid+.input-label {
-    transform: translate(20px, -7px) scale(0.8);
+input:focus+label {
     color: var(--orange);
-    padding-inline: 5px;
-    background-color: transparent;
+    transform: translate(30px, 0px);
+    transition: 0.25s;
 }
 
-.folder .container-contact .input:is(:focus, :valid) {
+.folder .container-contact form .text-area {
+    position: relative;
+    left: 5%;
+    margin: 50px;
+}
+
+.folder .container-contact form .text-area textarea {
+    position: relative;
+    border-radius: 4px;
+    border: none;
+    outline: 2px solid var(--white);
+    background-color: transparent;
+    color: var(--gray-dark);
+    height: 200px;
+    width: 80%;
+    padding: 10px;
+}
+
+.folder .container-contact form .text-area textarea:focus {
     outline-color: var(--orange);
-    background-color: var(--gray-dark);
+}
+
+.folder .container-contact form .text-area label {
+    position: absolute;
+    bottom: 102%;
+    left: 20px;
+}
+
+.folder .container-contact form .text-area textarea,
+.folder .container-contact form .text-area label {
+    cursor: text;
+}
+
+textarea:focus+label {
+    color: var(--orange);
+    transform: translate(30px, 0px);
+    transition: 0.25s;
+}
+
+.folder .container-contact form .send-box {
+    position: relative;
+    left: 5%;
+    margin: 50px;
+}
+
+.folder .container-contact form .send-box input {
+    position: relative;
+    border-radius: 4px;
+    border: none;
+    outline: 2px solid var(--white);
+    background-color: transparent;
+    color: var(--gray-dark);
+    width: 40%;
+    padding: 10px;
+}
+
+.folder .container-contact form .send-box input:hover {
+    outline-color: var(--orange);
+    background-color: var(--white);
+    border-radius: 25px;
+    transition: 0.25s;
 }
 
 button {
