@@ -370,9 +370,7 @@ body {
 
 .folder .container-contact {
     position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: left;
+    display: block;
     border-radius: 25px;
     background-color: var(--gray-light);
     color: var(--gray-dark);
@@ -381,60 +379,90 @@ body {
     width: 100%;
 }
 
-.folder .container-contact .title {
+form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 25px;
+    height: 100%;
+    width: 100%;
+}
+
+form .flex-top {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    border-radius: 25px;
+    width: 100%;
+    height: 35%;
+    /* border: 2px solid red; */
+}
+
+form .flex-top .flex-left {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 25px;
+    height: 100%;
+    width: 50%;
+    /* border: 2px solid cyan; */
+}
+
+form .flex-top .flex-right {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 25px;
+    height: 100%;
+    width: 50%;
+    /* border: 2px solid yellow; */
+}
+
+form .flex-bottom {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 25px;
+    width: 100%;
+    height: 75%;
+    /* border: 2px solid green; */
+}
+
+.text-box {
     position: relative;
     display: block;
-    overflow: hidden;
-    font-size: 25px;
-    text-transform: uppercase;
-    white-space: nowrap;
-    top: 0%;
-    left: 5%;
-    max-width: 95%;
-}
-
-.folder .container-contact .text {
-    position: relative;
-    display: block;
-    overflow: hidden;
-    font-size: 17px;
-    white-space: nowrap;
-    top: 0%;
-    left: 12%;
-    max-width: 88%;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-.folder .container-contact form .text-box {
-    position: relative;
-    left: 5%;
-    margin: 50px;
-}
-
-.folder .container-contact form .text-box input {
-    position: relative;
     border-radius: 4px;
+    width: 60%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    margin: 40px 0px 20px 0px;
+}
+
+.text-box input {
+    position: relative;
+    display: block;
     border: none;
+    border-radius: 4px;
     outline: 2px solid var(--white);
     background-color: transparent;
     color: var(--gray-dark);
-    width: 40%;
-    padding: 10px;
+    height: 100%;
+    width: 100%;
+    padding: 5px 10px 5px 10px;
 }
 
-.folder .container-contact form .text-box input:focus {
+.text-box input:focus {
     outline-color: var(--orange);
 }
 
-.folder .container-contact form .text-box label {
+.text-box label {
     position: absolute;
     bottom: 107%;
     left: 20px;
 }
 
-.folder .container-contact form .text-box input,
-.folder .container-contact form .text-box label {
+.text-box input,
+.text-box label {
     cursor: text;
 }
 
@@ -444,36 +472,42 @@ input:focus+label {
     transition: 0.25s;
 }
 
-.folder .container-contact form .text-area {
+.text-area {
     position: relative;
-    left: 5%;
-    margin: 50px;
+    display: block;
+    border-radius: 4px;
+    height: 70%;
+    width: 80%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    margin: 30px 0px 40px 0px;
 }
 
-.folder .container-contact form .text-area textarea {
+.text-area textarea {
     position: relative;
-    border-radius: 4px;
+    display: block;
     border: none;
+    border-radius: 4px;
     outline: 2px solid var(--white);
     background-color: transparent;
     color: var(--gray-dark);
-    height: 200px;
-    width: 80%;
-    padding: 10px;
+    height: 100%;
+    width: 100%;
+    padding: 10px 10px 10px 10px;
 }
 
-.folder .container-contact form .text-area textarea:focus {
+.text-area textarea:focus {
     outline-color: var(--orange);
 }
 
-.folder .container-contact form .text-area label {
+.text-area label {
     position: absolute;
     bottom: 102%;
     left: 20px;
 }
 
-.folder .container-contact form .text-area textarea,
-.folder .container-contact form .text-area label {
+.text-area textarea,
+.text-area label {
     cursor: text;
 }
 
@@ -483,24 +517,28 @@ textarea:focus+label {
     transition: 0.25s;
 }
 
-.folder .container-contact form .send-box {
+.send-box {
     position: relative;
-    left: 5%;
-    margin: 50px;
+    display: block;
+    border-radius: 4px;
+    height: 35px;
+    width: 25%;
+    left: 50%;
+    transform: translate(-50%, 0%);
 }
 
-.folder .container-contact form .send-box input {
+.send-box input {
     position: relative;
     border-radius: 4px;
     border: none;
     outline: 2px solid var(--white);
     background-color: transparent;
     color: var(--gray-dark);
-    width: 40%;
-    padding: 10px;
+    height: 100%;
+    width: 100%;
 }
 
-.folder .container-contact form .send-box input:hover {
+.send-box input:hover {
     outline-color: var(--orange);
     background-color: var(--white);
     border-radius: 25px;
