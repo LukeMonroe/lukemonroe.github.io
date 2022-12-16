@@ -8,16 +8,16 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 
-<body onload="openTab(event, 'about'); initEmail(event);">
+<body onload="openTab('about'); initEmail();">
     <div class="folder">
         <div class="tab">
-            <button class="slide" onclick="openTab(event, 'about')"><b>About</b></button>
-            <button class="slide" onclick="openTab(event, 'education')"><b>Education</b></button>
-            <button class="slide" onclick="openTab(event, 'experience')"><b>Experience</b></button>
-            <button class="slide" onclick="openTab(event, 'skills')"><b>Skills</b></button>
-            <button class="slide" onclick="openTab(event, 'contact')"><b>Contact</b></button>
+            <button class="slide" onclick="openTab('about')"><b>About</b></button>
+            <button class="slide" onclick="openTab('education')"><b>Education</b></button>
+            <button class="slide" onclick="openTab('experience')"><b>Experience</b></button>
+            <button class="slide" onclick="openTab('skills')"><b>Skills</b></button>
+            <button class="slide" onclick="openTab('contact')"><b>Contact</b></button>
         </div>
-        <div id="about" class="tabcontent">
+        <div id="about" class="tab-content">
             <div class="container-information">
                 <div class="image"> </div>
                 <div class="title"><b>Luke Monroe</b></div>
@@ -70,7 +70,7 @@
                 </div>
             </div>
         </div>
-        <div id="education" class="tabcontent">
+        <div id="education" class="tab-content">
             <div class="container-education">
                 <div class="triangle"> </div>
                 <div class="image"> </div>
@@ -82,7 +82,7 @@
                 <div class="text"><b> Computer Science GPA: 3.49</b></div>
             </div>
         </div>
-        <div id="experience" class="tabcontent">
+        <div id="experience" class="tab-content">
             <div class="container-experience">
                 <div class="above-title"><b>Jun. 2022 - Current</b></div>
                 <div class="title"><b>System Developer, PCE Systems</b></div>
@@ -107,7 +107,7 @@
                 <div class="text">Developed strong interpersonal and communication skills.</div>
             </div>
         </div>
-        <div id="skills" class="tabcontent">
+        <div id="skills" class="tab-content">
             <div class="container-skills">
                 <div class="container-box">
                     <div class="box"><b><i>Java</b></i></div>
@@ -139,34 +139,34 @@
                 </div>
             </div>
         </div>
-        <div id="contact" class="tabcontent">
+        <div id="contact" class="tab-content">
             <div class="container-contact">
                 <form id="contact-form">
                     <div class="flex-top">
                         <div class="flex-left">
                             <div class="text-box">
-                                <input type="text" name="user_first_name" required>
+                                <input id="first-name" type="text" name="user_first_name" required>
                                 <label for="user_first_name">First Name</label>
                             </div>
                             <div class="text-box">
-                                <input type="text" name="user_last_name" required>
+                                <input id="last-name" type="text" name="user_last_name" required>
                                 <label for="user_last_name">Last Name</label>
                             </div>
                         </div>
                         <div class="flex-right">
                             <div class="text-box">
-                                <input type="text" name="user_phone" required>
+                                <input id="phone" type="text" name="user_phone" required>
                                 <label for="user_phone">Phone</label>
                             </div>
                             <div class="text-box">
-                                <input type="email" name="user_email" required>
+                                <input id="email" type="email" name="user_email" required>
                                 <label for="user_email">Email</label>
                             </div>
                         </div>
                     </div>
                     <div class="flex-bottom">
                         <div class="text-area">
-                            <textarea name="user_message" required></textarea>
+                            <textarea id="message" name="user_message" required></textarea>
                             <label for="user_message">Message</label>
                         </div>
                         <div class="send-box">

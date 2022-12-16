@@ -1,12 +1,13 @@
-function openTab(event, tabName) {
-    var tabcontent = document.getElementsByClassName("tabcontent");
-    for (var i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
+function openTab(tabName) {
+    var tabContent = document.getElementsByClassName("tab-content");
+    for (var i = 0; i < tabContent.length; i++) {
+        tabContent[i].style.display = "none";
     }
+
     document.getElementById(tabName).style.display = "flex";
 }
 
-function initEmail(event) {
+function initEmail() {
     emailjs.init("I4v5nKkBfKnOtb346");
     document.getElementById("contact-form").addEventListener("submit", sendEmail);
 }
@@ -19,4 +20,10 @@ function sendEmail(event) {
         }, function (error) {
             console.log("FAILED:", error);
         });
+
+    document.getElementById("first-name").value = "";
+    document.getElementById("last-name").value = "";
+    document.getElementById("phone").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("message").value = "";
 }
