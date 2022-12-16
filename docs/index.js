@@ -26,4 +26,24 @@ function sendEmail(event) {
     document.getElementById("phone").value = "";
     document.getElementById("email").value = "";
     document.getElementById("message").value = "";
+
+    alert("Message sent successfully!");
+}
+
+function clickSubmit() {
+    var elem = document.getElementById("send");
+    var pos = 0;
+    var interval = setInterval(frame, 10);
+    function frame() {
+        if (pos == 2000) {
+            pos = -2000;
+        } else if (pos == -10) {
+            pos += 10;
+            elem.style.left = pos + "px";
+            clearInterval(interval);
+        } else {
+            pos += 10;
+            elem.style.left = pos + "px";
+        }
+    }
 }
