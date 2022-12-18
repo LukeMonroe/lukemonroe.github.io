@@ -3,7 +3,8 @@
     --blue: rgba(27, 102, 133, 1.0);
     --gray-light: rgba(187, 187, 187, 0.40);
     --gray-dark: rgba(77, 77, 77, 1.0);
-    --green: rgba(23, 69, 59, 1.0);
+    --green-light: rgb(48, 206, 36);
+    --green-dark: rgba(23, 69, 59, 1.0);
     --orange: rgba(251, 112, 115, 1.0);
     --purple: rgba(114, 86, 135, 1.0);
     --white: rgba(255, 255, 255, 1.0);
@@ -523,6 +524,8 @@ form .send-box input {
     border: none;
     outline: 2px solid var(--white);
     background-color: transparent;
+    font-family: inherit;
+    font-size: inherit;
     color: var(--gray-dark);
     height: 100%;
     width: 100%;
@@ -530,9 +533,43 @@ form .send-box input {
 
 form .send-box input:hover {
     outline-color: var(--orange);
-    background-color: var(--white);
     border-radius: 25px;
     transition: 0.25s;
+}
+
+.checkmark {
+    position: absolute;
+    display: block;
+    visibility: hidden;
+    font-size: 17px;
+    height: 30px;
+    width: 30px;
+    top: 50%;
+    left: 0%;
+    transform: translate(0%, -52%);
+    border: 2px solid blue;
+}
+
+.checkmark:before {
+    position: absolute;
+    content: "";
+    border: 14px solid var(--green-light);
+    border-radius: 14px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.checkmark:after {
+    position: absolute;
+    content: "";
+    border: 3px solid var(--white);
+    border-width: 0px 3px 3px 0px;
+    width: 6px;
+    height: 12px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
 }
 
 button {
@@ -571,5 +608,25 @@ button {
 
     to {
         width: 100%;
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
     }
 }

@@ -21,29 +21,40 @@ function sendEmail(event) {
             console.log("FAILED:", error);
         });
 
+    clearForm();
+    sendAnimation();
+}
+
+function clearForm() {
     document.getElementById("first-name").value = "";
     document.getElementById("last-name").value = "";
     document.getElementById("phone").value = "";
     document.getElementById("email").value = "";
     document.getElementById("message").value = "";
-
-    alert("Message sent successfully!");
 }
 
-function clickSubmit() {
-    var elem = document.getElementById("send");
-    var pos = 0;
-    var interval = setInterval(frame, 10);
-    function frame() {
-        if (pos == 2000) {
-            pos = -2000;
-        } else if (pos == -10) {
-            pos += 10;
-            elem.style.left = pos + "px";
-            clearInterval(interval);
-        } else {
-            pos += 10;
-            elem.style.left = pos + "px";
-        }
-    }
+function sendAnimation() {
+    var element = document.getElementById("checkmark");
+    element.style.visibility = "visible";
+    element.style.animation = "fade-in 2s";
+    element.style.transform = "translate(650%, -52%) rotate(720deg)";
+    element.style.transition = "2s";
+
+    setTimeout(() => {
+        var element = document.getElementById("send");
+        element.value = "Message sent successfully!";
+    }, 2000);
+
+    setTimeout(() => {
+        var element = document.getElementById("checkmark");
+        element.style.visibility = "hidden";
+        element.style.animation = "fade-out 2s";
+        element.style.transform = "translate(0%, -52%) rotate(-720deg)";
+        element.style.transition = "2s";
+    }, 5000);
+
+    setTimeout(() => {
+        var element = document.getElementById("send");
+        element.value = "Send";
+    }, 7000);
 }
