@@ -37,7 +37,8 @@ function sendAnimation() {
     var element = document.getElementById("checkmark");
     element.style.visibility = "visible";
     element.style.animation = "fade-in 2s";
-    element.style.transform = "translate(650%, -52%) rotate(720deg)";
+    element.style.left = "87%";
+    element.style.transform = "translate(0%, -52%) rotate(720deg)";
     element.style.transition = "2s";
 
     setTimeout(() => {
@@ -49,6 +50,7 @@ function sendAnimation() {
         var element = document.getElementById("checkmark");
         element.style.visibility = "hidden";
         element.style.animation = "fade-out 2s";
+        element.style.left = "0%";
         element.style.transform = "translate(0%, -52%) rotate(-720deg)";
         element.style.transition = "2s";
     }, 5000);

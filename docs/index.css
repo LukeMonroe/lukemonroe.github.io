@@ -33,9 +33,9 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-height: 600px;
-    min-width: 750px;
-    max-height: 800px;
+    min-height: 750px;
+    min-width: 600px;
+    max-height: 1400px;
     max-width: 1200px;
 }
 
@@ -51,11 +51,9 @@ body {
     border-bottom-right-radius: 0px;
     bottom: 99%;
     right: 0%;
-    height: 5vh;
+    height: 40px;
     width: 50vw;
-    min-height: 30px;
     min-width: 500px;
-    max-height: 40px;
     max-width: 800px;
     padding: 10px;
 }
@@ -102,6 +100,11 @@ body {
     color: var(--white);
     border-radius: 20px;
     padding: 10px;
+}
+
+.folder .container-information .role:hover {
+    transform: scale(125%);
+    transition: 0.25s;
 }
 
 .folder .container-information .text {
@@ -205,7 +208,7 @@ body {
     position: absolute;
     display: block;
     overflow: hidden;
-    top: -1%;
+    top: 0%;
     right: 0%;
     width: 400px;
     height: 400px;
@@ -234,7 +237,7 @@ body {
     top: 0%;
     left: 5%;
     max-width: 95%;
-    margin-top: 100px;
+    margin-top: 170px;
     animation: typewriter-effect 5s steps(100, jump-end) 0s 1 normal both;
 }
 
@@ -273,7 +276,7 @@ body {
     font-size: 12px;
     text-transform: uppercase;
     white-space: nowrap;
-    top: 0%;
+    top: 5%;
     left: 5%;
     max-width: 95%;
     margin-top: 15px;
@@ -287,7 +290,7 @@ body {
     font-size: 25px;
     text-transform: uppercase;
     white-space: nowrap;
-    top: 0%;
+    top: 5%;
     left: 5%;
     max-width: 95%;
     animation: typewriter-effect 5s steps(100, jump-end) 0s 1 normal both;
@@ -299,7 +302,7 @@ body {
     overflow: hidden;
     font-size: 17px;
     white-space: nowrap;
-    top: 0%;
+    top: 5%;
     left: 12%;
     max-width: 88%;
     margin-top: 5px;
@@ -430,8 +433,9 @@ form .text-box {
     display: block;
     border-radius: 4px;
     width: 60%;
+    top: 5%;
     left: 50%;
-    transform: translate(-50%, 0%);
+    transform: translate(-50%, 5%);
     margin: 40px 0px 20px 0px;
 }
 
@@ -468,7 +472,7 @@ form .text-area {
     width: 80%;
     left: 50%;
     transform: translate(-50%, 0%);
-    margin: 30px 0px 40px 0px;
+    margin: 30px 0px 50px 0px;
 }
 
 form .text-area textarea {
@@ -513,7 +517,7 @@ form .send-box {
     display: block;
     border-radius: 4px;
     height: 35px;
-    width: 25%;
+    width: 40%;
     left: 50%;
     transform: translate(-50%, 0%);
 }
