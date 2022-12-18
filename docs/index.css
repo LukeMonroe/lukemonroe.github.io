@@ -547,7 +547,6 @@ form .send-box input:hover {
     top: 50%;
     left: 0%;
     transform: translate(0%, -52%);
-    border: 2px solid blue;
 }
 
 .checkmark:before {
