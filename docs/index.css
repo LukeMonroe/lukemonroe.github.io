@@ -228,8 +228,8 @@ body {
 .folder .container-education .title {
     position: relative;
     display: block;
-    overflow: hidden;
-    font-size: 25px;
+    font-size: calc(15px + 1vw);
+    color: var(--green-dark);
     text-decoration-line: overline underline;
     text-decoration-color: var(--white);
     text-transform: uppercase;
@@ -237,22 +237,20 @@ body {
     top: 0%;
     left: 5%;
     max-width: 95%;
-    margin-top: 170px;
-    animation: typewriter-effect 5s steps(100, jump-end) 0s 1 normal both;
+    margin-top: 150px;
 }
 
 .folder .container-education .text {
     position: relative;
     display: block;
-    overflow: hidden;
-    font-size: 20px;
+    font-size: calc(10px + 1vw);
+    color: var(--green-dark);
     text-transform: uppercase;
     white-space: nowrap;
     top: 0%;
     left: 12%;
     max-width: 88%;
     margin-top: 30px;
-    animation: typewriter-effect 5s steps(100, jump-end) 3s 1 normal both;
 }
 
 .folder .container-experience {
@@ -595,12 +593,6 @@ button {
 .slide:focus {
     color: var(--white);
     box-shadow: inset 150px 0 0 0 var(--purple);
-    transition: 0.25s;
-}
-
-.slide:active {
-    color: var(--white);
-    box-shadow: inset 150px 0 0 0 var(--yellow);
     transition: 0.25s;
 }
 
