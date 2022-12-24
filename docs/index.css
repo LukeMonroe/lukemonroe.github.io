@@ -26,36 +26,31 @@ body {
     display: flex;
     flex-direction: row;
     background-color: var(--white);
-    height: 65vh;
+    border-radius: 25px 0px 25px 25px;
     width: 85vw;
-    border-radius: 25px;
-    border-top-right-radius: 0px;
+    height: 80vh;
+    min-width: 400px;
+    min-height: 600px;
+    max-width: 1200px;
+    max-height: 1800px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-height: 750px;
-    min-width: 600px;
-    max-height: 1400px;
-    max-width: 1200px;
 }
 
 .folder .tab {
     position: absolute;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     background-color: var(--white);
-    border-top-left-radius: 25px;
-    border-top-right-radius: 25px;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
-    bottom: 99%;
+    border-radius: 25px 25px 0px 0px;
+    bottom: 100%;
     right: 0%;
-    height: 40px;
-    width: 50vw;
-    min-width: 500px;
-    max-width: 800px;
-    padding: 10px;
+    width: 60vw;
+    height: 50px;
+    min-width: 350px;
+    max-width: 750px;
+    padding: 5px 5px 5px 5px;
 }
 
 .folder .container-information {
@@ -271,7 +266,7 @@ body {
     display: block;
     overflow: hidden;
     color: var(--yellow);
-    font-size: 12px;
+    font-size: calc(12px + 0.25vw);
     text-transform: uppercase;
     white-space: nowrap;
     top: 5%;
@@ -285,7 +280,7 @@ body {
     position: relative;
     display: block;
     overflow: hidden;
-    font-size: 25px;
+    font-size: calc(15px + 0.25vw);
     text-transform: uppercase;
     white-space: nowrap;
     top: 5%;
@@ -298,13 +293,12 @@ body {
     position: relative;
     display: block;
     overflow: hidden;
-    font-size: 17px;
+    font-size: calc(10px + 0.25vw);
     white-space: nowrap;
     top: 5%;
     left: 12%;
     max-width: 88%;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    padding: 5px 0px 5px 0px;
     animation: typewriter-effect 5s steps(100, jump-end) 3s 1 normal both;
 }
 
@@ -345,7 +339,6 @@ body {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
     width: 100%;
     height: 100%;
-    margin-bottom: 5px;
 }
 
 .folder .container-skills .container-box .box {
@@ -354,11 +347,14 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    font-size: calc(8px + 0.5vw);
     text-align: center;
     border: 2px solid var(--blue);
     border-radius: 100%;
-    width: 85px;
-    height: 85px;
+    width: calc(50px + 4vw);
+    height: calc(50px + 4vw);
+    max-width: 110px;
+    max-height: 110px;
     margin: auto;
 }
 
@@ -423,7 +419,7 @@ form .flex-bottom {
     flex-direction: column;
     border-radius: 25px;
     width: 100%;
-    height: 75%;
+    height: 65%;
 }
 
 form .text-box {
@@ -434,7 +430,7 @@ form .text-box {
     top: 5%;
     left: 50%;
     transform: translate(-50%, 5%);
-    margin: 40px 0px 20px 0px;
+    margin: 50px 0px 0px 0px;
 }
 
 form .text-box input {
@@ -466,11 +462,11 @@ form .text-area {
     position: relative;
     display: block;
     border-radius: 4px;
-    height: 70%;
+    height: 65%;
     width: 80%;
     left: 50%;
     transform: translate(-50%, 0%);
-    margin: 30px 0px 50px 0px;
+    margin: 25px 0px 50px 0px;
 }
 
 form .text-area textarea {
@@ -577,11 +573,9 @@ button {
     color: var(--orange);
     background: none;
     border: transparent;
-    width: 150px;
-    border-radius: 15px;
-    padding: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
+    font-size: calc(7px + 0.25vw);
+    width: 100%;
+    border-radius: 25px 25px 25px 25px;
 }
 
 .slide {
@@ -623,5 +617,38 @@ button {
 
     100% {
         opacity: 0;
+    }
+}
+
+@media screen and (max-width: 750px) {
+    .folder .container-about .container-box {
+        grid-template-columns: 1fr;
+        margin-bottom: 10px;
+    }
+
+    .folder .container-skills .container-box {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+
+    form .flex-top {
+        flex-direction: column;
+        height: 55%;
+    }
+
+    form .flex-top .flex-left {
+        width: 100%;
+    }
+
+    form .flex-top .flex-right {
+        width: 100%;
+    }
+
+    form .flex-bottom {
+        height: 45%;
+    }
+
+    form .text-area {
+        height: 55%;
+        width: 60%;
     }
 }
