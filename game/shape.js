@@ -182,7 +182,7 @@ class Polygon extends Shape {
   }
 
   static createRock (canvas) {
-    let sides = Math.floor(Math.random() * 8)
+    let sides = Math.floor(Math.random() * 10)
     sides = sides < 3 ? 3 : sides
 
     let radius = Math.floor(Math.random() * 80)
@@ -216,7 +216,7 @@ class Polygon extends Shape {
     const shards = []
     if (rock.radius > 30) {
       for (let index = 0; index < rock.sides; index++) {
-        let sides = Math.floor(Math.random() * 8)
+        let sides = Math.floor(Math.random() * 10)
         sides = sides < 3 ? 3 : sides
 
         let radius = Math.floor(Math.random() * 30)
