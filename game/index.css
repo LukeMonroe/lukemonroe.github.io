@@ -1,0 +1,63 @@
+body {
+    background-color: rgb(30, 25, 40);
+}
+
+canvas {
+    position: absolute;
+    display: block;
+    background-color: rgba(0, 0, 0, 1);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+button.play {
+    position: absolute;
+    display: block;
+    cursor: pointer;
+    background-color: #ac6100;
+    color: white;
+    border: none;
+    font-size: 18px;
+    font-family: monospace;
+    text-align: center;
+    padding: 15px;
+    width: 250px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+button.again {
+    position: absolute;
+    display: block;
+    cursor: pointer;
+    background-color: #005800;
+    color: white;
+    border: none;
+    font-size: 18px;
+    font-family: monospace;
+    text-align: center;
+    padding: 15px;
+    width: 250px;
+    top: 50%;
+    left: 40%;
+    transform: translate(-50%, -50%);
+  }
+
+  button.quit {
+    position: absolute;
+    display: block;
+    cursor: pointer;
+    background-color: rgb(30, 25, 40);
+    color: white;
+    border: none;
+    font-size: 18px;
+    font-family: monospace;
+    text-align: center;
+    padding: 15px;
+    width: 250px;
+    top: 50%;
+    left:60%;
+    transform: translate(-50%, -50%);
+  }
