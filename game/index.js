@@ -128,8 +128,11 @@ function collisions () {
       if (Collision.checkShapes(bullet, rock)) {
         shards = shards.concat(Polygon.createShards(rock))
         score.incrementScore()
+        if (score.score > 0 && score.score % 10 === 0) {
+          score.incrementLives()
+        }
         if (rockIntervalMillis > 10) {
-          rockIntervalMillis -= 2
+          rockIntervalMillis -= 1
           clearInterval(rockInterval)
           rockInterval = setInterval(() => rocks.push(Polygon.createRock(game.canvas)), rockIntervalMillis)
         }

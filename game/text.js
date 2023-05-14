@@ -19,6 +19,10 @@ class Score {
     this.score++
   }
 
+  incrementLives () {
+    this.lives++
+  }
+
   decrementLives () {
     this.lives--
   }
