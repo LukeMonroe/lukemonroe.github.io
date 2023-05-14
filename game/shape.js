@@ -5,6 +5,7 @@ const COLLISION_COLOR = 'royalblue'
 const BULLET_COLOR = 'skyblue'
 const ROCK_COLOR = 'firebrick'
 const SHARD_COLOR = 'palevioletred'
+const TRANSPARENT_COLOR = 'rgba(0,0,0,0)'
 const BOUNDS_OFFSET = 250
 
 class Point {
@@ -74,7 +75,14 @@ class Circle extends Shape {
   }
 
   copy () {
-    return new Circle(this.x, this.y, this.radius)
+    const circle = new Circle(this.x, this.y, this.radius)
+    circle.name = this.name
+    circle.rotation = this.rotation
+    circle.speed = this.speed
+    circle.show = this.show
+    circle.color = this.color
+
+    return circle
   }
 
   update (canvas) {
@@ -112,7 +120,14 @@ class Polygon extends Shape {
   }
 
   copy () {
-    return new Polygon(this.x, this.y, this.radius, this.sides)
+    const polygon = new Polygon(this.x, this.y, this.radius, this.sides)
+    polygon.name = this.name
+    polygon.rotation = this.rotation
+    polygon.speed = this.speed
+    polygon.show = this.show
+    polygon.color = this.color
+
+    return polygon
   }
 
   getRotatedVertices () {
@@ -219,4 +234,4 @@ class Polygon extends Shape {
   }
 }
 
-export { CIRCLE, POLYGON, BOUNDS_OFFSET, DEFAULT_COLOR, COLLISION_COLOR, Point, Circle, Polygon }
+export { CIRCLE, POLYGON, BOUNDS_OFFSET, DEFAULT_COLOR, COLLISION_COLOR, TRANSPARENT_COLOR, Point, Circle, Polygon }

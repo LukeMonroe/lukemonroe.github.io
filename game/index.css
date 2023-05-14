@@ -26,6 +26,7 @@ button.play {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    visibility: visible;
   }
 
 button.again {
@@ -43,6 +44,7 @@ button.again {
     top: 50%;
     left: 40%;
     transform: translate(-50%, -50%);
+    visibility: hidden;
   }
 
   button.quit {
@@ -60,4 +62,5 @@ button.again {
     top: 50%;
     left:60%;
     transform: translate(-50%, -50%);
+    visibility: hidden;
   }
