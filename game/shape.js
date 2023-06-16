@@ -167,13 +167,27 @@ class Polygon extends Shape {
       context.closePath()
       context.fillStyle = this.color
       context.fill()
-      context.stroke()
+
+      // Draw the front of the player.
+      if (this.name === 'player') {
+        context.strokeStyle = 'seagreen'
+        context.lineWidth = 4
+        context.beginPath()
+
+        const vertices = this.getRotatedVertices()
+        context.moveTo(this.x + vertices[2].x, this.y + vertices[2].y)
+        context.lineTo(this.x + vertices[3].x, this.y + vertices[3].y)
+        context.lineTo(this.x + vertices[4].x, this.y + vertices[4].y)
+
+        context.stroke()
+      }
+
       context.restore()
     }
   }
 
   static createBullet (x, y, rotation) {
-    const bullet = new Polygon(x, y, 6, 3)
+    const bullet = new Polygon(x, y, 8, 3)
     bullet.rotation = rotation
     bullet.speed = 10
     bullet.color = BULLET_COLOR

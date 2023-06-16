@@ -1,6 +1,6 @@
 import { Collision } from './collision.js'
 import { DEFAULT_COLOR, COLLISION_COLOR, TRANSPARENT_COLOR, Polygon } from './shape.js'
-import { Score } from './text.js'
+import { Score } from './score.js'
 import { Keys } from './keys.js'
 
 let spacePressed = false
@@ -10,9 +10,7 @@ let bullets = []
 let rocks = []
 let alive = null
 let gameInterval = null
-let rockInterval = null
 let deadInterval = null
-let rockIntervalMillis = null
 let keys = null
 
 const game = {
@@ -27,20 +25,12 @@ const game = {
   },
   start: function () {
     document.getElementById('play').style.visibility = 'hidden'
-    document.getElementById('again').addEventListener('click', function (e) {
-      game.restart()
-    })
-    document.getElementById('quit').addEventListener('click', function (e) {
-      close()
-    })
-
+    document.getElementById('again').addEventListener('click', function (e) { game.restart() })
+    document.getElementById('quit').addEventListener('click', function (e) { close() })
     gameInterval = setInterval(manage, 10)
-    rockIntervalMillis = 200
-    rockInterval = setInterval(() => rocks.push(Polygon.createRock(game.canvas)), rockIntervalMillis)
   },
   stop: function () {
     clearInterval(gameInterval)
-    clearInterval(rockInterval)
     document.getElementById('again').style.visibility = 'visible'
     document.getElementById('quit').style.visibility = 'visible'
   },
@@ -50,10 +40,6 @@ const game = {
   restart: function () {
     document.getElementById('again').style.visibility = 'hidden'
     document.getElementById('quit').style.visibility = 'hidden'
-    gameInterval = setInterval(manage, 10)
-    rockIntervalMillis = 200
-    rockInterval = setInterval(() => rocks.push(Polygon.createRock(game.canvas)), 100)
-    spacePressed = false
     player = new Polygon(700, 400, 30, 5)
     player.name = 'player'
     score.reset()
@@ -61,6 +47,8 @@ const game = {
     bullets = []
     rocks = []
     alive = true
+    spacePressed = false
+    gameInterval = setInterval(manage, 10)
   }
 }
 
@@ -104,16 +92,19 @@ function update () {
   rocks.forEach(rock => rock.update(game.canvas))
   rocks = rocks.filter(rock => rock.show)
   player.update(game.canvas)
+
+  if (!rocks.length) {
+    score.incrementLevel()
+    for (let i = 0; i < score.level * 5; i++) {
+      rocks.push(Polygon.createRock(game.canvas))
+    }
+  }
 }
 
 function draw () {
   bullets.forEach(bullet => bullet.draw(game.context))
   rocks.forEach(rock => rock.draw(game.context))
   player.draw(game.context)
-  const playerCopy = new Polygon(player.x, player.y, 12, 3)
-  playerCopy.rotation = player.rotation
-  playerCopy.color = 'seagreen'
-  playerCopy.draw(game.context)
   score.draw(game.canvas, game.context)
 }
 
@@ -121,17 +112,9 @@ function collisions () {
   let shards = []
   for (const bullet of bullets) {
     for (const rock of rocks) {
-      if (Collision.checkShapes(bullet, rock)) {
+      if (rock.show && Collision.checkShapes(bullet, rock)) {
         shards = shards.concat(Polygon.createShards(rock))
         score.incrementScore()
-        if (score.score > 0 && score.score % 50 === 0) {
-          score.incrementLives()
-        }
-        if (rockIntervalMillis > 10) {
-          rockIntervalMillis -= 1
-          clearInterval(rockInterval)
-          rockInterval = setInterval(() => rocks.push(Polygon.createRock(game.canvas)), rockIntervalMillis)
-        }
         bullet.show = false
         rock.show = false
         break
@@ -141,17 +124,16 @@ function collisions () {
   rocks = rocks.concat(shards)
 
   if (alive) {
-    player.color = DEFAULT_COLOR
     for (const rock of rocks) {
       if (Collision.checkShapes(player, rock)) {
-        player.color = COLLISION_COLOR
-        score.decrementLives()
         alive = false
+        score.decrementLives()
         if (score.lives === 0) {
+          player.color = COLLISION_COLOR
           setTimeout(game.stop, 50)
         } else {
           deadInterval = setInterval(function () { player.color = player.color === COLLISION_COLOR ? TRANSPARENT_COLOR : COLLISION_COLOR }, 80)
-          setTimeout(function () { alive = true; clearInterval(deadInterval) }, 3000)
+          setTimeout(function () { alive = true; player.color = DEFAULT_COLOR; clearInterval(deadInterval) }, 3000)
         }
         break
       }
