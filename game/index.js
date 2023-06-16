@@ -1,8 +1,9 @@
 import { Collision } from './collision.js'
 import { DEFAULT_COLOR, COLLISION_COLOR, TRANSPARENT_COLOR, Polygon } from './shape.js'
 import { Score } from './text.js'
+import { Keys } from './keys.js'
 
-let spaceDown = false
+let spacePressed = false
 let player = null
 let score = null
 let bullets = []
@@ -12,6 +13,7 @@ let gameInterval = null
 let rockInterval = null
 let deadInterval = null
 let rockIntervalMillis = null
+let keys = null
 
 const game = {
   canvas: document.createElement('canvas'),
@@ -31,14 +33,7 @@ const game = {
     document.getElementById('quit').addEventListener('click', function (e) {
       close()
     })
-    window.addEventListener('keydown', function (e) {
-      e.preventDefault()
-      game.keys = (game.keys || [])
-      game.keys[e.keyCode] = true
-    })
-    window.addEventListener('keyup', function (e) {
-      game.keys[e.keyCode] = false
-    })
+
     gameInterval = setInterval(manage, 10)
     rockIntervalMillis = 200
     rockInterval = setInterval(() => rocks.push(Polygon.createRock(game.canvas)), rockIntervalMillis)
@@ -58,11 +53,11 @@ const game = {
     gameInterval = setInterval(manage, 10)
     rockIntervalMillis = 200
     rockInterval = setInterval(() => rocks.push(Polygon.createRock(game.canvas)), 100)
-    game.keys = []
-    spaceDown = false
+    spacePressed = false
     player = new Polygon(700, 400, 30, 5)
     player.name = 'player'
-    score = new Score()
+    score.reset()
+    keys.reset()
     bullets = []
     rocks = []
     alive = true
@@ -75,6 +70,7 @@ function startGame () {
   player = new Polygon(700, 400, 30, 5)
   player.name = 'player'
   score = new Score()
+  keys = new Keys()
   alive = true
   game.init()
   document.getElementById('play').addEventListener('click', game.start)
@@ -89,17 +85,17 @@ function update () {
   game.clear()
   player.speed = 0
 
-  if (game.keys && game.keys[37]) { player.rotation -= 0.07 }
-  if (game.keys && game.keys[39]) { player.rotation += 0.07 }
-  if (game.keys && game.keys[38]) { player.speed = 3 }
-  if (game.keys && game.keys[40]) { player.speed = -3 }
-  if (game.keys && game.keys[32]) {
-    if (!spaceDown && alive) {
-      spaceDown = true
-      bullets.push(Polygon.createBullet(player.x, player.y, player.rotation))
-    }
+  if (keys.arrowLeft()) { player.rotation -= 0.07 }
+  if (keys.arrowRight()) { player.rotation += 0.07 }
+  if (keys.arrowDown()) { player.speed = -3 }
+  if (keys.arrowUp()) { player.speed = 3 }
+  if (keys.space() && !spacePressed) {
+    spacePressed = true
+    bullets.push(Polygon.createBullet(player.x, player.y, player.rotation))
   } else {
-    spaceDown = false
+    if (!keys.space() && spacePressed) {
+      spacePressed = false
+    }
   }
 
   collisions()
@@ -150,16 +146,12 @@ function collisions () {
       if (Collision.checkShapes(player, rock)) {
         player.color = COLLISION_COLOR
         score.decrementLives()
+        alive = false
         if (score.lives === 0) {
-          alive = false
           setTimeout(game.stop, 50)
         } else {
-          alive = false
           deadInterval = setInterval(function () { player.color = player.color === COLLISION_COLOR ? TRANSPARENT_COLOR : COLLISION_COLOR }, 80)
-          setTimeout(function () {
-            alive = true
-            clearInterval(deadInterval)
-          }, 3000)
+          setTimeout(function () { alive = true; clearInterval(deadInterval) }, 3000)
         }
         break
       }
