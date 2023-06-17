@@ -95,7 +95,7 @@ function update () {
 
   if (!rocks.length) {
     score.incrementLevel()
-    for (let i = 0; i < score.level * 5; i++) {
+    for (let i = 0; i < score.level * 2; i++) {
       rocks.push(Polygon.createRock(game.canvas))
     }
   }

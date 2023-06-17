@@ -4,9 +4,10 @@ const DEFAULT_COLOR = 'white'
 const COLLISION_COLOR = 'royalblue'
 const BULLET_COLOR = 'skyblue'
 const ROCK_COLOR = 'firebrick'
-const SHARD_COLOR = 'palevioletred'
+const LARGE_SHARD_COLOR = 'tomato'
+const SMALL_SHARD_COLOR = 'palevioletred'
 const TRANSPARENT_COLOR = 'rgba(0,0,0,0)'
-const BOUNDS_OFFSET = 250
+const BOUNDS_OFFSET = 150
 
 class Point {
   constructor (x, y) {
@@ -46,23 +47,32 @@ class Shape {
       const x = this.x + this.speed * Math.sin(this.rotation)
       const y = this.y - this.speed * Math.cos(this.rotation)
 
-      if (this.name === null) {
-        if (x > 0 - BOUNDS_OFFSET && x < canvas.width + BOUNDS_OFFSET) {
-          this.x = x
-        } else {
-          this.show = false
-        }
-        if (y > 0 - BOUNDS_OFFSET && y < canvas.height + BOUNDS_OFFSET) {
-          this.y = y
-        } else {
-          this.show = false
-        }
-      } else {
+      if (this.name === 'player') {
         if (x > 0 && x < canvas.width) {
           this.x = x
         }
         if (y > 0 && y < canvas.height) {
           this.y = y
+        }
+      } else {
+        if (x > 0 - BOUNDS_OFFSET && x < canvas.width + BOUNDS_OFFSET) {
+          this.x = x
+        } else {
+          if (this.name === 'bullet') {
+            this.show = false
+          } else {
+            this.rotation *= -1
+          }
+        }
+        if (y > 0 - BOUNDS_OFFSET && y < canvas.height + BOUNDS_OFFSET) {
+          this.y = y
+        } else {
+          if (this.name === 'bullet') {
+            this.show = false
+          } else {
+            this.rotation *= -1
+            this.speed *= -1
+          }
         }
       }
     }
@@ -191,6 +201,7 @@ class Polygon extends Shape {
     bullet.rotation = rotation
     bullet.speed = 10
     bullet.color = BULLET_COLOR
+    bullet.name = 'bullet'
 
     return bullet
   }
@@ -199,8 +210,8 @@ class Polygon extends Shape {
     let sides = Math.floor(Math.random() * 10)
     sides = sides < 3 ? 3 : sides
 
-    let radius = Math.floor(Math.random() * 80)
-    radius = radius < 40 ? 40 : radius
+    let radius = Math.floor(Math.random() * 100)
+    radius = radius < 71 ? 71 : radius
 
     let x = 0
     let offset = Math.random() * BOUNDS_OFFSET
@@ -220,26 +231,34 @@ class Polygon extends Shape {
 
     const rock = new Polygon(x, y, radius, sides)
     rock.rotation = Math.random() * Math.PI * 2
-    rock.speed = 2
+    rock.speed = 1
     rock.color = ROCK_COLOR
+    rock.name = 'rock'
 
     return rock
   }
 
   static createShards (rock) {
     const shards = []
-    if (rock.radius > 30) {
+    if (rock.radius > 40) {
       for (let index = 0; index < rock.sides; index++) {
         let sides = Math.floor(Math.random() * 10)
         sides = sides < 3 ? 3 : sides
 
-        let radius = Math.floor(Math.random() * 30)
-        radius = radius < 10 ? 10 : radius
+        let radius = 0
+        if (rock.radius > 70) {
+          radius = Math.floor(Math.random() * 60)
+          radius = radius < 41 ? 41 : radius
+        } else {
+          radius = Math.floor(Math.random() * 40)
+          radius = radius < 21 ? 21 : radius
+        }
 
         const shard = new Polygon(rock.x, rock.y, radius, sides)
         shard.rotation = Math.random() * Math.PI * 2
-        shard.speed = 1
-        shard.color = SHARD_COLOR
+        shard.speed = shard.radius > 40 ? 1.5 : 2
+        shard.color = shard.radius > 40 ? LARGE_SHARD_COLOR : SMALL_SHARD_COLOR
+        shard.name = 'shard'
         shards.push(shard)
       }
     }
