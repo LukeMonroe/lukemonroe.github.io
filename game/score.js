@@ -19,6 +19,9 @@ class Score {
 
   incrementScore () {
     this.score++
+    if (this.score > 0 && this.score % 200 === 0) {
+      this.incrementLives()
+    }
   }
 
   incrementLevel () {
