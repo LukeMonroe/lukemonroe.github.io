@@ -36,6 +36,7 @@ function start () {
   document.getElementById('quit').addEventListener('click', function (e) { close() })
   gameInterval = setInterval(manage, 10)
 }
+
 function stop () {
   clearInterval(gameInterval)
   document.getElementById('again').style.visibility = 'visible'
