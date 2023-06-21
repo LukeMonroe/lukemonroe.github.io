@@ -1,5 +1,5 @@
 import { Collision } from './collision.js'
-import { DEFAULT_COLOR, COLLISION_COLOR, TRANSPARENT_COLOR, Polygon } from './shape.js'
+import { DEFAULT_COLOR, TRANSPARENT_COLOR, Polygon } from './shape.js'
 import { Score } from './score.js'
 import { Keys } from './keys.js'
 
@@ -18,21 +18,28 @@ playButton.className = 'play'
 playButton.addEventListener('click', start)
 
 const againButton = document.createElement('button')
-againButton.innerText = 'Play Again'
+againButton.innerText = 'Again'
 againButton.className = 'again'
-againButton.style.visibility = HIDDEN
 againButton.addEventListener('click', restart)
 
 const quitButton = document.createElement('button')
 quitButton.innerText = 'Quit'
 quitButton.className = 'quit'
-quitButton.style.visibility = HIDDEN
 quitButton.addEventListener('click', function (e) { close() })
 
+const buttons00 = document.createElement('div')
+buttons00.className = 'buttons'
+buttons00.appendChild(playButton)
+
+const buttons01 = document.createElement('div')
+buttons01.className = 'buttons'
+buttons01.style.visibility = HIDDEN
+buttons01.appendChild(againButton)
+buttons01.appendChild(quitButton)
+
 document.body.appendChild(canvas)
-document.body.appendChild(playButton)
-document.body.appendChild(againButton)
-document.body.appendChild(quitButton)
+document.body.appendChild(buttons00)
+document.body.appendChild(buttons01)
 
 let player = Polygon.createPlayer(canvas)
 const score = new Score()
@@ -45,19 +52,17 @@ let alive = true
 let spacePressed = false
 
 function start () {
-  playButton.style.visibility = HIDDEN
+  buttons00.style.visibility = HIDDEN
   gameInterval = setInterval(manage, 10)
 }
 
 function stop () {
   clearInterval(gameInterval)
-  againButton.style.visibility = VISIBLE
-  quitButton.style.visibility = VISIBLE
+  buttons01.style.visibility = VISIBLE
 }
 
 function restart () {
-  againButton.style.visibility = HIDDEN
-  quitButton.style.visibility = HIDDEN
+  buttons01.style.visibility = HIDDEN
   player = Polygon.createPlayer(canvas)
   score.reset()
   keys.reset()
@@ -137,10 +142,9 @@ function collisions () {
         alive = false
         score.decrementLives()
         if (score.lives === 0) {
-          player.color = COLLISION_COLOR
           setTimeout(stop, 50)
         } else {
-          deadInterval = setInterval(function () { player.color = player.color === COLLISION_COLOR ? TRANSPARENT_COLOR : COLLISION_COLOR }, 80)
+          deadInterval = setInterval(function () { player.color = player.color === DEFAULT_COLOR ? TRANSPARENT_COLOR : DEFAULT_COLOR }, 80)
           setTimeout(function () { alive = true; player.color = DEFAULT_COLOR; clearInterval(deadInterval) }, 3000)
         }
         break

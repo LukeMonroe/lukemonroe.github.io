@@ -1,12 +1,11 @@
 const CIRCLE = 'circle'
 const POLYGON = 'polygon'
 const DEFAULT_COLOR = 'white'
-const COLLISION_COLOR = 'royalblue'
+const TRANSPARENT_COLOR = 'transparent'
 const BULLET_COLOR = 'skyblue'
 const ROCK_COLOR = 'firebrick'
 const LARGE_SHARD_COLOR = 'tomato'
 const SMALL_SHARD_COLOR = 'palevioletred'
-const TRANSPARENT_COLOR = 'rgba(0,0,0,0)'
 const BOUNDS_OFFSET = 150
 
 class Point {
@@ -274,4 +273,4 @@ class Polygon extends Shape {
   }
 }
 
-export { CIRCLE, POLYGON, BOUNDS_OFFSET, DEFAULT_COLOR, COLLISION_COLOR, TRANSPARENT_COLOR, Point, Circle, Polygon }
+export { CIRCLE, POLYGON, BOUNDS_OFFSET, DEFAULT_COLOR, TRANSPARENT_COLOR, Point, Circle, Polygon }
