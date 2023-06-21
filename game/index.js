@@ -1,5 +1,5 @@
 import { Collision } from './collision.js'
-import { DEFAULT_COLOR, TRANSPARENT_COLOR, Polygon } from './shape.js'
+import { DEFAULT_COLOR, TRANSPARENT_COLOR, Polygon, Circle } from './shape.js'
 import { Score } from './score.js'
 import { Keys } from './keys.js'
 
@@ -47,8 +47,7 @@ const keys = new Keys()
 let bullets = []
 let rocks = []
 let gameInterval = null
-let deadInterval = null
-let alive = true
+let lifeInterval = null
 let spacePressed = false
 
 function start () {
@@ -68,7 +67,6 @@ function restart () {
   keys.reset()
   bullets = []
   rocks = []
-  alive = true
   spacePressed = false
   gameInterval = setInterval(manage, 10)
 }
@@ -99,16 +97,15 @@ function collisions () {
   }
   rocks = rocks.concat(shards)
 
-  if (alive) {
+  if (lifeInterval === null) {
     for (const rock of rocks) {
       if (Collision.checkShapes(player, rock)) {
-        alive = false
         score.decrementLives()
         if (score.lives === 0) {
           stop()
         } else {
-          deadInterval = setInterval(function () { player.color = player.color === DEFAULT_COLOR ? TRANSPARENT_COLOR : DEFAULT_COLOR }, 100)
-          setTimeout(function () { alive = true; player.color = DEFAULT_COLOR; clearInterval(deadInterval) }, 3000)
+          lifeInterval = setInterval(function () { player.color = player.color === DEFAULT_COLOR ? TRANSPARENT_COLOR : DEFAULT_COLOR }, 100)
+          setTimeout(function () { clearInterval(lifeInterval); lifeInterval = null; player.color = DEFAULT_COLOR }, 3000)
         }
         break
       }
@@ -124,7 +121,7 @@ function update () {
   if (keys.arrowUp()) { player.speed = 3 }
   if (keys.space() && !spacePressed) {
     spacePressed = true
-    bullets.push(Polygon.createBullet(player.x, player.y, player.rotation))
+    bullets.push(Circle.createBullet(player.x, player.y, player.rotation))
   } else {
     if (!keys.space() && spacePressed) {
       spacePressed = false

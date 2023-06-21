@@ -101,16 +101,25 @@ class Circle extends Shape {
   draw (context) {
     if (this.show) {
       context.save()
-      context.strokeStyle = this.color
-      context.lineWidth = 2
+      context.fillStyle = this.color
       context.beginPath()
 
       context.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
 
       context.closePath()
-      context.stroke()
+      context.fill()
       context.restore()
     }
+  }
+
+  static createBullet (x, y, rotation) {
+    const bullet = new Circle(x, y, 8)
+    bullet.rotation = rotation
+    bullet.speed = 10
+    bullet.color = BULLET_COLOR
+    bullet.name = 'bullet'
+
+    return bullet
   }
 }
 
@@ -162,8 +171,7 @@ class Polygon extends Shape {
   draw (context) {
     if (this.show) {
       context.save()
-      context.strokeStyle = this.color
-      context.lineWidth = 2
+      context.fillStyle = this.color
       context.beginPath()
 
       // Start drawing from the last vertex.
@@ -174,7 +182,6 @@ class Polygon extends Shape {
       }
 
       context.closePath()
-      context.fillStyle = this.color
       context.fill()
 
       // Draw the front of the player.

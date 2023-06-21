@@ -1,5 +1,3 @@
-const TEXT_COLOR = 'white'
-
 class Score {
   constructor () {
     this.score = 0
@@ -10,7 +8,7 @@ class Score {
   draw (context) {
     context.save()
     context.font = '20px monospace'
-    context.fillStyle = TEXT_COLOR
+    context.fillStyle = 'white'
     context.fillText('Score: ' + this.score, 30, 40)
     context.fillText('Level: ' + this.level, 30, 70)
     context.fillText('Lives: ' + this.lives, 30, 100)
