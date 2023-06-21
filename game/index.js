@@ -73,52 +73,15 @@ function restart () {
   gameInterval = setInterval(manage, 10)
 }
 
-function clear () {
-  context.clearRect(0, 0, canvas.width, canvas.height)
-}
-
 function manage () {
+  clear()
+  collisions()
   update()
   draw()
 }
 
-function update () {
-  clear()
-  player.speed = 0
-
-  if (keys.arrowLeft()) { player.rotation -= 0.07 }
-  if (keys.arrowRight()) { player.rotation += 0.07 }
-  if (keys.arrowDown()) { player.speed = -3 }
-  if (keys.arrowUp()) { player.speed = 3 }
-  if (keys.space() && !spacePressed) {
-    spacePressed = true
-    bullets.push(Polygon.createBullet(player.x, player.y, player.rotation))
-  } else {
-    if (!keys.space() && spacePressed) {
-      spacePressed = false
-    }
-  }
-
-  collisions()
-  bullets.forEach(bullet => bullet.update(canvas))
-  bullets = bullets.filter(bullet => bullet.show)
-  rocks.forEach(rock => rock.update(canvas))
-  rocks = rocks.filter(rock => rock.show)
-  player.update(canvas)
-
-  if (!rocks.length) {
-    score.incrementLevel()
-    for (let i = 0; i < score.level * 2; i++) {
-      rocks.push(Polygon.createRock(canvas))
-    }
-  }
-}
-
-function draw () {
-  bullets.forEach(bullet => bullet.draw(context))
-  rocks.forEach(rock => rock.draw(context))
-  player.draw(context)
-  score.draw(context)
+function clear () {
+  context.clearRect(0, 0, canvas.width, canvas.height)
 }
 
 function collisions () {
@@ -151,4 +114,40 @@ function collisions () {
       }
     }
   }
+}
+
+function update () {
+  player.speed = 0
+  if (keys.arrowLeft()) { player.rotation -= 0.07 }
+  if (keys.arrowRight()) { player.rotation += 0.07 }
+  if (keys.arrowDown()) { player.speed = -3 }
+  if (keys.arrowUp()) { player.speed = 3 }
+  if (keys.space() && !spacePressed) {
+    spacePressed = true
+    bullets.push(Polygon.createBullet(player.x, player.y, player.rotation))
+  } else {
+    if (!keys.space() && spacePressed) {
+      spacePressed = false
+    }
+  }
+
+  bullets.forEach(bullet => bullet.update(canvas))
+  bullets = bullets.filter(bullet => bullet.show)
+  rocks.forEach(rock => rock.update(canvas))
+  rocks = rocks.filter(rock => rock.show)
+  player.update(canvas)
+
+  if (!rocks.length) {
+    score.incrementLevel()
+    for (let i = 0; i < score.level * 2; i++) {
+      rocks.push(Polygon.createRock(canvas))
+    }
+  }
+}
+
+function draw () {
+  bullets.forEach(bullet => bullet.draw(context))
+  rocks.forEach(rock => rock.draw(context))
+  player.draw(context)
+  score.draw(context)
 }
