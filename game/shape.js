@@ -196,6 +196,13 @@ class Polygon extends Shape {
     }
   }
 
+  static createPlayer (canvas) {
+    const player = new Polygon(canvas.width / 2, canvas.height / 2, 30, 5)
+    player.name = 'player'
+
+    return player
+  }
+
   static createBullet (x, y, rotation) {
     const bullet = new Polygon(x, y, 8, 3)
     bullet.rotation = rotation

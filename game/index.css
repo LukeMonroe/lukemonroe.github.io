@@ -1,68 +1,44 @@
 body {
-    /* background-color: rgb(30, 25, 40); */
-    background-color: rgba(0, 0, 0, 1);
+  background-color: #000000;
 }
 
 canvas {
-    position: absolute;
-    display: block;
-    background-color: rgba(0, 0, 0, 1);
-    border: 1px solid white;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  display: block;
+  background-color: #000000;
+  border: 1px solid #ffffff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+button {
+  position: absolute;
+  display: block;
+  cursor: pointer;
+  background-color: #505050;
+  color: #ffffff;
+  border: none;
+  font-size: 18px;
+  font-family: monospace;
+  text-align: center;
+  padding: 15px;
+  width: 250px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 button.play {
-    position: absolute;
-    display: block;
-    cursor: pointer;
-    background-color: #ac6100;
-    color: white;
-    border: none;
-    font-size: 18px;
-    font-family: monospace;
-    text-align: center;
-    padding: 15px;
-    width: 250px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    visibility: visible;
-  }
+  background-color: #ac6100;
+}
 
 button.again {
-    position: absolute;
-    display: block;
-    cursor: pointer;
-    background-color: #005800;
-    color: white;
-    border: none;
-    font-size: 18px;
-    font-family: monospace;
-    text-align: center;
-    padding: 15px;
-    width: 250px;
-    top: 50%;
-    left: 40%;
-    transform: translate(-50%, -50%);
-    visibility: hidden;
-  }
+  background-color: #005800;
+  top: 45%;
+}
 
-  button.quit {
-    position: absolute;
-    display: block;
-    cursor: pointer;
-    background-color: rgb(30, 25, 40);
-    color: white;
-    border: none;
-    font-size: 18px;
-    font-family: monospace;
-    text-align: center;
-    padding: 15px;
-    width: 250px;
-    top: 50%;
-    left:60%;
-    transform: translate(-50%, -50%);
-    visibility: hidden;
-  }
+button.quit {
+  background-color: #580000;
+  top: 55%;
+}

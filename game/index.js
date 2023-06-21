@@ -3,51 +3,62 @@ import { DEFAULT_COLOR, COLLISION_COLOR, TRANSPARENT_COLOR, Polygon } from './sh
 import { Score } from './score.js'
 import { Keys } from './keys.js'
 
+const VISIBLE = 'visible'
+const HIDDEN = 'hidden'
+
 const canvas = document.createElement('canvas')
+canvas.width = 1000
+canvas.height = 700
+
 const context = canvas.getContext('2d')
 
-let player = null
-let score = null
+const playButton = document.createElement('button')
+playButton.innerText = 'Play'
+playButton.className = 'play'
+playButton.addEventListener('click', start)
+
+const againButton = document.createElement('button')
+againButton.innerText = 'Play Again'
+againButton.className = 'again'
+againButton.style.visibility = HIDDEN
+againButton.addEventListener('click', restart)
+
+const quitButton = document.createElement('button')
+quitButton.innerText = 'Quit'
+quitButton.className = 'quit'
+quitButton.style.visibility = HIDDEN
+quitButton.addEventListener('click', function (e) { close() })
+
+document.body.appendChild(canvas)
+document.body.appendChild(playButton)
+document.body.appendChild(againButton)
+document.body.appendChild(quitButton)
+
+let player = Polygon.createPlayer(canvas)
+const score = new Score()
+const keys = new Keys()
 let bullets = []
 let rocks = []
-let alive = null
 let gameInterval = null
 let deadInterval = null
-let keys = null
+let alive = true
 let spacePressed = false
 
-document.addEventListener('DOMContentLoaded', load)
-
-function load () {
-  canvas.width = 1400
-  canvas.height = 800
-  player = new Polygon(700, 400, 30, 5)
-  player.name = 'player'
-  score = new Score()
-  keys = new Keys()
-  alive = true
-  document.body.insertBefore(canvas, document.body.childNodes[0])
-  document.getElementById('play').addEventListener('click', start)
-}
-
 function start () {
-  document.getElementById('play').style.visibility = 'hidden'
-  document.getElementById('again').addEventListener('click', function (e) { restart() })
-  document.getElementById('quit').addEventListener('click', function (e) { close() })
+  playButton.style.visibility = HIDDEN
   gameInterval = setInterval(manage, 10)
 }
 
 function stop () {
   clearInterval(gameInterval)
-  document.getElementById('again').style.visibility = 'visible'
-  document.getElementById('quit').style.visibility = 'visible'
+  againButton.style.visibility = VISIBLE
+  quitButton.style.visibility = VISIBLE
 }
 
 function restart () {
-  document.getElementById('again').style.visibility = 'hidden'
-  document.getElementById('quit').style.visibility = 'hidden'
-  player = new Polygon(700, 400, 30, 5)
-  player.name = 'player'
+  againButton.style.visibility = HIDDEN
+  quitButton.style.visibility = HIDDEN
+  player = Polygon.createPlayer(canvas)
   score.reset()
   keys.reset()
   bullets = []
