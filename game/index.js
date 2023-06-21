@@ -118,7 +118,7 @@ function draw () {
   bullets.forEach(bullet => bullet.draw(context))
   rocks.forEach(rock => rock.draw(context))
   player.draw(context)
-  score.draw(canvas, context)
+  score.draw(context)
 }
 
 function collisions () {
@@ -142,9 +142,9 @@ function collisions () {
         alive = false
         score.decrementLives()
         if (score.lives === 0) {
-          setTimeout(stop, 50)
+          stop()
         } else {
-          deadInterval = setInterval(function () { player.color = player.color === DEFAULT_COLOR ? TRANSPARENT_COLOR : DEFAULT_COLOR }, 80)
+          deadInterval = setInterval(function () { player.color = player.color === DEFAULT_COLOR ? TRANSPARENT_COLOR : DEFAULT_COLOR }, 100)
           setTimeout(function () { alive = true; player.color = DEFAULT_COLOR; clearInterval(deadInterval) }, 3000)
         }
         break

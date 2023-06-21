@@ -1,6 +1,6 @@
 const CIRCLE = 'circle'
 const POLYGON = 'polygon'
-const DEFAULT_COLOR = 'white'
+const DEFAULT_COLOR = 'darkgrey'
 const TRANSPARENT_COLOR = 'transparent'
 const BULLET_COLOR = 'skyblue'
 const ROCK_COLOR = 'firebrick'
