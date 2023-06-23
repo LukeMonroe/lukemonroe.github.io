@@ -1,3 +1,5 @@
+const KEYDOWN = 'keydown'
+const KEYUP = 'keyup'
 const ARROW_DOWN = 'ArrowDown'
 const ARROW_LEFT = 'ArrowLeft'
 const ARROW_RIGHT = 'ArrowRight'
@@ -9,8 +11,8 @@ class Keys {
   #spacePressed = false
 
   constructor () {
-    window.addEventListener('keydown', event => this.#keydown(event))
-    window.addEventListener('keyup', event => this.#keyup(event))
+    window.addEventListener(KEYDOWN, event => this.#keydown(event))
+    window.addEventListener(KEYUP, event => this.#keyup(event))
   }
 
   #keydown (event) {

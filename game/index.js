@@ -3,35 +3,39 @@ import { Polygon } from './shape.js'
 import { Score } from './score.js'
 import { Keys } from './keys.js'
 
+const CLICK = 'click'
+const CANVAS = 'canvas'
+const BUTTON = 'button'
+const DIV = 'div'
 const VISIBLE = 'visible'
 const HIDDEN = 'hidden'
 
-const canvas = document.createElement('canvas')
+const canvas = document.createElement(CANVAS)
 canvas.width = 1000
 canvas.height = 700
 
 const context = canvas.getContext('2d')
 
-const playButton = document.createElement('button')
+const playButton = document.createElement(BUTTON)
 playButton.innerText = 'Play'
 playButton.className = 'play'
-playButton.addEventListener('click', start)
+playButton.addEventListener(CLICK, start)
 
-const againButton = document.createElement('button')
+const againButton = document.createElement(BUTTON)
 againButton.innerText = 'Again'
 againButton.className = 'again'
-againButton.addEventListener('click', restart)
+againButton.addEventListener(CLICK, restart)
 
-const quitButton = document.createElement('button')
+const quitButton = document.createElement(BUTTON)
 quitButton.innerText = 'Quit'
 quitButton.className = 'quit'
-quitButton.addEventListener('click', function (e) { close() })
+quitButton.addEventListener(CLICK, function () { close() })
 
-const startButtons = document.createElement('div')
+const startButtons = document.createElement(DIV)
 startButtons.className = 'buttons'
 startButtons.appendChild(playButton)
 
-const endButtons = document.createElement('div')
+const endButtons = document.createElement(DIV)
 endButtons.className = 'buttons'
 endButtons.style.visibility = HIDDEN
 endButtons.appendChild(againButton)
