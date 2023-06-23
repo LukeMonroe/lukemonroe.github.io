@@ -8,13 +8,9 @@ class Collision {
       return Collision.#checkPolygonCircle(shape01, shape02)
     } else if (shape01.type === CIRCLE && shape02.type === POLYGON) {
       return Collision.#checkPolygonCircle(shape02, shape01)
-    } else if (shape01.type === CIRCLE && shape02.type === CIRCLE) {
-      return Collision.#checkCircles(shape01, shape02)
     } else {
-      console.error('Unknown shape detected. Collision can not be checked.')
+      return Collision.#checkCircles(shape01, shape02)
     }
-
-    return false
   }
 
   static #checkPolygons (polygon01, polygon02, invert) {
@@ -38,22 +34,36 @@ class Collision {
     return invert ? Collision.#checkPolygons(polygon02, polygon01, false) : true
   }
 
-  // TODO: This doesn't fully work. Only polygon corners detect collisions against a circle.
+  // TODO: Does not detect a collision until the circle is about halfway into the polygon.
   static #checkPolygonCircle (polygon, circle) {
     const rotatedVertices = polygon.getRotatedVertices()
-    const closestVertex = new Point(0, 0)
+    const vectorOffset = new Point(polygon.x - circle.x, polygon.y - circle.y)
     let shortestDistance = null
 
     for (const vertex of rotatedVertices) {
-      const distance = Point.getDistance(polygon.x + vertex.x - circle.x, polygon.y + vertex.y - circle.y)
+      const distance = Point.getDistance(vectorOffset.x + vertex.x, vectorOffset.y + vertex.y)
       if (shortestDistance === null || distance < shortestDistance) {
         shortestDistance = distance
-        closestVertex.x = polygon.x + vertex.x - circle.x
-        closestVertex.y = polygon.y + vertex.y - circle.y
       }
     }
 
-    return closestVertex.getDistance() <= circle.radius
+    if (shortestDistance <= circle.radius) {
+      return true
+    }
+
+    for (let index = 0; index < rotatedVertices.length; index++) {
+      const axis = Collision.#getPerpendicularAxis(rotatedVertices, index)
+      const polygonRange = Collision.#getProjectedVertices(axis, rotatedVertices)
+      const scalerOffset = Collision.#getDotProduct(axis, vectorOffset)
+      polygonRange.min += scalerOffset
+      polygonRange.max += scalerOffset
+
+      if ((polygonRange.min - circle.radius > 0) || (-circle.radius - polygonRange.max > 0)) {
+        return false
+      }
+    }
+
+    return true
   }
 
   static #checkCircles (circle01, circle02) {

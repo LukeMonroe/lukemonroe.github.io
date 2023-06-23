@@ -1,5 +1,5 @@
 import { Collision } from './collision.js'
-import { DEFAULT_COLOR, TRANSPARENT_COLOR, Polygon, Circle } from './shape.js'
+import { Polygon } from './shape.js'
 import { Score } from './score.js'
 import { Keys } from './keys.js'
 
@@ -104,8 +104,8 @@ function collisions () {
         if (score.lives === 0) {
           stop()
         } else {
-          lifeInterval = setInterval(function () { player.color = player.color === DEFAULT_COLOR ? TRANSPARENT_COLOR : DEFAULT_COLOR }, 100)
-          setTimeout(function () { clearInterval(lifeInterval); lifeInterval = null; player.color = DEFAULT_COLOR }, 3000)
+          lifeInterval = setInterval(function () { player.alternateColor() }, 100)
+          setTimeout(function () { clearInterval(lifeInterval); lifeInterval = null; player.defaultColor() }, 3000)
         }
         break
       }
@@ -115,13 +115,13 @@ function collisions () {
 
 function update () {
   player.speed = 0
-  if (keys.arrowLeft()) { player.rotation -= 0.07 }
-  if (keys.arrowRight()) { player.rotation += 0.07 }
-  if (keys.arrowDown()) { player.speed = -3 }
-  if (keys.arrowUp()) { player.speed = 3 }
+  if (keys.arrowLeft()) { player.angle -= 0.07; player.rotation -= 0.07 }
+  if (keys.arrowRight()) { player.angle += 0.07; player.rotation += 0.07 }
+  if (keys.arrowDown()) { player.speed = -4 }
+  if (keys.arrowUp()) { player.speed = 4 }
   if (keys.space() && !spacePressed) {
     spacePressed = true
-    bullets.push(Circle.createBullet(player.x, player.y, player.rotation))
+    bullets.push(Polygon.createBullet(player))
   } else {
     if (!keys.space() && spacePressed) {
       spacePressed = false

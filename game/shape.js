@@ -1,11 +1,16 @@
 const CIRCLE = 'circle'
 const POLYGON = 'polygon'
-const DEFAULT_COLOR = 'darkgrey'
-const TRANSPARENT_COLOR = 'transparent'
-const BULLET_COLOR = 'skyblue'
-const ROCK_COLOR = 'firebrick'
-const LARGE_SHARD_COLOR = 'tomato'
-const SMALL_SHARD_COLOR = 'palevioletred'
+const PLAYER = 'player'
+const BULLET = 'bullet'
+const ROCK = 'rock'
+const SHARD = 'shard'
+const SEA_GREEN = 'seagreen'
+const DARK_GREY = 'darkgrey'
+const GHOST_WHITE = 'ghostwhite'
+const SKY_BLUE = 'skyblue'
+const FIRE_BRICK = 'firebrick'
+const TOMATO = 'tomato'
+const PALE_VIOLET_RED = 'palevioletred'
 const BOUNDS_OFFSET = 150
 
 class Point {
@@ -35,18 +40,29 @@ class Shape {
     this.type = type
 
     this.name = null
+    this.angle = 0
     this.rotation = 0
     this.speed = 0
     this.show = true
-    this.color = DEFAULT_COLOR
+    this.color = DARK_GREY
   }
 
   update (canvas) {
     if (this.show) {
-      const x = this.x + this.speed * Math.sin(this.rotation)
-      const y = this.y - this.speed * Math.cos(this.rotation)
+      const x = this.x + this.speed * Math.sin(this.angle)
+      const y = this.y - this.speed * Math.cos(this.angle)
 
-      if (this.name === 'player') {
+      if (this.name === ROCK || this.name === SHARD) {
+        this.rotation += this.rotation > 0 ? 0.01 : -0.01
+      } else if (this.name === BULLET) {
+        this.rotation += 0.15
+        this.speed -= 0.05
+        if (this.speed <= 0) {
+          this.show = false
+        }
+      }
+
+      if (this.name === PLAYER) {
         if (x > 0 && x < canvas.width) {
           this.x = x
         }
@@ -57,41 +73,43 @@ class Shape {
         if (x > 0 - BOUNDS_OFFSET && x < canvas.width + BOUNDS_OFFSET) {
           this.x = x
         } else {
-          if (this.name === 'bullet') {
+          if (this.name === BULLET) {
             this.show = false
           } else {
-            this.rotation *= -1
+            this.angle *= -1
           }
         }
         if (y > 0 - BOUNDS_OFFSET && y < canvas.height + BOUNDS_OFFSET) {
           this.y = y
         } else {
-          if (this.name === 'bullet') {
+          if (this.name === BULLET) {
             this.show = false
           } else {
-            this.rotation *= -1
+            this.angle *= -1
             this.speed *= -1
           }
         }
       }
     }
   }
+
+  static rangeRandom (floor, ceil) {
+    const number = Math.ceil(Shape.limitRandom(ceil))
+    return number < floor ? floor : number
+  }
+
+  static limitRandom (limit) {
+    return Shape.random() * limit
+  }
+
+  static random () {
+    return Math.random()
+  }
 }
 
 class Circle extends Shape {
   constructor (x, y, radius) {
     super(x, y, radius, CIRCLE)
-  }
-
-  copy () {
-    const circle = new Circle(this.x, this.y, this.radius)
-    circle.name = this.name
-    circle.rotation = this.rotation
-    circle.speed = this.speed
-    circle.show = this.show
-    circle.color = this.color
-
-    return circle
   }
 
   update (canvas) {
@@ -111,16 +129,6 @@ class Circle extends Shape {
       context.restore()
     }
   }
-
-  static createBullet (x, y, rotation) {
-    const bullet = new Circle(x, y, 8)
-    bullet.rotation = rotation
-    bullet.speed = 10
-    bullet.color = BULLET_COLOR
-    bullet.name = 'bullet'
-
-    return bullet
-  }
 }
 
 class Polygon extends Shape {
@@ -135,17 +143,6 @@ class Polygon extends Shape {
       angle = (side * sideAngle) + ((Math.PI - sideAngle) * 0.5)
       this.vertices.push(new Point(Math.cos(angle) * radius, Math.sin(angle) * radius))
     }
-  }
-
-  copy () {
-    const polygon = new Polygon(this.x, this.y, this.radius, this.sides)
-    polygon.name = this.name
-    polygon.rotation = this.rotation
-    polygon.speed = this.speed
-    polygon.show = this.show
-    polygon.color = this.color
-
-    return polygon
   }
 
   getRotatedVertices () {
@@ -177,16 +174,14 @@ class Polygon extends Shape {
       // Start drawing from the last vertex.
       const vertices = this.getRotatedVertices()
       context.moveTo(this.x + vertices[vertices.length - 1].x, this.y + vertices[vertices.length - 1].y)
-      for (const vertex of vertices) {
-        context.lineTo(this.x + vertex.x, this.y + vertex.y)
-      }
+      vertices.forEach(vertex => context.lineTo(this.x + vertex.x, this.y + vertex.y))
 
       context.closePath()
       context.fill()
 
       // Draw the front of the player.
-      if (this.name === 'player') {
-        context.strokeStyle = 'seagreen'
+      if (this.name === PLAYER) {
+        context.strokeStyle = SEA_GREEN
         context.lineWidth = 4
         context.beginPath()
 
@@ -202,51 +197,49 @@ class Polygon extends Shape {
     }
   }
 
+  defaultColor () {
+    this.color = DARK_GREY
+  }
+
+  alternateColor () {
+    this.color = this.color === DARK_GREY ? GHOST_WHITE : DARK_GREY
+  }
+
   static createPlayer (canvas) {
     const player = new Polygon(canvas.width / 2, canvas.height / 2, 30, 5)
-    player.name = 'player'
+    player.name = PLAYER
 
     return player
   }
 
-  static createBullet (x, y, rotation) {
-    const bullet = new Polygon(x, y, 8, 3)
-    bullet.rotation = rotation
-    bullet.speed = 10
-    bullet.color = BULLET_COLOR
-    bullet.name = 'bullet'
+  static createBullet (player) {
+    const bullet = new Polygon(player.x, player.y, 10, 3)
+    bullet.angle = player.angle
+    bullet.rotation = player.rotation
+    bullet.speed = 8
+    bullet.color = SKY_BLUE
+    bullet.name = BULLET
 
     return bullet
   }
 
   static createRock (canvas) {
-    let sides = Math.floor(Math.random() * 10)
-    sides = sides < 3 ? 3 : sides
+    const sides = Shape.rangeRandom(3, 8)
+    const radius = Shape.rangeRandom(71, 100)
 
-    let radius = Math.floor(Math.random() * 100)
-    radius = radius < 71 ? 71 : radius
+    let offset = Shape.limitRandom(BOUNDS_OFFSET)
+    const x = Shape.random() >= 0.5 ? canvas.width + offset : -offset
 
-    let x = 0
-    let offset = Math.random() * BOUNDS_OFFSET
-    if (Math.random() >= 0.5) {
-      x = canvas.width + offset
-    } else {
-      x = 0 - offset
-    }
-
-    let y = 0
-    offset = Math.random() * BOUNDS_OFFSET
-    if (Math.random() >= 0.5) {
-      y = offset + canvas.height
-    } else {
-      y = 0 - offset
-    }
+    offset = Shape.limitRandom(BOUNDS_OFFSET)
+    const y = Shape.random() >= 0.5 ? canvas.height + offset : -offset
 
     const rock = new Polygon(x, y, radius, sides)
-    rock.rotation = Math.random() * Math.PI * 2
+    rock.angle = Shape.limitRandom(Math.PI * 2)
+    rock.rotation = Shape.limitRandom(Math.PI * 2)
+    rock.rotation *= Shape.random() >= 0.5 ? 1 : -1
     rock.speed = 1
-    rock.color = ROCK_COLOR
-    rock.name = 'rock'
+    rock.color = FIRE_BRICK
+    rock.name = ROCK
 
     return rock
   }
@@ -255,23 +248,16 @@ class Polygon extends Shape {
     const shards = []
     if (rock.radius > 40) {
       for (let index = 0; index < rock.sides; index++) {
-        let sides = Math.floor(Math.random() * 10)
-        sides = sides < 3 ? 3 : sides
-
-        let radius = 0
-        if (rock.radius > 70) {
-          radius = Math.floor(Math.random() * 60)
-          radius = radius < 41 ? 41 : radius
-        } else {
-          radius = Math.floor(Math.random() * 40)
-          radius = radius < 21 ? 21 : radius
-        }
+        const sides = Shape.rangeRandom(3, 8)
+        const radius = rock.radius > 70 ? Shape.rangeRandom(41, 60) : Shape.rangeRandom(21, 40)
 
         const shard = new Polygon(rock.x, rock.y, radius, sides)
-        shard.rotation = Math.random() * Math.PI * 2
+        shard.angle = Shape.limitRandom(Math.PI * 2)
+        shard.rotation = Shape.limitRandom(Math.PI * 2)
+        shard.rotation *= Shape.random() >= 0.5 ? 1 : -1
         shard.speed = shard.radius > 40 ? 1.5 : 2
-        shard.color = shard.radius > 40 ? LARGE_SHARD_COLOR : SMALL_SHARD_COLOR
-        shard.name = 'shard'
+        shard.color = shard.radius > 40 ? TOMATO : PALE_VIOLET_RED
+        shard.name = SHARD
         shards.push(shard)
       }
     }
@@ -280,4 +266,4 @@ class Polygon extends Shape {
   }
 }
 
-export { CIRCLE, POLYGON, BOUNDS_OFFSET, DEFAULT_COLOR, TRANSPARENT_COLOR, Point, Circle, Polygon }
+export { CIRCLE, POLYGON, Point, Circle, Polygon }
