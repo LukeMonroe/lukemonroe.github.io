@@ -51,11 +51,11 @@ let lifeInterval = null
 
 function start () {
   startButtons.style.visibility = HIDDEN
-  gameInterval = setInterval(manage, 10)
+  setGameInterval()
 }
 
 function stop () {
-  clearInterval(gameInterval)
+  clearGameInterval()
   endButtons.style.visibility = VISIBLE
 }
 
@@ -66,7 +66,30 @@ function restart () {
   keys.reset()
   bullets = []
   rocks = []
+  setGameInterval()
+}
+
+function setGameInterval () {
   gameInterval = setInterval(manage, 10)
+}
+
+function clearGameInterval () {
+  clearInterval(gameInterval)
+  gameInterval = null
+}
+
+function setLifeInterval () {
+  lifeInterval = setInterval(function () { player.alternateColor() }, 100)
+  setLifeIntervalTimeout()
+}
+
+function clearLifeInterval () {
+  clearInterval(lifeInterval)
+  lifeInterval = null
+}
+
+function setLifeIntervalTimeout () {
+  setTimeout(function () { clearLifeInterval(); player.defaultColor() }, 3000)
 }
 
 function manage () {
@@ -102,8 +125,7 @@ function collisions () {
         if (score.lives === 0) {
           stop()
         } else {
-          lifeInterval = setInterval(function () { player.alternateColor() }, 100)
-          setTimeout(function () { clearInterval(lifeInterval); lifeInterval = null; player.defaultColor() }, 3000)
+          setLifeInterval()
         }
         break
       }
