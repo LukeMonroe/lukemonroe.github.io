@@ -48,7 +48,6 @@ let bullets = []
 let rocks = []
 let gameInterval = null
 let lifeInterval = null
-let spacePressed = false
 
 function start () {
   buttons00.style.visibility = HIDDEN
@@ -67,7 +66,6 @@ function restart () {
   keys.reset()
   bullets = []
   rocks = []
-  spacePressed = false
   gameInterval = setInterval(manage, 10)
 }
 
@@ -119,14 +117,7 @@ function update () {
   if (keys.arrowRight()) { player.angle += 0.07; player.rotation += 0.07 }
   if (keys.arrowDown()) { player.speed = -4 }
   if (keys.arrowUp()) { player.speed = 4 }
-  if (keys.space() && !spacePressed) {
-    spacePressed = true
-    bullets.push(Polygon.createBullet(player))
-  } else {
-    if (!keys.space() && spacePressed) {
-      spacePressed = false
-    }
-  }
+  if (keys.space()) { bullets.push(Polygon.createBullet(player)) }
 
   bullets.forEach(bullet => bullet.update(canvas))
   bullets = bullets.filter(bullet => bullet.show)

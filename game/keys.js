@@ -7,6 +7,8 @@ const SPACE = ' '
 class Keys {
   constructor () {
     this.keys = new Map([[ARROW_DOWN, false], [ARROW_LEFT, false], [ARROW_RIGHT, false], [ARROW_UP, false], [SPACE, false]])
+    this.spacePressed = false
+
     window.addEventListener('keydown', event => this.keydown(event))
     window.addEventListener('keyup', event => this.keyup(event))
   }
@@ -25,12 +27,27 @@ class Keys {
   }
 
   arrowDown () { return this.keys.get(ARROW_DOWN) }
+
   arrowLeft () { return this.keys.get(ARROW_LEFT) }
+
   arrowRight () { return this.keys.get(ARROW_RIGHT) }
+
   arrowUp () { return this.keys.get(ARROW_UP) }
-  space () { return this.keys.get(SPACE) }
+
+  space () {
+    if (this.keys.get(SPACE) && !this.spacePressed) {
+      this.spacePressed = true
+      return true
+    }
+    if (!this.keys.get(SPACE) && this.spacePressed) {
+      this.spacePressed = false
+    }
+
+    return false
+  }
 
   reset () {
+    this.spacePressed = false
     for (const key in this.keys.keys()) {
       this.keys[key] = false
     }
