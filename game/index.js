@@ -27,19 +27,19 @@ quitButton.innerText = 'Quit'
 quitButton.className = 'quit'
 quitButton.addEventListener('click', function (e) { close() })
 
-const buttons00 = document.createElement('div')
-buttons00.className = 'buttons'
-buttons00.appendChild(playButton)
+const startButtons = document.createElement('div')
+startButtons.className = 'buttons'
+startButtons.appendChild(playButton)
 
-const buttons01 = document.createElement('div')
-buttons01.className = 'buttons'
-buttons01.style.visibility = HIDDEN
-buttons01.appendChild(againButton)
-buttons01.appendChild(quitButton)
+const endButtons = document.createElement('div')
+endButtons.className = 'buttons'
+endButtons.style.visibility = HIDDEN
+endButtons.appendChild(againButton)
+endButtons.appendChild(quitButton)
 
 document.body.appendChild(canvas)
-document.body.appendChild(buttons00)
-document.body.appendChild(buttons01)
+document.body.appendChild(startButtons)
+document.body.appendChild(endButtons)
 
 let player = Polygon.createPlayer(canvas)
 const score = new Score()
@@ -50,17 +50,17 @@ let gameInterval = null
 let lifeInterval = null
 
 function start () {
-  buttons00.style.visibility = HIDDEN
+  startButtons.style.visibility = HIDDEN
   gameInterval = setInterval(manage, 10)
 }
 
 function stop () {
   clearInterval(gameInterval)
-  buttons01.style.visibility = VISIBLE
+  endButtons.style.visibility = VISIBLE
 }
 
 function restart () {
-  buttons01.style.visibility = HIDDEN
+  endButtons.style.visibility = HIDDEN
   player = Polygon.createPlayer(canvas)
   score.reset()
   keys.reset()
@@ -127,9 +127,7 @@ function update () {
 
   if (!rocks.length) {
     score.incrementLevel()
-    for (let i = 0; i < score.level * 2; i++) {
-      rocks.push(Polygon.createRock(canvas))
-    }
+    rocks = Polygon.createRocks(canvas, score.level * 2)
   }
 }
 

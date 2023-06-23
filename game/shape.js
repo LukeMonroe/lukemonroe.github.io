@@ -223,6 +223,16 @@ class Polygon extends Shape {
     return bullet
   }
 
+  static createRocks (canvas, quantity) {
+    const rocks = []
+    while (quantity > 0) {
+      rocks.push(Polygon.createRock(canvas))
+      quantity--
+    }
+
+    return rocks
+  }
+
   static createRock (canvas) {
     const sides = Shape.rangeRandom(3, 8)
     const radius = Shape.rangeRandom(71, 100)
