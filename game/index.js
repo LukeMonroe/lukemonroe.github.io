@@ -122,10 +122,10 @@ function collisions () {
     for (const rock of rocks) {
       if (Collision.checkShapes(player, rock)) {
         score.decrementLives()
-        if (score.lives === 0) {
-          stop()
-        } else {
+        if (score.hasLives()) {
           setLifeInterval()
+        } else {
+          stop()
         }
         break
       }
@@ -149,7 +149,7 @@ function update () {
 
   if (!rocks.length) {
     score.incrementLevel()
-    rocks = Polygon.createRocks(canvas, score.level * 2)
+    rocks = Polygon.createRocks(canvas, score.level())
   }
 }
 

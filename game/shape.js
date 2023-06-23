@@ -223,8 +223,9 @@ class Polygon extends Shape {
     return bullet
   }
 
-  static createRocks (canvas, quantity) {
+  static createRocks (canvas, level) {
     const rocks = []
+    let quantity = level * 2
     while (quantity > 0) {
       rocks.push(Polygon.createRock(canvas))
       quantity--
