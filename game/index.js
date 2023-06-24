@@ -69,12 +69,20 @@ downButton.addEventListener('touchstart', function () { downDown = true })
 downButton.addEventListener('touchend', function () { downDown = false })
 downButton.addEventListener('touchcancel', function () { downDown = false })
 
+const controlsLeftRight = document.createElement(DIV)
+controlsLeftRight.className = 'controlsLeftRight'
+controlsLeftRight.appendChild(leftButton)
+controlsLeftRight.appendChild(rightButton)
+
+const controlsUpDown = document.createElement(DIV)
+controlsUpDown.className = 'controlsUpDown'
+controlsUpDown.appendChild(upButton)
+controlsUpDown.appendChild(downButton)
+
 const controls = document.createElement(DIV)
 controls.className = 'controls'
-controls.appendChild(upButton)
-controls.appendChild(downButton)
-controls.appendChild(leftButton)
-controls.appendChild(rightButton)
+controls.appendChild(controlsLeftRight)
+controls.appendChild(controlsUpDown)
 
 document.body.appendChild(canvas)
 document.body.appendChild(startButtons)
