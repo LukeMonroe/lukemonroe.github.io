@@ -44,30 +44,30 @@ endButtons.appendChild(quitButton)
 const leftButton = document.createElement(BUTTON)
 leftButton.innerText = 'Left'
 leftButton.className = 'controls'
-leftButton.addEventListener('mousedown', function () { leftDown = true })
-leftButton.addEventListener('mouseup', function () { leftDown = false })
-leftButton.addEventListener('mouseleave', function () { leftDown = false })
+leftButton.addEventListener('touchstart', function () { leftDown = true })
+leftButton.addEventListener('touchend', function () { leftDown = false })
+leftButton.addEventListener('touchcancel', function () { leftDown = false })
 
 const rightButton = document.createElement(BUTTON)
 rightButton.innerText = 'Right'
 rightButton.className = 'controls'
-rightButton.addEventListener('mousedown', function () { rightDown = true })
-rightButton.addEventListener('mouseup', function () { rightDown = false })
-rightButton.addEventListener('mouseleave', function () { rightDown = false })
+rightButton.addEventListener('touchstart', function () { rightDown = true })
+rightButton.addEventListener('touchend', function () { rightDown = false })
+rightButton.addEventListener('touchcancel', function () { rightDown = false })
 
 const upButton = document.createElement(BUTTON)
 upButton.innerText = 'Up'
 upButton.className = 'controls'
-upButton.addEventListener('mousedown', function () { upDown = true })
-upButton.addEventListener('mouseup', function () { upDown = false })
-upButton.addEventListener('mouseleave', function () { upDown = false })
+upButton.addEventListener('touchstart', function () { upDown = true })
+upButton.addEventListener('touchend', function () { upDown = false })
+upButton.addEventListener('touchcancel', function () { upDown = false })
 
 const downButton = document.createElement(BUTTON)
 downButton.innerText = 'Down'
 downButton.className = 'controls'
-downButton.addEventListener('mousedown', function () { downDown = true })
-downButton.addEventListener('mouseup', function () { downDown = false })
-downButton.addEventListener('mouseleave', function () { downDown = false })
+downButton.addEventListener('touchstart', function () { downDown = true })
+downButton.addEventListener('touchend', function () { downDown = false })
+downButton.addEventListener('touchcancel', function () { downDown = false })
 
 const controls = document.createElement(DIV)
 controls.className = 'controls'
