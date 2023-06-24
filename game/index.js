@@ -41,9 +41,45 @@ endButtons.style.visibility = HIDDEN
 endButtons.appendChild(againButton)
 endButtons.appendChild(quitButton)
 
+const leftButton = document.createElement(BUTTON)
+leftButton.innerText = 'Left'
+leftButton.className = 'controls'
+leftButton.addEventListener('mousedown', function () { leftDown = true })
+leftButton.addEventListener('mouseup', function () { leftDown = false })
+leftButton.addEventListener('mouseleave', function () { leftDown = false })
+
+const rightButton = document.createElement(BUTTON)
+rightButton.innerText = 'Right'
+rightButton.className = 'controls'
+rightButton.addEventListener('mousedown', function () { rightDown = true })
+rightButton.addEventListener('mouseup', function () { rightDown = false })
+rightButton.addEventListener('mouseleave', function () { rightDown = false })
+
+const upButton = document.createElement(BUTTON)
+upButton.innerText = 'Up'
+upButton.className = 'controls'
+upButton.addEventListener('mousedown', function () { upDown = true })
+upButton.addEventListener('mouseup', function () { upDown = false })
+upButton.addEventListener('mouseleave', function () { upDown = false })
+
+const downButton = document.createElement(BUTTON)
+downButton.innerText = 'Down'
+downButton.className = 'controls'
+downButton.addEventListener('mousedown', function () { downDown = true })
+downButton.addEventListener('mouseup', function () { downDown = false })
+downButton.addEventListener('mouseleave', function () { downDown = false })
+
+const controls = document.createElement(DIV)
+controls.className = 'controls'
+controls.appendChild(upButton)
+controls.appendChild(downButton)
+controls.appendChild(leftButton)
+controls.appendChild(rightButton)
+
 document.body.appendChild(canvas)
 document.body.appendChild(startButtons)
 document.body.appendChild(endButtons)
+document.body.appendChild(controls)
 
 let player = Polygon.createPlayer(canvas)
 const score = new Score()
@@ -52,6 +88,10 @@ let bullets = []
 let rocks = []
 let gameInterval = null
 let lifeInterval = null
+let upDown = false
+let downDown = false
+let leftDown = false
+let rightDown = false
 
 function start () {
   startButtons.style.visibility = HIDDEN
@@ -139,10 +179,10 @@ function collisions () {
 
 function update () {
   player.speed = 0
-  if (keys.arrowLeft()) { player.angle -= 0.07; player.rotation -= 0.07 }
-  if (keys.arrowRight()) { player.angle += 0.07; player.rotation += 0.07 }
-  if (keys.arrowDown()) { player.speed = -4 }
-  if (keys.arrowUp()) { player.speed = 4 }
+  if (keys.arrowLeft() || leftDown) { player.angle -= 0.07; player.rotation -= 0.07 }
+  if (keys.arrowRight() || rightDown) { player.angle += 0.07; player.rotation += 0.07 }
+  if (keys.arrowDown() || downDown) { player.speed = -4 }
+  if (keys.arrowUp() || upDown) { player.speed = 4 }
   if (keys.space()) { bullets.push(Polygon.createBullet(player)) }
 
   bullets.forEach(bullet => bullet.update(canvas))

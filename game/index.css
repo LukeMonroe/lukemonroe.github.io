@@ -3,13 +3,13 @@ body {
 }
 
 canvas {
-  position: absolute;
+  position: relative;
   display: block;
   background-color: black;
   border: 1px solid white;
-  top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%);
+  margin-top: 50px;
 }
 
 button {
@@ -39,13 +39,25 @@ button.quit {
   background-color: palevioletred;
 }
 
+button.controls {
+  background-color: skyblue;
+}
+
 div.buttons {
   position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  top: 50%;
+  top: 350px;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%);
+}
+
+div.controls {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
