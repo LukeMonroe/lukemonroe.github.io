@@ -1,21 +1,40 @@
+const FONT_SIZE = 20
+const X = 30
+const SCORE_Y = 40
+const LEVEL_Y = 70
+const LIVES_Y = 100
+const LIFE_INCREMENT = 200
+
 class Score {
   #score = 0
   #level = 0
   #lives = 3
+  #scale = 1
+
+  #scaled (number) {
+    return number * this.#scale
+  }
+
+  update (scale) {
+    this.#scale = scale
+  }
 
   draw (context) {
     context.save()
-    context.font = '20px monospace'
+    context.font = `${this.#scaled(FONT_SIZE)}px monospace`
     context.fillStyle = 'white'
-    context.fillText('Score: ' + this.#score, 30, 40)
-    context.fillText('Level: ' + this.#level, 30, 70)
-    context.fillText('Lives: ' + this.#lives, 30, 100)
+
+    const scaledX = this.#scaled(X)
+    context.fillText(`Score: ${this.#score}`, scaledX, this.#scaled(SCORE_Y))
+    context.fillText(`Level: ${this.#level}`, scaledX, this.#scaled(LEVEL_Y))
+    context.fillText(`Lives: ${this.#lives}`, scaledX, this.#scaled(LIVES_Y))
+
     context.restore()
   }
 
   incrementScore () {
     this.#score++
-    if (this.#score > 0 && this.#score % 200 === 0) {
+    if (this.#score > 0 && this.#score % LIFE_INCREMENT === 0) {
       this.incrementLives()
     }
   }
@@ -44,6 +63,7 @@ class Score {
     this.#score = 0
     this.#level = 0
     this.#lives = 3
+    this.#scale = 1
   }
 }
 

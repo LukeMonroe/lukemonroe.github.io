@@ -9,17 +9,25 @@ const BUTTON = 'button'
 const DIV = 'div'
 const VISIBLE = 'visible'
 const HIDDEN = 'hidden'
+const ASPECT_RATIO = 16 / 9
+const CANVAS_MIN_WIDTH = 300
+const CANVAS_MAX_WIDTH = 1200
+const CANVAS_MIN_HEIGHT = CANVAS_MIN_WIDTH / ASPECT_RATIO
+const CANVAS_MAX_HEIGHT = CANVAS_MAX_WIDTH / ASPECT_RATIO
 
 const canvas = document.createElement(CANVAS)
-canvas.width = 1000
-canvas.height = 700
-
 const context = canvas.getContext('2d')
 
 const playButton = document.createElement(BUTTON)
 playButton.innerText = 'Play'
 playButton.className = 'play'
 playButton.addEventListener(CLICK, start)
+
+const resumeButton = document.createElement(BUTTON)
+resumeButton.innerText = 'Resume'
+resumeButton.className = 'resume'
+resumeButton.style.visibility = HIDDEN
+resumeButton.addEventListener(CLICK, resume)
 
 const againButton = document.createElement(BUTTON)
 againButton.innerText = 'Again'
@@ -41,69 +49,89 @@ endButtons.style.visibility = HIDDEN
 endButtons.appendChild(againButton)
 endButtons.appendChild(quitButton)
 
-const leftButton = document.createElement(BUTTON)
-leftButton.innerText = 'Left'
-leftButton.className = 'controls'
-leftButton.addEventListener('touchstart', function () { leftDown = true })
-leftButton.addEventListener('touchend', function () { leftDown = false })
-leftButton.addEventListener('touchcancel', function () { leftDown = false })
-
-const rightButton = document.createElement(BUTTON)
-rightButton.innerText = 'Right'
-rightButton.className = 'controls'
-rightButton.addEventListener('touchstart', function () { rightDown = true })
-rightButton.addEventListener('touchend', function () { rightDown = false })
-rightButton.addEventListener('touchcancel', function () { rightDown = false })
-
-const upButton = document.createElement(BUTTON)
-upButton.innerText = 'Up'
-upButton.className = 'controls'
-upButton.addEventListener('touchstart', function () { upDown = true })
-upButton.addEventListener('touchend', function () { upDown = false })
-upButton.addEventListener('touchcancel', function () { upDown = false })
-
-const downButton = document.createElement(BUTTON)
-downButton.innerText = 'Down'
-downButton.className = 'controls'
-downButton.addEventListener('touchstart', function () { downDown = true })
-downButton.addEventListener('touchend', function () { downDown = false })
-downButton.addEventListener('touchcancel', function () { downDown = false })
-
-const controlsLeftRight = document.createElement(DIV)
-controlsLeftRight.className = 'controlsLeftRight'
-controlsLeftRight.appendChild(leftButton)
-controlsLeftRight.appendChild(rightButton)
-
-const controlsUpDown = document.createElement(DIV)
-controlsUpDown.className = 'controlsUpDown'
-controlsUpDown.appendChild(upButton)
-controlsUpDown.appendChild(downButton)
-
-const controls = document.createElement(DIV)
-controls.className = 'controls'
-controls.appendChild(controlsLeftRight)
-controls.appendChild(controlsUpDown)
-
 document.body.appendChild(canvas)
 document.body.appendChild(startButtons)
 document.body.appendChild(endButtons)
-document.body.appendChild(controls)
+document.body.appendChild(resumeButton)
 
-let player = Polygon.createPlayer(canvas)
+let player = null
 const score = new Score()
 const keys = new Keys()
 let bullets = []
 let rocks = []
 let gameInterval = null
 let lifeInterval = null
-let upDown = false
-let downDown = false
-let leftDown = false
-let rightDown = false
+let scale = 1
+let paused = false
+
+resizeCanvas()
+window.addEventListener('resize', resizeCanvas)
+window.addEventListener('mousedown', event => a(event))
+
+function a (event) {
+  if (player !== null) {
+    const r = canvas.getBoundingClientRect()
+    player.x = event.clientX - r.left
+    player.y = event.clientY - r.top
+  }
+}
+
+function resizeCanvas () {
+  const oldWidth = canvas.width
+  const oldHeight = canvas.height
+
+  if (gameInterval !== null) {
+    pause()
+  }
+
+  if (document.body.clientWidth < CANVAS_MIN_WIDTH || window.innerHeight < CANVAS_MIN_HEIGHT) {
+    canvas.width = CANVAS_MIN_WIDTH
+    canvas.height = CANVAS_MIN_HEIGHT
+  } else if (document.body.clientWidth > CANVAS_MAX_WIDTH && window.innerHeight > CANVAS_MAX_HEIGHT) {
+    canvas.width = CANVAS_MAX_WIDTH
+    canvas.height = CANVAS_MAX_HEIGHT
+  } else {
+    canvas.width = document.body.clientWidth
+    canvas.height = canvas.width / ASPECT_RATIO
+
+    if (canvas.height > window.innerHeight) {
+      canvas.height = window.innerHeight
+      canvas.width = canvas.height * ASPECT_RATIO
+    }
+  }
+
+  if (paused) {
+    const widthDelta = canvas.width / oldWidth
+    const heightDelta = canvas.height / oldHeight
+
+    player.x *= widthDelta
+    player.y *= heightDelta
+    bullets.forEach(bullet => { bullet.x *= widthDelta; bullet.y *= heightDelta })
+    rocks.forEach(rock => { rock.x *= widthDelta; rock.y *= heightDelta })
+  }
+
+  scale = canvas.width / CANVAS_MAX_WIDTH
+  const canvasRect = canvas.getBoundingClientRect()
+  resumeButton.style.top = canvasRect.y + (canvasRect.height / 2) + 'px'
+  resumeButton.style.left = canvasRect.x + (canvasRect.width / 2) + 'px'
+  resumeButton.style.transform = 'translate(-50%, -50%)'
+}
 
 function start () {
   startButtons.style.visibility = HIDDEN
+  scale = canvas.width / CANVAS_MAX_WIDTH
+  player = Polygon.createPlayer(canvas, scale)
   setGameInterval()
+}
+
+function pause () {
+  resumeButton.style.visibility = VISIBLE
+  paused = true
+}
+
+function resume () {
+  resumeButton.style.visibility = HIDDEN
+  paused = false
 }
 
 function stop () {
@@ -112,12 +140,16 @@ function stop () {
 }
 
 function restart () {
+  clearGameInterval()
+  clearLifeInterval()
   endButtons.style.visibility = HIDDEN
-  player = Polygon.createPlayer(canvas)
+  scale = canvas.width / CANVAS_MAX_WIDTH
+  player = Polygon.createPlayer(canvas, scale)
   score.reset()
   keys.reset()
   bullets = []
   rocks = []
+  paused = false
   setGameInterval()
 }
 
@@ -187,21 +219,26 @@ function collisions () {
 
 function update () {
   player.speed = 0
-  if (keys.arrowLeft() || leftDown) { player.angle -= 0.07; player.rotation -= 0.07 }
-  if (keys.arrowRight() || rightDown) { player.angle += 0.07; player.rotation += 0.07 }
-  if (keys.arrowDown() || downDown) { player.speed = -4 }
-  if (keys.arrowUp() || upDown) { player.speed = 4 }
+  if (keys.arrowLeft()) { player.angle -= 0.07; player.rotation -= 0.07 }
+  if (keys.arrowRight()) { player.angle += 0.07; player.rotation += 0.07 }
+  if (keys.arrowDown()) { player.speed = -4 }
+  if (keys.arrowUp()) { player.speed = 4 }
   if (keys.space()) { bullets.push(Polygon.createBullet(player)) }
+  if (keys.lowerA()) { restart() }
+  if (keys.lowerP()) { pause() }
+  if (keys.lowerQ()) { stop() }
+  if (keys.lowerR()) { resume() }
 
-  bullets.forEach(bullet => bullet.update(canvas))
+  bullets.forEach(bullet => bullet.update(canvas, scale, paused))
   bullets = bullets.filter(bullet => bullet.show)
-  rocks.forEach(rock => rock.update(canvas))
+  rocks.forEach(rock => rock.update(canvas, scale, paused))
   rocks = rocks.filter(rock => rock.show)
-  player.update(canvas)
+  player.update(canvas, scale, paused)
+  score.update(scale)
 
   if (!rocks.length) {
     score.incrementLevel()
-    rocks = Polygon.createRocks(canvas, score.level())
+    rocks = Polygon.createRocks(canvas, scale, score.level())
   }
 }
 

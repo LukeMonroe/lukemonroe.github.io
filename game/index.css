@@ -9,7 +9,6 @@ canvas {
   border: 1px solid white;
   left: 50%;
   transform: translate(-50%);
-  margin-top: 50px;
 }
 
 button {
@@ -23,11 +22,19 @@ button {
   font-family: monospace;
   text-align: center;
   padding: 15px;
-  margin: 15px;
   width: 250px;
 }
 
 button.play {
+  background-color: firebrick;
+}
+
+button.pause {
+  background-color: firebrick;
+}
+
+button.resume {
+  position: absolute;
   background-color: firebrick;
 }
 
@@ -39,13 +46,6 @@ button.quit {
   background-color: palevioletred;
 }
 
-button.controls {
-  width: 200px;
-  height: 200px;
-  /* border-radius: 100%; */
-  background-color: skyblue;
-}
-
 div.buttons {
   position: absolute;
   display: flex;
@@ -55,28 +55,4 @@ div.buttons {
   top: 350px;
   left: 50%;
   transform: translate(-50%);
-}
-
-div.controls{
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-div.controlsLeftRight {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-div.controlsUpDown {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }

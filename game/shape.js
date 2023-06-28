@@ -42,13 +42,31 @@ class Shape {
     this.name = null
     this.angle = 0
     this.rotation = 0
+    this.scale = 1
+    this.defaultSpeed = 0
     this.speed = 0
     this.show = true
     this.color = DARK_GREY
   }
 
-  update (canvas) {
-    if (this.show) {
+  scaled (number) {
+    return Shape.scaled(number, this.scale)
+  }
+
+  static scaled (number, scale) {
+    return number * scale
+  }
+
+  update (canvas, scale, paused) {
+    this.scale = scale
+
+    if (!paused && this.show) {
+      if (this.name === PLAYER) {
+        this.speed = this.scaled(this.speed)
+      } else {
+        this.speed = this.scaled(this.defaultSpeed)
+      }
+
       const x = this.x + this.speed * Math.sin(this.angle)
       const y = this.y - this.speed * Math.cos(this.angle)
 
@@ -56,8 +74,8 @@ class Shape {
         this.rotation += this.rotation > 0 ? 0.01 : -0.01
       } else if (this.name === BULLET) {
         this.rotation += 0.15
-        this.speed -= 0.05
-        if (this.speed <= 0) {
+        this.defaultSpeed -= 0.05
+        if (this.defaultSpeed <= 0) {
           this.show = false
         }
       }
@@ -70,7 +88,7 @@ class Shape {
           this.y = y
         }
       } else {
-        if (x > 0 - BOUNDS_OFFSET && x < canvas.width + BOUNDS_OFFSET) {
+        if (x > this.scaled(-BOUNDS_OFFSET) && x < canvas.width + this.scaled(BOUNDS_OFFSET)) {
           this.x = x
         } else {
           if (this.name === BULLET) {
@@ -79,14 +97,14 @@ class Shape {
             this.angle *= -1
           }
         }
-        if (y > 0 - BOUNDS_OFFSET && y < canvas.height + BOUNDS_OFFSET) {
+        if (y > this.scaled(-BOUNDS_OFFSET) && y < canvas.height + this.scaled(BOUNDS_OFFSET)) {
           this.y = y
         } else {
           if (this.name === BULLET) {
             this.show = false
           } else {
             this.angle *= -1
-            this.speed *= -1
+            this.defaultSpeed *= -1
           }
         }
       }
@@ -112,8 +130,8 @@ class Circle extends Shape {
     super(x, y, radius, CIRCLE)
   }
 
-  update (canvas) {
-    super.update(canvas)
+  update (canvas, scale, paused) {
+    super.update(canvas, scale, paused)
   }
 
   draw (context) {
@@ -155,14 +173,17 @@ class Polygon extends Shape {
         rotatedVertex.x = Math.cos(angle) * distance
         rotatedVertex.y = Math.sin(angle) * distance
       }
+
+      rotatedVertex.x = this.scaled(rotatedVertex.x)
+      rotatedVertex.y = this.scaled(rotatedVertex.y)
       rotatedVertices.push(rotatedVertex)
     }
 
     return rotatedVertices
   }
 
-  update (canvas) {
-    super.update(canvas)
+  update (canvas, scale, paused) {
+    super.update(canvas, scale, paused)
   }
 
   draw (context) {
@@ -182,7 +203,7 @@ class Polygon extends Shape {
       // Draw the front of the player.
       if (this.name === PLAYER) {
         context.strokeStyle = SEA_GREEN
-        context.lineWidth = 4
+        context.lineWidth = this.scaled(4)
         context.beginPath()
 
         const vertices = this.getRotatedVertices()
@@ -205,8 +226,9 @@ class Polygon extends Shape {
     this.color = this.color === DARK_GREY ? GHOST_WHITE : DARK_GREY
   }
 
-  static createPlayer (canvas) {
+  static createPlayer (canvas, scale) {
     const player = new Polygon(canvas.width / 2, canvas.height / 2, 30, 5)
+    player.scale = scale
     player.name = PLAYER
 
     return player
@@ -216,39 +238,40 @@ class Polygon extends Shape {
     const bullet = new Polygon(player.x, player.y, 10, 3)
     bullet.angle = player.angle
     bullet.rotation = player.rotation
-    bullet.speed = 8
+    bullet.scale = player.scale
+    bullet.defaultSpeed = 8
     bullet.color = SKY_BLUE
     bullet.name = BULLET
 
     return bullet
   }
 
-  static createRocks (canvas, level) {
+  static createRocks (canvas, scale, level) {
     const rocks = []
     let quantity = level * 2
     while (quantity > 0) {
-      rocks.push(Polygon.createRock(canvas))
+      rocks.push(Polygon.createRock(canvas, scale))
       quantity--
     }
 
     return rocks
   }
 
-  static createRock (canvas) {
+  static createRock (canvas, scale) {
     const sides = Shape.rangeRandom(3, 8)
     const radius = Shape.rangeRandom(71, 100)
 
-    let offset = Shape.limitRandom(BOUNDS_OFFSET)
+    let offset = Shape.limitRandom(Shape.scaled(BOUNDS_OFFSET, scale))
     const x = Shape.random() >= 0.5 ? canvas.width + offset : -offset
 
-    offset = Shape.limitRandom(BOUNDS_OFFSET)
+    offset = Shape.limitRandom(Shape.scaled(BOUNDS_OFFSET, scale))
     const y = Shape.random() >= 0.5 ? canvas.height + offset : -offset
 
     const rock = new Polygon(x, y, radius, sides)
     rock.angle = Shape.limitRandom(Math.PI * 2)
     rock.rotation = Shape.limitRandom(Math.PI * 2)
     rock.rotation *= Shape.random() >= 0.5 ? 1 : -1
-    rock.speed = 1
+    rock.defaultSpeed = 1
     rock.color = FIRE_BRICK
     rock.name = ROCK
 
@@ -266,7 +289,8 @@ class Polygon extends Shape {
         shard.angle = Shape.limitRandom(Math.PI * 2)
         shard.rotation = Shape.limitRandom(Math.PI * 2)
         shard.rotation *= Shape.random() >= 0.5 ? 1 : -1
-        shard.speed = shard.radius > 40 ? 1.5 : 2
+        shard.defaultSpeed = shard.radius > 40 ? 1.5 : 2
+        shard.scale = rock.scale
         shard.color = shard.radius > 40 ? TOMATO : PALE_VIOLET_RED
         shard.name = SHARD
         shards.push(shard)

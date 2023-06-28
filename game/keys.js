@@ -5,9 +5,15 @@ const ARROW_LEFT = 'ArrowLeft'
 const ARROW_RIGHT = 'ArrowRight'
 const ARROW_UP = 'ArrowUp'
 const SPACE = ' '
+const LOWER_A = 'a'
+const LOWER_P = 'p'
+const LOWER_Q = 'q'
+const LOWER_R = 'r'
 
 class Keys {
-  #keys = new Map([[ARROW_DOWN, false], [ARROW_LEFT, false], [ARROW_RIGHT, false], [ARROW_UP, false], [SPACE, false]])
+  #keys = new Map([[ARROW_DOWN, false], [ARROW_LEFT, false], [ARROW_RIGHT, false], [ARROW_UP, false], [SPACE, false],
+    [LOWER_A, false], [LOWER_P, false], [LOWER_Q, false], [LOWER_R, false]])
+
   #spacePressed = false
 
   constructor () {
@@ -47,6 +53,14 @@ class Keys {
 
     return false
   }
+
+  lowerA () { return this.#keys.get(LOWER_A) }
+
+  lowerP () { return this.#keys.get(LOWER_P) }
+
+  lowerQ () { return this.#keys.get(LOWER_Q) }
+
+  lowerR () { return this.#keys.get(LOWER_R) }
 
   reset () {
     this.#spacePressed = false
