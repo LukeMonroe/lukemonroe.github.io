@@ -71,10 +71,8 @@ let playerDown = false
 
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
-window.addEventListener('mousedown', event => { mouseControls(event) })
+// window.addEventListener('mousedown', event => { mouseControls(event) })
 window.addEventListener('touchstart', event => { touchControls(event) })
-window.addEventListener('touchend', () => { playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
-window.addEventListener('touchcancel', () => { playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
 
 function mouseControls (event) {
   if (controls.length > 0) {
@@ -148,15 +146,24 @@ function touchControls (event) {
         const dist = Point.getDistance(x - controls[i].x, y - controls[i].y)
         if (dist < Shape.scaled(controls[i].radius, scale)) {
           if (i === 0) {
-            playerUp = true
+            playerUp = !playerUp
+            playerDown = false
+            break
           } else if (i === 1) {
-            playerLeft = true
+            playerLeft = !playerLeft
+            playerRight = false
+            break
           } else if (i === 2) {
-            playerRight = true
+            playerRight = !playerRight
+            playerLeft = false
+            break
           } else if (i === 3) {
-            playerDown = true
+            playerDown = !playerDown
+            playerUp = false
+            break
           } else if (i === 4) {
             makeBullet = true
+            break
           }
         }
       }
