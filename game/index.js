@@ -68,13 +68,15 @@ let playerLeft = false
 let playerRight = false
 let playerUp = false
 let playerDown = false
+let madeBullet = false
 
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
 // window.addEventListener('mousedown', event => { mouseControls(event) })
 window.addEventListener('touchstart', event => { touchControls(event) })
-window.addEventListener('touchend', () => { playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
-window.addEventListener('touchcancel', () => { playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
+window.addEventListener('touchmove', event => { touchControls(event) })
+window.addEventListener('touchend', () => { if (!madeBullet) { playerLeft = false; playerRight = false; playerUp = false; playerDown = false } })
+window.addEventListener('touchcancel', () => { if (!madeBullet) { playerLeft = false; playerRight = false; playerUp = false; playerDown = false } })
 
 function mouseControls (event) {
   if (controls.length > 0) {
@@ -137,6 +139,7 @@ function touchControls (event) {
   if (controls.length > 0) {
     event.preventDefault()
 
+    madeBullet = false
     const r = canvas.getBoundingClientRect()
     let makeBullet = false
     const touches = event.changedTouches
@@ -187,6 +190,7 @@ function touchControls (event) {
       controls[3].color = 'rgba(255, 255, 255, 0.1)'
     }
     if (makeBullet) {
+      madeBullet = true
       bullets.push(Polygon.createBullet(player))
     }
   }
