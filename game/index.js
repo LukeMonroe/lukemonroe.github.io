@@ -64,7 +64,6 @@ let gameInterval = null
 let lifeInterval = null
 let scale = 1
 let paused = false
-let down = false
 let playerLeft = false
 let playerRight = false
 let playerUp = false
@@ -72,64 +71,117 @@ let playerDown = false
 
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
-window.addEventListener('mousedown', event => { down = true; a(event, 'm') })
-window.addEventListener('touchstart', event => { down = true; a(event, 'p') })
-window.addEventListener('mouseup', () => { down = false; playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
-window.addEventListener('touchend', () => { down = false; playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
+window.addEventListener('mousedown', event => { mouseControls(event) })
+window.addEventListener('touchstart', event => { touchControls(event) })
 
-function a (event, b) {
-  playerLeft = false
-  playerRight = false
-  playerUp = false
-  playerDown = false
-
-  if (controls.length > 0 && down) {
+function mouseControls (event) {
+  if (controls.length > 0) {
     const r = canvas.getBoundingClientRect()
-    let x = 0
-    let y = 0
-    if (b === 'm') {
-      x = event.clientX - r.left
-      y = event.clientY - r.top
-    } else {
-      x = event.touches[0].clientX - r.left
-      y = event.touches[0].clientY - r.top
-    }
+    const x = event.clientX - r.left
+    const y = event.clientY - r.top
 
-    let count = 0
     for (let i = 0; i < controls.length; i++) {
       const dist = Point.getDistance(x - controls[i].x, y - controls[i].y)
       if (dist < Shape.scaled(controls[i].radius, scale)) {
-        if (count === 0) {
-          playerLeft = true
-          playerUp = true
+        if (i === 0) {
+          playerUp = !playerUp
+          playerDown = false
           break
-        } else if (count === 1) {
-          playerUp = true
+        } else if (i === 1) {
+          playerLeft = !playerLeft
+          playerRight = false
           break
-        } else if (count === 2) {
-          playerRight = true
-          playerUp = true
+        } else if (i === 2) {
+          playerRight = !playerRight
+          playerLeft = false
           break
-        } else if (count === 3) {
-          playerLeft = true
+        } else if (i === 3) {
+          playerDown = !playerDown
+          playerUp = false
           break
-        } else if (count === 4) {
-          playerRight = true
-          break
-        } else if (count === 5) {
-          playerLeft = true
-          playerDown = true
-          break
-        } else if (count === 6) {
-          playerDown = true
-          break
-        } else if (count === 7) {
-          playerRight = true
-          playerDown = true
+        } else if (i === 4) {
+          bullets.push(Polygon.createBullet(player))
           break
         }
       }
-      count++
+    }
+
+    if (playerUp) {
+      controls[0].color = 'rgba(255, 255, 255, 0.3)'
+    } else {
+      controls[0].color = 'rgba(255, 255, 255, 0.1)'
+    }
+    if (playerLeft) {
+      controls[1].color = 'rgba(255, 255, 255, 0.3)'
+    } else {
+      controls[1].color = 'rgba(255, 255, 255, 0.1)'
+    }
+    if (playerRight) {
+      controls[2].color = 'rgba(255, 255, 255, 0.3)'
+    } else {
+      controls[2].color = 'rgba(255, 255, 255, 0.1)'
+    }
+    if (playerDown) {
+      controls[3].color = 'rgba(255, 255, 255, 0.3)'
+    } else {
+      controls[3].color = 'rgba(255, 255, 255, 0.1)'
+    }
+  }
+}
+
+function touchControls (event) {
+  if (controls.length > 0) {
+    const r = canvas.getBoundingClientRect()
+    for (let t = 0; t < event.touches.length; t++) {
+      const x = event.touches[t].clientX - r.left
+      const y = event.touches[t].clientY - r.top
+
+      for (let i = 0; i < controls.length; i++) {
+        const dist = Point.getDistance(x - controls[i].x, y - controls[i].y)
+        if (dist < Shape.scaled(controls[i].radius, scale)) {
+          if (i === 0) {
+            playerUp = !playerUp
+            playerDown = false
+            break
+          } else if (i === 1) {
+            playerLeft = !playerLeft
+            playerRight = false
+            break
+          } else if (i === 2) {
+            playerRight = !playerRight
+            playerLeft = false
+            break
+          } else if (i === 3) {
+            playerDown = !playerDown
+            playerUp = false
+            break
+          } else if (i === 4) {
+            bullets.push(Polygon.createBullet(player))
+            break
+          }
+        }
+      }
+
+      if (playerUp) {
+        controls[0].color = 'rgba(255, 255, 255, 0.3)'
+      } else {
+        controls[0].color = 'rgba(255, 255, 255, 0.1)'
+      }
+      if (playerLeft) {
+        controls[1].color = 'rgba(255, 255, 255, 0.3)'
+      } else {
+        controls[1].color = 'rgba(255, 255, 255, 0.1)'
+      }
+      if (playerRight) {
+        controls[2].color = 'rgba(255, 255, 255, 0.3)'
+      } else {
+        controls[2].color = 'rgba(255, 255, 255, 0.1)'
+      }
+      if (playerDown) {
+        controls[3].color = 'rgba(255, 255, 255, 0.3)'
+      } else {
+        controls[3].color = 'rgba(255, 255, 255, 0.1)'
+      }
     }
   }
 }
@@ -181,14 +233,11 @@ function start () {
   scale = canvas.width / CANVAS_MAX_WIDTH
   player = Player.create(canvas, scale)
 
-  controls.push(new Circle(canvas.width - Shape.scaled(300, scale), canvas.height - Shape.scaled(300, scale), 40))
-  controls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(300, scale), 40))
-  controls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(300, scale), 40))
-  controls.push(new Circle(canvas.width - Shape.scaled(300, scale), canvas.height - Shape.scaled(200, scale), 40))
-  controls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(200, scale), 40))
-  controls.push(new Circle(canvas.width - Shape.scaled(300, scale), canvas.height - Shape.scaled(100, scale), 40))
-  controls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 40))
-  controls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(100, scale), 40))
+  controls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(300, scale), 60))
+  controls.push(new Circle(canvas.width - Shape.scaled(300, scale), canvas.height - Shape.scaled(200, scale), 60))
+  controls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(200, scale), 60))
+  controls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 60))
+  controls.push(new Circle(Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 60))
   controls.forEach(control => { control.color = 'rgba(255, 255, 255, 0.1)' })
   setGameInterval()
 }
