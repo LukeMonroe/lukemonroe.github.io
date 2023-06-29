@@ -55,152 +55,74 @@ document.body.appendChild(endButtons)
 document.body.appendChild(resumeButton)
 
 let player = null
-const controls = []
 const score = new Score()
 const keys = new Keys()
+let touchControls = []
 let bullets = []
 let rocks = []
 let gameInterval = null
 let lifeInterval = null
 let scale = 1
 let paused = false
-let playerLeft = false
-let playerRight = false
-let playerUp = false
-let playerDown = false
-let madeBullet = false
+let touchLeft = false
+let touchRight = false
+let touchUp = false
+let touchDown = false
+let touchBullet = false
 
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
-// window.addEventListener('mousedown', event => { mouseControls(event) })
-window.addEventListener('touchstart', event => touchControls(event, 'a'))
-window.addEventListener('touchmove', event => touchControls(event, 'b'))
-window.addEventListener('touchend', event => touchControls(event), 'c')
-window.addEventListener('touchcancel', event => touchControls(event), 'd')
+canvas.addEventListener('touchstart', event => handleTouch(event, 'a'))
+canvas.addEventListener('touchmove', event => handleTouch(event, 'b'))
+canvas.addEventListener('touchend', event => handleTouch(event), 'c')
+canvas.addEventListener('touchcancel', event => handleTouch(event), 'd')
 
-function mouseControls (event) {
-  if (controls.length > 0) {
-    event.preventDefault()
-
-    const r = canvas.getBoundingClientRect()
-    const x = event.clientX - r.left
-    const y = event.clientY - r.top
-
-    for (let i = 0; i < controls.length; i++) {
-      const dist = Point.getDistance(x - controls[i].x, y - controls[i].y)
-      if (dist < Shape.scaled(controls[i].radius, scale)) {
-        if (i === 0) {
-          playerUp = !playerUp
-          playerDown = false
-          break
-        } else if (i === 1) {
-          playerLeft = !playerLeft
-          playerRight = false
-          break
-        } else if (i === 2) {
-          playerRight = !playerRight
-          playerLeft = false
-          break
-        } else if (i === 3) {
-          playerDown = !playerDown
-          playerUp = false
-          break
-        } else if (i === 4) {
-          bullets.push(Polygon.createBullet(player))
-          break
-        }
-      }
-    }
-
-    if (playerUp) {
-      controls[0].color = 'rgba(255, 255, 255, 0.3)'
-    } else {
-      controls[0].color = 'rgba(255, 255, 255, 0.1)'
-    }
-    if (playerLeft) {
-      controls[1].color = 'rgba(255, 255, 255, 0.3)'
-    } else {
-      controls[1].color = 'rgba(255, 255, 255, 0.1)'
-    }
-    if (playerRight) {
-      controls[2].color = 'rgba(255, 255, 255, 0.3)'
-    } else {
-      controls[2].color = 'rgba(255, 255, 255, 0.1)'
-    }
-    if (playerDown) {
-      controls[3].color = 'rgba(255, 255, 255, 0.3)'
-    } else {
-      controls[3].color = 'rgba(255, 255, 255, 0.1)'
-    }
-  }
-}
-
-function touchControls (event, type) {
-  if (controls.length > 0) {
-    event.preventDefault()
-
-    playerLeft = false
-    playerRight = false
-    playerUp = false
-    playerDown = false
-    madeBullet = false
+function handleTouch (event, type) {
+  if (touchControls.length > 0) {
+    touchLeft = false
+    touchRight = false
+    touchUp = false
+    touchDown = false
+    touchBullet = false
     if (type === 'c' || type === 'd') {
       return
     }
 
-    const r = canvas.getBoundingClientRect()
     const touches = event.changedTouches
-    for (let t = 0; t < touches.length; t++) {
-      const x = touches[t].clientX - r.left
-      const y = touches[t].clientY - r.top
+    const canvasRect = canvas.getBoundingClientRect()
+    for (let touch = 0; touch < touches.length; touch++) {
+      const x = touches[touch].clientX - canvasRect.left
+      const y = touches[touch].clientY - canvasRect.top
 
-      for (let i = 0; i < controls.length; i++) {
-        const dist = Point.getDistance(x - controls[i].x, y - controls[i].y)
-        if (dist < Shape.scaled(controls[i].radius, scale)) {
+      for (let i = 0; i < touchControls.length; i++) {
+        const dist = Point.getDistance(x - touchControls[i].x, y - touchControls[i].y)
+        if (dist < Shape.scaled(touchControls[i].radius, scale)) {
           if (i === 0) {
-            playerUp = true
-            playerDown = false
+            touchUp = true
+            touchDown = false
           } else if (i === 1) {
-            playerLeft = true
-            playerRight = false
+            touchLeft = true
+            touchRight = false
           } else if (i === 2) {
-            playerRight = true
-            playerLeft = false
+            touchRight = true
+            touchLeft = false
           } else if (i === 3) {
-            playerDown = true
-            playerUp = false
+            touchDown = true
+            touchUp = false
           } else if (i === 4) {
             if (type === 'a') {
-              madeBullet = true
+              touchBullet = true
             }
           }
         }
       }
     }
 
-    if (playerUp) {
-      controls[0].color = 'rgba(255, 255, 255, 0.3)'
-    } else {
-      controls[0].color = 'rgba(255, 255, 255, 0.1)'
-    }
-    if (playerLeft) {
-      controls[1].color = 'rgba(255, 255, 255, 0.3)'
-    } else {
-      controls[1].color = 'rgba(255, 255, 255, 0.1)'
-    }
-    if (playerRight) {
-      controls[2].color = 'rgba(255, 255, 255, 0.3)'
-    } else {
-      controls[2].color = 'rgba(255, 255, 255, 0.1)'
-    }
-    if (playerDown) {
-      controls[3].color = 'rgba(255, 255, 255, 0.3)'
-    } else {
-      controls[3].color = 'rgba(255, 255, 255, 0.1)'
-    }
-    if (madeBullet) {
-      bullets.push(Polygon.createBullet(player))
-    }
+    touchControls[0].color = touchUp ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)'
+    touchControls[1].color = touchUp ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)'
+    touchControls[2].color = touchUp ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)'
+    touchControls[3].color = touchUp ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)'
+    if (touchBullet) { bullets.push(Polygon.createBullet(player)) }
   }
 }
 
@@ -236,7 +158,7 @@ function resizeCanvas () {
     player.y *= heightDelta
     bullets.forEach(bullet => { bullet.x *= widthDelta; bullet.y *= heightDelta })
     rocks.forEach(rock => { rock.x *= widthDelta; rock.y *= heightDelta })
-    controls.forEach(control => { control.x *= widthDelta; control.y *= heightDelta })
+    touchControls.forEach(touchControl => { touchControl.x *= widthDelta; touchControl.y *= heightDelta })
   }
 
   scale = canvas.width / CANVAS_MAX_WIDTH
@@ -252,12 +174,12 @@ function start () {
   scale = canvas.width / CANVAS_MAX_WIDTH
   player = Player.create(canvas, scale)
 
-  controls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(300, scale), 100))
-  controls.push(new Circle(canvas.width - Shape.scaled(300, scale), canvas.height - Shape.scaled(200, scale), 100))
-  controls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(200, scale), 100))
-  controls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 100))
-  controls.push(new Circle(Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 90))
-  controls.forEach(control => { control.color = 'rgba(255, 255, 255, 0.1)' })
+  touchControls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(300, scale), 100))
+  touchControls.push(new Circle(canvas.width - Shape.scaled(300, scale), canvas.height - Shape.scaled(200, scale), 100))
+  touchControls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(200, scale), 100))
+  touchControls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 100))
+  touchControls.push(new Circle(Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 90))
+  touchControls.forEach(touchControl => { touchControl.color = 'rgba(255, 255, 255, 0.1)' })
   setGameInterval()
 }
 
@@ -284,6 +206,13 @@ function restart () {
   player.reset(canvas, scale)
   score.reset()
   keys.reset()
+  touchControls = []
+  touchControls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(300, scale), 100))
+  touchControls.push(new Circle(canvas.width - Shape.scaled(300, scale), canvas.height - Shape.scaled(200, scale), 100))
+  touchControls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(200, scale), 100))
+  touchControls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 100))
+  touchControls.push(new Circle(Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 90))
+  touchControls.forEach(touchControl => { touchControl.color = 'rgba(255, 255, 255, 0.1)' })
   bullets = []
   rocks = []
   paused = false
@@ -356,10 +285,10 @@ function collisions () {
 
 function update () {
   player.speed = 0
-  if (keys.arrowLeft() || keys.lowerA() || playerLeft) { player.rotateLeft() }
-  if (keys.arrowRight() || keys.lowerD() || playerRight) { player.rotateRight() }
-  if (keys.arrowDown() || keys.lowerS() || playerDown) { player.backward() }
-  if (keys.arrowUp() || keys.lowerW() || playerUp) { player.forward() }
+  if (keys.arrowLeft() || keys.lowerA() || touchLeft) { player.rotateLeft() }
+  if (keys.arrowRight() || keys.lowerD() || touchRight) { player.rotateRight() }
+  if (keys.arrowDown() || keys.lowerS() || touchDown) { player.backward() }
+  if (keys.arrowUp() || keys.lowerW() || touchUp) { player.forward() }
   if (keys.space()) { bullets.push(Polygon.createBullet(player)) }
   if (keys.lowerP()) { pause() }
   if (keys.lowerR()) { resume() }
@@ -369,7 +298,7 @@ function update () {
   rocks.forEach(rock => rock.update(canvas, scale, paused))
   rocks = rocks.filter(rock => rock.show)
   player.update(canvas, scale, paused)
-  controls.forEach(control => control.update(canvas, scale, paused))
+  touchControls.forEach(touchControl => touchControl.update(canvas, scale, paused))
   score.update(scale)
 
   if (!rocks.length) {
@@ -382,6 +311,6 @@ function draw () {
   bullets.forEach(bullet => bullet.draw(context))
   rocks.forEach(rock => rock.draw(context))
   player.draw(context)
-  controls.forEach(control => control.draw(context))
+  touchControls.forEach(touchControl => touchControl.draw(context))
   score.draw(context)
 }
