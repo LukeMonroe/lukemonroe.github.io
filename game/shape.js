@@ -199,39 +199,8 @@ class Polygon extends Shape {
 
       context.closePath()
       context.fill()
-
-      // Draw the front of the player.
-      if (this.name === PLAYER) {
-        context.strokeStyle = SEA_GREEN
-        context.lineWidth = this.scaled(4)
-        context.beginPath()
-
-        const vertices = this.getRotatedVertices()
-        context.moveTo(this.x + vertices[2].x, this.y + vertices[2].y)
-        context.lineTo(this.x + vertices[3].x, this.y + vertices[3].y)
-        context.lineTo(this.x + vertices[4].x, this.y + vertices[4].y)
-
-        context.stroke()
-      }
-
       context.restore()
     }
-  }
-
-  defaultColor () {
-    this.color = DARK_GREY
-  }
-
-  alternateColor () {
-    this.color = this.color === DARK_GREY ? GHOST_WHITE : DARK_GREY
-  }
-
-  static createPlayer (canvas, scale) {
-    const player = new Polygon(canvas.width / 2, canvas.height / 2, 30, 5)
-    player.scale = scale
-    player.name = PLAYER
-
-    return player
   }
 
   static createBullet (player) {
@@ -301,4 +270,81 @@ class Polygon extends Shape {
   }
 }
 
-export { CIRCLE, POLYGON, Point, Shape, Circle, Polygon }
+class Player extends Polygon {
+  constructor (canvas, scale) {
+    super(canvas.width / 2, canvas.height / 2, 30, 5)
+    this.scale = scale
+    this.name = PLAYER
+  }
+
+  draw (context) {
+    super.draw(context)
+
+    // Draw the front of the player.
+    if (this.show) {
+      context.save()
+      context.strokeStyle = SEA_GREEN
+      context.lineWidth = this.scaled(4)
+      context.beginPath()
+
+      const vertices = this.getRotatedVertices()
+      context.moveTo(this.x + vertices[2].x, this.y + vertices[2].y)
+      context.lineTo(this.x + vertices[3].x, this.y + vertices[3].y)
+      context.lineTo(this.x + vertices[4].x, this.y + vertices[4].y)
+
+      context.stroke()
+      context.restore()
+    }
+  }
+
+  defaultColor () {
+    this.color = DARK_GREY
+  }
+
+  alternateColor () {
+    this.color = this.color === DARK_GREY ? GHOST_WHITE : DARK_GREY
+  }
+
+  counterclockwise () {
+    this.angle -= 0.07
+    this.rotation -= 0.07
+  }
+
+  clockwise () {
+    this.angle += 0.07
+    this.rotation += 0.07
+  }
+
+  forward () {
+    this.speed = 4
+  }
+
+  backward () {
+    this.speed = -4
+  }
+
+  reset (canvas, scale) {
+    const player = new Player(canvas, scale)
+    this.x = player.x
+    this.y = player.y
+    this.radius = player.radius
+    this.type = player.type
+    this.sides = player.sides
+    this.vertices = player.vertices
+
+    this.name = player.name
+    this.angle = player.angle
+    this.rotation = player.rotation
+    this.scale = player.scale
+    this.defaultSpeed = player.defaultSpeed
+    this.speed = player.speed
+    this.show = player.show
+    this.color = player.color
+  }
+
+  static create (canvas, scale) {
+    return new Player(canvas, scale)
+  }
+}
+
+export { CIRCLE, POLYGON, Point, Shape, Circle, Polygon, Player }

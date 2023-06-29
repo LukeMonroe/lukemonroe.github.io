@@ -1,5 +1,5 @@
 import { Collision } from './collision.js'
-import { Point, Shape, Circle, Polygon } from './shape.js'
+import { Point, Shape, Circle, Polygon, Player } from './shape.js'
 import { Score } from './score.js'
 import { Keys } from './keys.js'
 
@@ -170,7 +170,7 @@ function resizeCanvas () {
 function start () {
   startButtons.style.visibility = HIDDEN
   scale = canvas.width / CANVAS_MAX_WIDTH
-  player = Polygon.createPlayer(canvas, scale)
+  player = Player.create(canvas, scale)
 
   controls.push(new Circle(canvas.width - Shape.scaled(150, scale), canvas.height - Shape.scaled(150, scale), 20))
   controls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(150, scale), 20))
@@ -203,7 +203,7 @@ function restart () {
   clearLifeInterval()
   endButtons.style.visibility = HIDDEN
   scale = canvas.width / CANVAS_MAX_WIDTH
-  player = Polygon.createPlayer(canvas, scale)
+  player.reset(canvas, scale)
   score.reset()
   keys.reset()
   bullets = []
@@ -278,14 +278,12 @@ function collisions () {
 
 function update () {
   player.speed = 0
-  if (keys.arrowLeft() || playerLeft) { player.angle -= 0.07; player.rotation -= 0.07 }
-  if (keys.arrowRight() || playerRight) { player.angle += 0.07; player.rotation += 0.07 }
-  if (keys.arrowDown() || playerDown) { player.speed = -4 }
-  if (keys.arrowUp() || playerUp) { player.speed = 4 }
+  if (keys.arrowLeft() || keys.lowerA() || playerLeft) { player.counterclockwise() }
+  if (keys.arrowRight() || keys.lowerD() || playerRight) { player.clockwise() }
+  if (keys.arrowDown() || keys.lowerS() || playerDown) { player.backward() }
+  if (keys.arrowUp() || keys.lowerW() || playerUp) { player.forward() }
   if (keys.space()) { bullets.push(Polygon.createBullet(player)) }
-  if (keys.lowerA()) { restart() }
   if (keys.lowerP()) { pause() }
-  if (keys.lowerQ()) { stop() }
   if (keys.lowerR()) { resume() }
 
   bullets.forEach(bullet => bullet.update(canvas, scale, paused))

@@ -6,15 +6,27 @@ const ARROW_RIGHT = 'ArrowRight'
 const ARROW_UP = 'ArrowUp'
 const SPACE = ' '
 const LOWER_A = 'a'
+const LOWER_D = 'd'
 const LOWER_P = 'p'
-const LOWER_Q = 'q'
 const LOWER_R = 'r'
+const LOWER_S = 's'
+const LOWER_W = 'w'
 
 class Keys {
-  #keys = new Map([[ARROW_DOWN, false], [ARROW_LEFT, false], [ARROW_RIGHT, false], [ARROW_UP, false], [SPACE, false],
-    [LOWER_A, false], [LOWER_P, false], [LOWER_Q, false], [LOWER_R, false]])
-
   #spacePressed = false
+  #keys = new Map([
+    [ARROW_DOWN, false],
+    [ARROW_LEFT, false],
+    [ARROW_RIGHT, false],
+    [ARROW_UP, false],
+    [SPACE, false],
+    [LOWER_A, false],
+    [LOWER_D, false],
+    [LOWER_P, false],
+    [LOWER_R, false],
+    [LOWER_S, false],
+    [LOWER_W, false]
+  ])
 
   constructor () {
     window.addEventListener(KEYDOWN, event => this.#keydown(event))
@@ -56,16 +68,20 @@ class Keys {
 
   lowerA () { return this.#keys.get(LOWER_A) }
 
+  lowerD () { return this.#keys.get(LOWER_D) }
+
   lowerP () { return this.#keys.get(LOWER_P) }
 
-  lowerQ () { return this.#keys.get(LOWER_Q) }
-
   lowerR () { return this.#keys.get(LOWER_R) }
+
+  lowerS () { return this.#keys.get(LOWER_S) }
+
+  lowerW () { return this.#keys.get(LOWER_W) }
 
   reset () {
     this.#spacePressed = false
     for (const key in this.#keys.keys()) {
-      this.#keys[key] = false
+      this.#keys.set(key, false)
     }
   }
 }
