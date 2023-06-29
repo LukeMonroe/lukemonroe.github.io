@@ -73,10 +73,10 @@ let madeBullet = false
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
 // window.addEventListener('mousedown', event => { mouseControls(event) })
-window.addEventListener('touchstart', event => { touchControls(event) })
-window.addEventListener('touchmove', event => { touchControls(event) })
-window.addEventListener('touchend', () => { if (!madeBullet) { playerLeft = false; playerRight = false; playerUp = false; playerDown = false } })
-window.addEventListener('touchcancel', () => { if (!madeBullet) { playerLeft = false; playerRight = false; playerUp = false; playerDown = false } })
+window.addEventListener('touchstart', event => touchControls(event, 'a'))
+window.addEventListener('touchmove', event => touchControls(event, 'b'))
+window.addEventListener('touchend', event => touchControls(event), 'c')
+window.addEventListener('touchcancel', event => touchControls(event), 'd')
 
 function mouseControls (event) {
   if (controls.length > 0) {
@@ -135,13 +135,20 @@ function mouseControls (event) {
   }
 }
 
-function touchControls (event) {
+function touchControls (event, type) {
   if (controls.length > 0) {
     event.preventDefault()
 
+    playerLeft = false
+    playerRight = false
+    playerUp = false
+    playerDown = false
     madeBullet = false
+    if (type === 'c' || type === 'd') {
+      return
+    }
+
     const r = canvas.getBoundingClientRect()
-    let makeBullet = false
     const touches = event.changedTouches
     for (let t = 0; t < touches.length; t++) {
       const x = touches[t].clientX - r.left
@@ -163,7 +170,9 @@ function touchControls (event) {
             playerDown = true
             playerUp = false
           } else if (i === 4) {
-            makeBullet = true
+            if (type === 'a') {
+              madeBullet = true
+            }
           }
         }
       }
@@ -189,8 +198,7 @@ function touchControls (event) {
     } else {
       controls[3].color = 'rgba(255, 255, 255, 0.1)'
     }
-    if (makeBullet) {
-      madeBullet = true
+    if (madeBullet) {
       bullets.push(Polygon.createBullet(player))
     }
   }
