@@ -1,5 +1,5 @@
 import { Collision } from './collision.js'
-import { Polygon } from './shape.js'
+import { Point, Shape, Circle, Polygon } from './shape.js'
 import { Score } from './score.js'
 import { Keys } from './keys.js'
 
@@ -55,6 +55,7 @@ document.body.appendChild(endButtons)
 document.body.appendChild(resumeButton)
 
 let player = null
+const controls = []
 const score = new Score()
 const keys = new Keys()
 let bullets = []
@@ -63,16 +64,64 @@ let gameInterval = null
 let lifeInterval = null
 let scale = 1
 let paused = false
+let down = false
+let playerLeft = false
+let playerRight = false
+let playerUp = false
+let playerDown = false
 
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
-window.addEventListener('mousedown', event => a(event))
+window.addEventListener('mousedown', event => { down = true; a(event) })
+window.addEventListener('mouseup', () => { down = false; playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
 
 function a (event) {
-  if (player !== null) {
+  playerLeft = false
+  playerRight = false
+  playerUp = false
+  playerDown = false
+
+  if (controls.length > 0 && down) {
     const r = canvas.getBoundingClientRect()
-    player.x = event.clientX - r.left
-    player.y = event.clientY - r.top
+    const x = event.clientX - r.left
+    const y = event.clientY - r.top
+
+    let count = 0
+    for (let i = 0; i < controls.length; i++) {
+      const dist = Point.getDistance(x - controls[i].x, y - controls[i].y)
+      if (dist < Shape.scaled(controls[i].radius, scale)) {
+        if (count === 0) {
+          playerLeft = true
+          playerUp = true
+          break
+        } else if (count === 1) {
+          playerUp = true
+          break
+        } else if (count === 2) {
+          playerRight = true
+          playerUp = true
+          break
+        } else if (count === 3) {
+          playerLeft = true
+          break
+        } else if (count === 4) {
+          playerRight = true
+          break
+        } else if (count === 5) {
+          playerLeft = true
+          playerDown = true
+          break
+        } else if (count === 6) {
+          playerDown = true
+          break
+        } else if (count === 7) {
+          playerRight = true
+          playerDown = true
+          break
+        }
+      }
+      count++
+    }
   }
 }
 
@@ -108,6 +157,7 @@ function resizeCanvas () {
     player.y *= heightDelta
     bullets.forEach(bullet => { bullet.x *= widthDelta; bullet.y *= heightDelta })
     rocks.forEach(rock => { rock.x *= widthDelta; rock.y *= heightDelta })
+    controls.forEach(control => { control.x *= widthDelta; control.y *= heightDelta })
   }
 
   scale = canvas.width / CANVAS_MAX_WIDTH
@@ -121,6 +171,14 @@ function start () {
   startButtons.style.visibility = HIDDEN
   scale = canvas.width / CANVAS_MAX_WIDTH
   player = Polygon.createPlayer(canvas, scale)
+  controls.push(new Circle(canvas.width - Shape.scaled(150, scale), canvas.height - Shape.scaled(150, scale), 20))
+  controls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(150, scale), 20))
+  controls.push(new Circle(canvas.width - Shape.scaled(50, scale), canvas.height - Shape.scaled(150, scale), 20))
+  controls.push(new Circle(canvas.width - Shape.scaled(150, scale), canvas.height - Shape.scaled(100, scale), 20))
+  controls.push(new Circle(canvas.width - Shape.scaled(50, scale), canvas.height - Shape.scaled(100, scale), 20))
+  controls.push(new Circle(canvas.width - Shape.scaled(150, scale), canvas.height - Shape.scaled(50, scale), 20))
+  controls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(50, scale), 20))
+  controls.push(new Circle(canvas.width - Shape.scaled(50, scale), canvas.height - Shape.scaled(50, scale), 20))
   setGameInterval()
 }
 
@@ -219,10 +277,10 @@ function collisions () {
 
 function update () {
   player.speed = 0
-  if (keys.arrowLeft()) { player.angle -= 0.07; player.rotation -= 0.07 }
-  if (keys.arrowRight()) { player.angle += 0.07; player.rotation += 0.07 }
-  if (keys.arrowDown()) { player.speed = -4 }
-  if (keys.arrowUp()) { player.speed = 4 }
+  if (keys.arrowLeft() || playerLeft) { player.angle -= 0.07; player.rotation -= 0.07 }
+  if (keys.arrowRight() || playerRight) { player.angle += 0.07; player.rotation += 0.07 }
+  if (keys.arrowDown() || playerDown) { player.speed = -4 }
+  if (keys.arrowUp() || playerUp) { player.speed = 4 }
   if (keys.space()) { bullets.push(Polygon.createBullet(player)) }
   if (keys.lowerA()) { restart() }
   if (keys.lowerP()) { pause() }
@@ -234,6 +292,7 @@ function update () {
   rocks.forEach(rock => rock.update(canvas, scale, paused))
   rocks = rocks.filter(rock => rock.show)
   player.update(canvas, scale, paused)
+  controls.forEach(control => control.update(canvas, scale, paused))
   score.update(scale)
 
   if (!rocks.length) {
@@ -246,5 +305,6 @@ function draw () {
   bullets.forEach(bullet => bullet.draw(context))
   rocks.forEach(rock => rock.draw(context))
   player.draw(context)
+  controls.forEach(control => control.draw(context))
   score.draw(context)
 }

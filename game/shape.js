@@ -140,7 +140,7 @@ class Circle extends Shape {
       context.fillStyle = this.color
       context.beginPath()
 
-      context.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
+      context.arc(this.x, this.y, this.scaled(this.radius), 0, Math.PI * 2)
 
       context.closePath()
       context.fill()
@@ -301,4 +301,4 @@ class Polygon extends Shape {
   }
 }
 
-export { CIRCLE, POLYGON, Point, Circle, Polygon }
+export { CIRCLE, POLYGON, Point, Shape, Circle, Polygon }
