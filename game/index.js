@@ -171,6 +171,7 @@ function start () {
   startButtons.style.visibility = HIDDEN
   scale = canvas.width / CANVAS_MAX_WIDTH
   player = Polygon.createPlayer(canvas, scale)
+
   controls.push(new Circle(canvas.width - Shape.scaled(150, scale), canvas.height - Shape.scaled(150, scale), 20))
   controls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(150, scale), 20))
   controls.push(new Circle(canvas.width - Shape.scaled(50, scale), canvas.height - Shape.scaled(150, scale), 20))
