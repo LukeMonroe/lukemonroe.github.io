@@ -72,12 +72,12 @@ let playerDown = false
 
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
-window.addEventListener('mousedown', event => { down = true; a(event) })
-window.addEventListener('touchstart', event => { down = true; a(event) })
+window.addEventListener('mousedown', event => { down = true; a(event, 'm') })
+window.addEventListener('touchstart', event => { down = true; a(event, 'p') })
 window.addEventListener('mouseup', () => { down = false; playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
 window.addEventListener('touchend', () => { down = false; playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
 
-function a (event) {
+function a (event, b) {
   playerLeft = false
   playerRight = false
   playerUp = false
@@ -85,8 +85,15 @@ function a (event) {
 
   if (controls.length > 0 && down) {
     const r = canvas.getBoundingClientRect()
-    const x = event.clientX - r.left
-    const y = event.clientY - r.top
+    let x = 0
+    let y = 0
+    if (b === 'm') {
+      x = event.clientX - r.left
+      y = event.clientY - r.top
+    } else {
+      x = event.touches[0].clientX - r.left
+      y = event.touches[0].clientY - r.top
+    }
 
     let count = 0
     for (let i = 0; i < controls.length; i++) {
