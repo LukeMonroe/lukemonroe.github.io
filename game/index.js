@@ -73,6 +73,8 @@ resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
 // window.addEventListener('mousedown', event => { mouseControls(event) })
 window.addEventListener('touchstart', event => { touchControls(event) })
+window.addEventListener('touchend', () => { playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
+window.addEventListener('touchcancel', () => { playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
 
 function mouseControls (event) {
   if (controls.length > 0) {
@@ -146,24 +148,19 @@ function touchControls (event) {
         const dist = Point.getDistance(x - controls[i].x, y - controls[i].y)
         if (dist < Shape.scaled(controls[i].radius, scale)) {
           if (i === 0) {
-            playerUp = !playerUp
+            playerUp = true
             playerDown = false
-            break
           } else if (i === 1) {
-            playerLeft = !playerLeft
+            playerLeft = true
             playerRight = false
-            break
           } else if (i === 2) {
-            playerRight = !playerRight
+            playerRight = true
             playerLeft = false
-            break
           } else if (i === 3) {
-            playerDown = !playerDown
+            playerDown = true
             playerUp = false
-            break
           } else if (i === 4) {
             makeBullet = true
-            break
           }
         }
       }
@@ -243,11 +240,11 @@ function start () {
   scale = canvas.width / CANVAS_MAX_WIDTH
   player = Player.create(canvas, scale)
 
-  controls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(300, scale), 60))
-  controls.push(new Circle(canvas.width - Shape.scaled(300, scale), canvas.height - Shape.scaled(200, scale), 60))
-  controls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(200, scale), 60))
-  controls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 60))
-  controls.push(new Circle(Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 60))
+  controls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(300, scale), 100))
+  controls.push(new Circle(canvas.width - Shape.scaled(300, scale), canvas.height - Shape.scaled(200, scale), 100))
+  controls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(200, scale), 100))
+  controls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 100))
+  controls.push(new Circle(Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 90))
   controls.forEach(control => { control.color = 'rgba(255, 255, 255, 0.1)' })
   setGameInterval()
 }
