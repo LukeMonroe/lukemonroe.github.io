@@ -305,12 +305,12 @@ class Player extends Polygon {
     this.color = this.color === DARK_GREY ? GHOST_WHITE : DARK_GREY
   }
 
-  counterclockwise () {
+  rotateLeft () {
     this.angle -= 0.07
     this.rotation -= 0.07
   }
 
-  clockwise () {
+  rotateRight () {
     this.angle += 0.07
     this.rotation += 0.07
   }
