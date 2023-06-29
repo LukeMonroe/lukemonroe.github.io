@@ -73,9 +73,9 @@ let playerDown = false
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
 window.addEventListener('mousedown', event => { down = true; a(event) })
-window.addEventListener('touchdown', event => { down = true; a(event) })
+window.addEventListener('touchstart', event => { down = true; a(event) })
 window.addEventListener('mouseup', () => { down = false; playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
-window.addEventListener('touchup', () => { down = false; playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
+window.addEventListener('touchend', () => { down = false; playerLeft = false; playerRight = false; playerUp = false; playerDown = false })
 
 function a (event) {
   playerLeft = false
