@@ -76,6 +76,8 @@ window.addEventListener('touchstart', event => { touchControls(event) })
 
 function mouseControls (event) {
   if (controls.length > 0) {
+    event.preventDefault()
+
     const r = canvas.getBoundingClientRect()
     const x = event.clientX - r.left
     const y = event.clientY - r.top
@@ -131,6 +133,8 @@ function mouseControls (event) {
 
 function touchControls (event) {
   if (controls.length > 0) {
+    event.preventDefault()
+
     const r = canvas.getBoundingClientRect()
     for (let t = 0; t < event.touches.length; t++) {
       const x = event.touches[t].clientX - r.left
