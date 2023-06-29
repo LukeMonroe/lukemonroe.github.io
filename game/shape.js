@@ -306,21 +306,27 @@ class Player extends Polygon {
   }
 
   rotateLeft () {
-    this.angle -= 0.07
-    this.rotation -= 0.07
+    // this.angle -= 0.07
+    // this.rotation -= 0.07
+    this.angle -= 0.04
+    this.rotation -= 0.04
   }
 
   rotateRight () {
-    this.angle += 0.07
-    this.rotation += 0.07
+    // this.angle += 0.07
+    // this.rotation += 0.07
+    this.angle += 0.04
+    this.rotation += 0.04
   }
 
   forward () {
-    this.speed = 4
+    // this.speed = 4
+    this.speed = 3
   }
 
   backward () {
-    this.speed = -4
+    // this.speed = -4
+    this.speed = -3
   }
 
   reset (canvas, scale) {

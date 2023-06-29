@@ -346,8 +346,8 @@ function collisions () {
 
 function update () {
   player.speed = 0
-  if (keys.arrowLeft() || keys.lowerA() || playerLeft) { player.counterclockwise() }
-  if (keys.arrowRight() || keys.lowerD() || playerRight) { player.clockwise() }
+  if (keys.arrowLeft() || keys.lowerA() || playerLeft) { player.rotateLeft() }
+  if (keys.arrowRight() || keys.lowerD() || playerRight) { player.rotateRight() }
   if (keys.arrowDown() || keys.lowerS() || playerDown) { player.backward() }
   if (keys.arrowUp() || keys.lowerW() || playerUp) { player.forward() }
   if (keys.space()) { bullets.push(Polygon.createBullet(player)) }
