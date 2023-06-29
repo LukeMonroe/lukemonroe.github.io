@@ -134,11 +134,14 @@ function mouseControls (event) {
 function touchControls (event) {
   if (controls.length > 0) {
     event.preventDefault()
+    console.log('touchstart')
 
     const r = canvas.getBoundingClientRect()
-    for (let t = 0; t < event.touches.length; t++) {
-      const x = event.touches[t].clientX - r.left
-      const y = event.touches[t].clientY - r.top
+    let makeBullet = false
+    const touches = event.changedTouches
+    for (let t = 0; t < touches.length; t++) {
+      const x = touches[t].clientX - r.left
+      const y = touches[t].clientY - r.top
 
       for (let i = 0; i < controls.length; i++) {
         const dist = Point.getDistance(x - controls[i].x, y - controls[i].y)
@@ -160,32 +163,35 @@ function touchControls (event) {
             playerUp = false
             break
           } else if (i === 4) {
-            bullets.push(Polygon.createBullet(player))
+            makeBullet = true
             break
           }
         }
       }
+    }
 
-      if (playerUp) {
-        controls[0].color = 'rgba(255, 255, 255, 0.3)'
-      } else {
-        controls[0].color = 'rgba(255, 255, 255, 0.1)'
-      }
-      if (playerLeft) {
-        controls[1].color = 'rgba(255, 255, 255, 0.3)'
-      } else {
-        controls[1].color = 'rgba(255, 255, 255, 0.1)'
-      }
-      if (playerRight) {
-        controls[2].color = 'rgba(255, 255, 255, 0.3)'
-      } else {
-        controls[2].color = 'rgba(255, 255, 255, 0.1)'
-      }
-      if (playerDown) {
-        controls[3].color = 'rgba(255, 255, 255, 0.3)'
-      } else {
-        controls[3].color = 'rgba(255, 255, 255, 0.1)'
-      }
+    if (playerUp) {
+      controls[0].color = 'rgba(255, 255, 255, 0.3)'
+    } else {
+      controls[0].color = 'rgba(255, 255, 255, 0.1)'
+    }
+    if (playerLeft) {
+      controls[1].color = 'rgba(255, 255, 255, 0.3)'
+    } else {
+      controls[1].color = 'rgba(255, 255, 255, 0.1)'
+    }
+    if (playerRight) {
+      controls[2].color = 'rgba(255, 255, 255, 0.3)'
+    } else {
+      controls[2].color = 'rgba(255, 255, 255, 0.1)'
+    }
+    if (playerDown) {
+      controls[3].color = 'rgba(255, 255, 255, 0.3)'
+    } else {
+      controls[3].color = 'rgba(255, 255, 255, 0.1)'
+    }
+    if (makeBullet) {
+      bullets.push(Polygon.createBullet(player))
     }
   }
 }
