@@ -1,0 +1,69 @@
+body {
+    background-color:  ghostwhite;
+    color: rosybrown;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    padding: 50px 50px;
+    margin: 0px auto;
+}
+
+h2 {
+    color: rosybrown;
+    text-align: center;
+    margin: auto;
+}
+
+a {
+    background-color: rosybrown;
+    color: ghostwhite;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 5px;
+    min-width: 100px;
+    padding: 10px;
+    margin: 10px;
+    transition: ease-out 0.3s;
+}
+
+a:link {
+    background-color: rosybrown;
+}
+
+a:visited {
+    background-color: thistle;
+}
+
+a:hover {
+    box-shadow: 10px 0px 0px 0px orange;
+}
+
+hr {
+    border: 1px solid rosybrown;
+    width: 98%;
+    margin: 0px auto;
+}
+
+div.categories {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 25px 50px 100px 50px;
+}
+
+div.links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 25px 50px 100px 50px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px 50px;
+}
