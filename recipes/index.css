@@ -1,31 +1,37 @@
+:root {
+    --primary-color: black;
+    --secondary-color: white;
+    --tertiary-color: slategray;
+    font-family: monospace;
+}
+
 body {
-    background-color:  white;
-    color: palegoldenrod;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    background-color:  var(--secondary-color);
+    color: var(--primary-color);
     margin: auto;
 }
 
 h1 {
-    background-color: palegoldenrod;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
     text-align: center;
     padding: 50px 50px;
     margin-top: 0px;
 }
 
 h2 {
-    color: palegoldenrod;
+    color: var(--primary-color);
     text-align: center;
     margin: auto;
 }
 
 h3 {
-    color: palegoldenrod;
+    color: var(--primary-color);
     text-align: center;
 }
 
 p {
-    color: slategray;
+    color: var(--tertiary-color);
     text-align: center;
     max-width: 1000px;
     margin: auto;
@@ -33,7 +39,7 @@ p {
 }
 
 ul {
-    color: slategray;
+    color: var(--tertiary-color);
     padding-left: 20px;
 }
 
@@ -94,8 +100,8 @@ div.how-to-make {
 }
 
 footer {
-    background-color: palegoldenrod;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
     text-align: center;
     padding: 25px 50px;
 }
