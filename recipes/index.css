@@ -8,7 +8,7 @@
 body {
     background-color:  var(--background-color);
     color: var(--random-color);
-    margin: 0px 0px;
+    margin: 0px;
 }
 
 a {
