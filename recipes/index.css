@@ -37,10 +37,11 @@ p {
 
 ul {
     color: var(--text-color);
+    padding-left: 20px;
 }
 
 li {
-    padding: 5px;
+    padding: 5px 0px;
 }
 
 header {
@@ -59,21 +60,17 @@ footer {
     margin-top: 100px;
 }
 
-div.list-number-text {
+div.li {
     display: flex;
-    flex-direction: row;
-    border: 1px solid green;
 }
 
-div.list-number {
+div.li .number {
     display: inline-block;
     min-width: 50px;
-    border: 1px solid green;
 }
 
-div.list-text {
+div.li .text {
     display: inline-block;
-    border: 1px solid green;
 }
 
 div.flex-row {
