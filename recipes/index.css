@@ -21,7 +21,7 @@ h1 {
 
 h2 {
     text-align: center;
-    margin: auto;
+    margin-bottom: 0px;
 }
 
 h3 {
@@ -32,64 +32,49 @@ p {
     color: var(--text-color);
     text-align: center;
     max-width: 1000px;
-    margin: auto;
-    margin-bottom: 20px;
+    margin: 0px 0px 20px;
 }
 
 ul {
     color: var(--text-color);
-    padding-left: 20px;
 }
 
 li {
-    padding: 5px 0px;
+    padding: 5px;
 }
 
 div.list-number-text {
     display: flex;
     flex-direction: row;
+    border: 1px solid green;
 }
 
 div.list-number {
     display: inline-block;
     min-width: 50px;
+    border: 1px solid green;
 }
 
 div.list-text {
     display: inline-block;
+    border: 1px solid green;
 }
 
-div.ingredients-and-utensils {
+div.flex-row {
     display: flex;
-    flex-direction: row;
     justify-content: center;
     align-items: flex-start;
+    width: fit-content;
+    margin: 0px auto;
 }
 
 @media screen and (max-width: 500px) {
-    div.ingredients-and-utensils {
+    div.flex-row {
         flex-direction: column;
-        align-items: center;
     }
 }
 
-div.ingredients {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 25px 50px;
-}
-
-div.utensils {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 25px 50px;
-}
-
-div.how-to-make {
+div.flex-column {
     display: flex;
     flex-direction: column;
     justify-content: center;
