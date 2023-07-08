@@ -1,37 +1,35 @@
 :root {
-    --primary-color: black;
-    --secondary-color: white;
-    --tertiary-color: slategray;
+    --background-color: white;
+    --random-color: black;
+    --text-color: black;
     font-family: monospace;
 }
 
 body {
-    background-color:  var(--secondary-color);
-    color: var(--primary-color);
+    background-color:  var(--background-color);
+    color: var(--random-color);
     margin: auto;
 }
 
 h1 {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
+    background-color: var(--random-color);
+    color: var(--background-color);
     text-align: center;
     padding: 50px 50px;
     margin-top: 0px;
 }
 
 h2 {
-    color: var(--primary-color);
     text-align: center;
     margin: auto;
 }
 
 h3 {
-    color: var(--primary-color);
     text-align: center;
 }
 
 p {
-    color: var(--tertiary-color);
+    color: var(--text-color);
     text-align: center;
     max-width: 1000px;
     margin: auto;
@@ -39,7 +37,7 @@ p {
 }
 
 ul {
-    color: var(--tertiary-color);
+    color: var(--text-color);
     padding-left: 20px;
 }
 
@@ -80,7 +78,7 @@ div.ingredients {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 25px 25px;
+    margin: 25px 50px;
 }
 
 div.utensils {
@@ -88,7 +86,7 @@ div.utensils {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 25px 25px;
+    margin: 25px 50px;
 }
 
 div.how-to-make {
@@ -96,12 +94,13 @@ div.how-to-make {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 25px 50px 100px 50px;
+    margin: 25px 50px;
 }
 
 footer {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
+    background-color: var(--random-color);
+    color: var(--background-color);
     text-align: center;
     padding: 25px 50px;
+    margin-top: 100px;
 }
