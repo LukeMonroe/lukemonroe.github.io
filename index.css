@@ -62,9 +62,13 @@ button.theme {
     color: var(--background-color);
     font-family: monospace;
     border: none;
-    border-radius: 50px;
-    width: 50px;
-    height: 50px;
+    border-radius: 5px;
+    width: 100px;
+    padding: 20px;
+}
+
+button.theme:hover {
+    animation: jiggle 0.20s 1;
 }
 
 div.categories {
