@@ -2,9 +2,31 @@
 const BLACK = 'black'
 const WHITE = 'white'
 
+const theme = localStorage.getItem('theme')
+
 pageColors()
 
 function pageColors () {
+  let backgroundColor = WHITE
+  let textColor = BLACK
+
+  let color = randomColor()
+  if (theme === 'light') {
+    while (color.grayscale > 150) { color = randomColor() }
+  } else if (theme === 'dark') {
+    while (color.grayscale <= 150) { color = randomColor() }
+    backgroundColor = BLACK
+    textColor = WHITE
+  } else {
+    while (color.grayscale > 150) { color = randomColor() }
+  }
+
+  document.documentElement.style.setProperty('--random-color', `hsl(${color.h}, ${color.s}%, ${color.l}%)`)
+  document.documentElement.style.setProperty('--background-color', backgroundColor)
+  document.documentElement.style.setProperty('--text-color', textColor)
+}
+
+function randomColor () {
   const h = Math.round(Math.random() * 359)
   const s = Math.round(Math.random() * 100)
   const l = Math.round(Math.random() * 100)
@@ -16,16 +38,7 @@ function pageColors () {
   console.log(`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`)
   console.log(grayscale)
 
-  let backgroundColor = WHITE
-  let textColor = BLACK
-  if (grayscale > 150) {
-    backgroundColor = BLACK
-    textColor = WHITE
-  }
-
-  document.documentElement.style.setProperty('--random-color', `hsl(${h}, ${s}%, ${l}%)`)
-  document.documentElement.style.setProperty('--background-color', backgroundColor)
-  document.documentElement.style.setProperty('--text-color', textColor)
+  return { h, s, l, rgb, grayscale }
 }
 
 function hslToRGB (h, s, l) {
