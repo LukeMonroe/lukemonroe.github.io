@@ -25,10 +25,7 @@ a {
     border-radius: 5px;
     width: 80%;
     padding: 10px;
-}
-
-a::selection {
-    background-color: transparent;
+    -webkit-tap-highlight-color: transparent;
 }
 
 a:link {
