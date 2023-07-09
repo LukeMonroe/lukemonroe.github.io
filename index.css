@@ -27,6 +27,10 @@ a {
     padding: 10px;
 }
 
+a::selection {
+    background-color: transparent;
+}
+
 a:link {
     background-color: rosybrown;
 }
