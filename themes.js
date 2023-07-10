@@ -40,8 +40,8 @@ class Themes {
     if (this.themeButton !== null) {
       this.themeButton.innerText = theme
     }
-    const a = this.light(theme) ? COLOR_A : Colors.darkenHSL(COLOR_A, 40)
-    const b = this.light(theme) ? COLOR_B : Colors.darkenHSL(COLOR_B, 40)
+    const a = this.light(theme) ? COLOR_A : Colors.darkenHSL(COLOR_A, 50)
+    const b = this.light(theme) ? COLOR_B : Colors.darkenHSL(COLOR_B, 50)
     document.documentElement.style.setProperty('--background-color', this.backgroundColor(theme))
     document.documentElement.style.setProperty('--text-color', this.textColor(theme))
     document.documentElement.style.setProperty('--link-color', a)
