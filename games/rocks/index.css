@@ -1,12 +1,21 @@
+:root {
+    --background-color: ghostwhite;
+    --text-color: black;
+}
+
+::backdrop {
+  background-color: var(--background-color);
+}
+
 body {
-  background-color: black;
+  background-color: var(--background-color);
 }
 
 canvas {
   position: relative;
   display: block;
-  background-color: black;
-  border: 1px solid white;
+  background-color: var(--background-color);
+  border: 1px solid var(--text-color);
   left: 50%;
   transform: translate(-50%);
 }
@@ -16,7 +25,7 @@ button {
   display: block;
   cursor: pointer;
   background-color:darkgrey;
-  color: white;
+  color: var(--text-color);
   border: none;
   font-size: 18px;
   font-family: monospace;

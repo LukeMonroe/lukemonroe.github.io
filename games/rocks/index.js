@@ -2,6 +2,7 @@ import { Collision } from './collision.js'
 import { Point, Shape, Circle, Polygon, Player } from './shape.js'
 import { Score } from './score.js'
 import { Keys } from './keys.js'
+import { RocksThemes } from './rocks-themes.js'
 
 const CLICK = 'click'
 const CANVAS = 'canvas'
@@ -54,8 +55,11 @@ document.body.appendChild(startButtons)
 document.body.appendChild(endButtons)
 document.body.appendChild(resumeButton)
 
+const themes = new RocksThemes()
+themes.setTheme()
+
 let player = null
-const score = new Score()
+const score = new Score(themes)
 const keys = new Keys()
 let touchControls = []
 let bullets = []
@@ -118,10 +122,10 @@ function handleTouch (event, type) {
       }
     }
 
-    touchControls[0].color = touchUp ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)'
-    touchControls[1].color = touchUp ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)'
-    touchControls[2].color = touchUp ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)'
-    touchControls[3].color = touchUp ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)'
+    touchControls[0].color = touchUp ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
+    touchControls[1].color = touchUp ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
+    touchControls[2].color = touchUp ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
+    touchControls[3].color = touchUp ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
     if (touchBullet) { bullets.push(Polygon.createBullet(player)) }
   }
 }
@@ -172,14 +176,14 @@ function start () {
   document.body.requestFullscreen()
   startButtons.style.visibility = HIDDEN
   scale = canvas.width / CANVAS_MAX_WIDTH
-  player = Player.create(canvas, scale)
+  player = Player.create(canvas, scale, themes)
 
   touchControls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(300, scale), 100))
   touchControls.push(new Circle(canvas.width - Shape.scaled(300, scale), canvas.height - Shape.scaled(200, scale), 100))
   touchControls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(200, scale), 100))
   touchControls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 100))
   touchControls.push(new Circle(Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 90))
-  touchControls.forEach(touchControl => { touchControl.color = 'rgba(255, 255, 255, 0.1)' })
+  touchControls.forEach(touchControl => { touchControl.color = 'rgba(150, 150, 150, 0.3)' })
   setGameInterval()
 }
 
@@ -203,7 +207,7 @@ function restart () {
   clearLifeInterval()
   endButtons.style.visibility = HIDDEN
   scale = canvas.width / CANVAS_MAX_WIDTH
-  player.reset(canvas, scale)
+  player.reset(canvas, scale, themes)
   score.reset()
   keys.reset()
   touchControls = []
@@ -212,7 +216,7 @@ function restart () {
   touchControls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(200, scale), 100))
   touchControls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 100))
   touchControls.push(new Circle(Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 90))
-  touchControls.forEach(touchControl => { touchControl.color = 'rgba(255, 255, 255, 0.1)' })
+  touchControls.forEach(touchControl => { touchControl.color = 'rgba(150, 150, 150, 0.3)' })
   bullets = []
   rocks = []
   paused = false

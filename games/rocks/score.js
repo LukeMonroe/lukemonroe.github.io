@@ -10,6 +10,15 @@ class Score {
   #level = 0
   #lives = 3
   #scale = 1
+  #themes = null
+  #theme = null
+  #textColor = null
+
+  constructor (themes) {
+    this.#themes = themes
+    this.#theme = themes.getTheme()
+    this.#textColor = this.#themes.textColor(this.#theme)
+  }
 
   #scaled (number) {
     return number * this.#scale
@@ -22,7 +31,7 @@ class Score {
   draw (context) {
     context.save()
     context.font = `${this.#scaled(FONT_SIZE)}px monospace`
-    context.fillStyle = 'white'
+    context.fillStyle = this.#textColor
 
     const scaledX = this.#scaled(X)
     context.fillText(`Score: ${this.#score}`, scaledX, this.#scaled(SCORE_Y))

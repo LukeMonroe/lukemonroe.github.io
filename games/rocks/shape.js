@@ -6,7 +6,6 @@ const ROCK = 'rock'
 const SHARD = 'shard'
 const SEA_GREEN = 'seagreen'
 const DARK_GREY = 'darkgrey'
-const GHOST_WHITE = 'ghostwhite'
 const SKY_BLUE = 'skyblue'
 const FIRE_BRICK = 'firebrick'
 const TOMATO = 'tomato'
@@ -271,10 +270,18 @@ class Polygon extends Shape {
 }
 
 class Player extends Polygon {
-  constructor (canvas, scale) {
+  #themes = null
+  #theme = null
+  #textColor = null
+
+  constructor (canvas, scale, themes) {
     super(canvas.width / 2, canvas.height / 2, 30, 5)
     this.scale = scale
     this.name = PLAYER
+
+    this.#themes = themes
+    this.#theme = themes.getTheme()
+    this.#textColor = this.#themes.textColor(this.#theme)
   }
 
   draw (context) {
@@ -302,7 +309,7 @@ class Player extends Polygon {
   }
 
   alternateColor () {
-    this.color = this.color === DARK_GREY ? GHOST_WHITE : DARK_GREY
+    this.color = this.color === DARK_GREY ? this.#textColor : DARK_GREY
   }
 
   rotateLeft () {
@@ -329,8 +336,8 @@ class Player extends Polygon {
     this.speed = -3
   }
 
-  reset (canvas, scale) {
-    const player = new Player(canvas, scale)
+  reset (canvas, scale, themes) {
+    const player = new Player(canvas, scale, themes)
     this.x = player.x
     this.y = player.y
     this.radius = player.radius
@@ -346,10 +353,14 @@ class Player extends Polygon {
     this.speed = player.speed
     this.show = player.show
     this.color = player.color
+
+    this.#themes = player.#themes
+    this.#theme = player.#theme
+    this.#textColor = player.#textColor
   }
 
-  static create (canvas, scale) {
-    return new Player(canvas, scale)
+  static create (canvas, scale, themes) {
+    return new Player(canvas, scale, themes)
   }
 }
 
