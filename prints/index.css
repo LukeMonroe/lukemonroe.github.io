@@ -1,27 +1,21 @@
+:root {
+    --gs: ghostwhite;
+    --ge: black;
+    --text-color: black;
+}
+
 body {
-    background-image: linear-gradient(to right, #6b4040, #440707);
-    color: white;
+    background-image: linear-gradient(to right, var(--gs), var(--ge));
+    color: var(--text-color);
     font-family: monospace;
-    margin: auto;
+    margin: 0px;
 }
 
 h1 {
-    text-shadow: 2px 2px 2px black;
-    text-decoration: underline wavy 1px;
     text-align: center;
-    padding: 50px 50px;
-    margin-top: 0px;
 }
 
 h2 {
-    text-shadow: 2px 2px 2px black;
-    text-decoration: underline wavy 1px;
-    text-align: center;
-}
-
-h3 {
-    text-shadow: 2px 2px 2px black;
-    text-decoration: underline wavy 1px;
     text-align: center;
 }
 
@@ -46,4 +40,14 @@ div.description {
     justify-content: center;
     align-items: center;
     margin: 25px 50px 100px 50px;
+}
+
+header {
+    text-align: center;
+    padding: 50px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px 50px;
 }
