@@ -1,5 +1,3 @@
-import { Colors } from './colors.js'
-
 const CLICK = 'click'
 const THEME = 'theme'
 const LIGHT = 'light'
@@ -11,50 +9,57 @@ const BLACK = 'black'
 const GHOST_WHITE = 'ghostwhite'
 
 class Themes {
+  themeButton = null
   themes = new Map([
     [LIGHT, new Map([[BACKGROUND_COLOR, GHOST_WHITE], [TEXT_COLOR, BLACK], [NEXT, DARK]])],
     [DARK, new Map([[BACKGROUND_COLOR, BLACK], [TEXT_COLOR, GHOST_WHITE], [NEXT, LIGHT]])]
   ])
 
-  constructor () {
-    if (document.URL.match(/lukemonroe.github.io\/index.html/i)) {
-      this.themeButton = document.getElementById(THEME)
-      this.themeButton.addEventListener(CLICK, () => this.nextTheme())
-    }
-  }
-
   getTheme () {
     const theme = localStorage.getItem(THEME)
-
     return this.themes.has(theme) ? theme : LIGHT
   }
 
   setTheme () {
-    this.changeTheme(this.getTheme())
-  }
-
-  changeTheme (theme) {
+    const theme = this.getTheme()
     localStorage.setItem(THEME, theme)
-
-    if (document.URL.match(/lukemonroe.github.io\/index.html/i)) {
-      this.themeButton.innerText = theme
-      document.documentElement.style.setProperty('--background-color', this.themes.get(theme).get(BACKGROUND_COLOR))
-    } else if (document.URL.match(/lukemonroe.github.io\/recipes\/.*\/index.html/i)) {
-      let hsl = Colors.randomHSL()
-      if (theme === LIGHT) {
-        while (hsl.grayscale > 150) { hsl = Colors.randomHSL() }
-      } else {
-        while (hsl.grayscale <= 150) { hsl = Colors.randomHSL() }
-      }
-
-      document.documentElement.style.setProperty('--random-color', `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`)
-      document.documentElement.style.setProperty('--background-color', this.themes.get(theme).get(BACKGROUND_COLOR))
-      document.documentElement.style.setProperty('--text-color', this.themes.get(theme).get(TEXT_COLOR))
-    }
+    this.changeTheme(theme)
   }
 
   nextTheme () {
-    this.changeTheme(this.themes.get(this.getTheme()).get(NEXT))
+    const theme = this.themes.get(this.getTheme()).get(NEXT)
+    localStorage.setItem(THEME, theme)
+    this.changeTheme(theme)
+  }
+
+  changeTheme (theme) {
+    if (this.themeButton !== null) {
+      this.themeButton.innerText = theme
+    }
+    document.documentElement.style.setProperty('--background-color', this.backgroundColor(theme))
+  }
+
+  setThemeButton () {
+    this.themeButton = document.getElementById(THEME)
+    if (this.themeButton !== null) {
+      this.themeButton.addEventListener(CLICK, () => this.nextTheme())
+    }
+  }
+
+  light (theme) {
+    return theme === LIGHT
+  }
+
+  dark (theme) {
+    return theme === DARK
+  }
+
+  backgroundColor (theme) {
+    return this.themes.get(theme).get(BACKGROUND_COLOR)
+  }
+
+  textColor (theme) {
+    return this.themes.get(theme).get(TEXT_COLOR)
   }
 }
 

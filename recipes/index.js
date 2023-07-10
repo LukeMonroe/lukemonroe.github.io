@@ -1,4 +1,4 @@
-import { Themes } from '../themes.js'
+import { RecipesThemes } from './recipes-themes.js'
 
-const themes = new Themes()
-themes.setTheme()
+const recipesThemes = new RecipesThemes()
+recipesThemes.setTheme()
