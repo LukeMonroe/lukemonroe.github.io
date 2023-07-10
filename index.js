@@ -1,41 +1,35 @@
 
-let theme = null
+const CLICK = 'click'
+const THEME = 'theme'
+const LIGHT = 'light'
+const DARK = 'dark'
+const COLOR = 'color'
+const NEXT = 'next'
+const BLACK = 'black'
+const GHOST_WHITE = 'ghostwhite'
 
-const themeButton = document.getElementById('theme')
-themeButton.addEventListener('click', changeTheme)
+const themes = new Map([
+  [LIGHT, new Map([[COLOR, GHOST_WHITE], [NEXT, DARK]])],
+  [DARK, new Map([[COLOR, BLACK], [NEXT, LIGHT]])]
+])
 
-setTheme()
+const themeButton = document.getElementById(THEME)
+themeButton.addEventListener(CLICK, nextTheme)
 
-function setTheme () {
-  theme = localStorage.getItem('theme')
-  if (theme === 'light') {
-    lightTheme()
-  } else if (theme === 'dark') {
-    darkTheme()
-  } else {
-    lightTheme()
-  }
+setTheme(getTheme())
+
+function getTheme () {
+  const theme = localStorage.getItem(THEME)
+
+  return themes.has(theme) ? theme : LIGHT
 }
 
-function changeTheme () {
-  theme = localStorage.getItem('theme')
-  if (theme === 'light') {
-    darkTheme()
-  } else if (theme === 'dark') {
-    lightTheme()
-  } else {
-    lightTheme()
-  }
+function setTheme (theme) {
+  localStorage.setItem(THEME, theme)
+  themeButton.innerText = theme
+  document.documentElement.style.setProperty('--background-color', themes.get(theme).get(COLOR))
 }
 
-function darkTheme () {
-  localStorage.setItem('theme', 'dark')
-  themeButton.textContent = 'dark'
-  document.documentElement.style.setProperty('--background-color', 'black')
-}
-
-function lightTheme () {
-  localStorage.setItem('theme', 'light')
-  themeButton.textContent = 'light'
-  document.documentElement.style.setProperty('--background-color', 'ghostwhite')
+function nextTheme () {
+  setTheme(themes.get(getTheme()).get(NEXT))
 }
