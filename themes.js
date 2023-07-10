@@ -1,3 +1,5 @@
+import { Colors } from './colors.js'
+
 const CLICK = 'click'
 const THEME = 'theme'
 const LIGHT = 'light'
@@ -7,6 +9,8 @@ const TEXT_COLOR = 'textColor'
 const NEXT = 'next'
 const BLACK = 'black'
 const GHOST_WHITE = 'ghostwhite'
+const COLOR_A = 'hsl(300, 25%, 80%)'
+const COLOR_B = 'hsl(260, 25%, 75%)'
 
 class Themes {
   themeButton = null
@@ -36,7 +40,12 @@ class Themes {
     if (this.themeButton !== null) {
       this.themeButton.innerText = theme
     }
+    const a = this.light(theme) ? COLOR_A : Colors.darkenHSL(COLOR_A, 10)
+    const b = this.light(theme) ? COLOR_B : Colors.darkenHSL(COLOR_B, 10)
     document.documentElement.style.setProperty('--background-color', this.backgroundColor(theme))
+    document.documentElement.style.setProperty('--text-color', this.textColor(theme))
+    document.documentElement.style.setProperty('--link-color', a)
+    document.documentElement.style.setProperty('--visited-color', b)
   }
 
   setThemeButton () {

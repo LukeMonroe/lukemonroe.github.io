@@ -49,6 +49,24 @@ class Colors {
     return { r, g, b }
   }
 
+  static darkenHSL (hsl, darkness) {
+    let darkHSL = hsl.trim().replaceAll(' ', '')
+    darkHSL = darkHSL.match(/hsl\(([\d]{1,3}),([\d]{1,3})%,([\d]{1,3})%\)/i)
+
+    if (darkHSL === null || darkHSL.length !== 4) {
+      return hsl
+    }
+
+    const h = Number(darkHSL[1])
+    const s = Number(darkHSL[2])
+    let l = Number(darkHSL[3])
+
+    l -= darkness
+    l = l > 0 ? l : 0
+
+    return `hsl(${h}, ${s}%, ${l}%)`
+  }
+
   static formatHSL (color) {
     return `hsl(${color.hsl.h}, ${color.hsl.s}%, ${color.hsl.l}%)`
   }
