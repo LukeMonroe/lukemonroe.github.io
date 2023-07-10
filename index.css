@@ -18,7 +18,6 @@ h2 {
 }
 
 a {
-    background-color: rosybrown;
     color: var(--background-color);
     text-decoration: none;
     text-align: center;

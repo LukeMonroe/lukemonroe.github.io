@@ -13,6 +13,7 @@ body {
 
 a {
     color: var(--background-color);
+    -webkit-tap-highlight-color: transparent;
 }
 
 h1 {
