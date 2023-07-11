@@ -6,10 +6,6 @@
     font-family: monospace;
 }
 
-::backdrop {
-    background-color: var(--background-color);
-}
-
 body {
     background-color: var(--background-color);
     color: var(--color);
@@ -42,6 +38,10 @@ img {
     border-radius: 25px;
     width: 80%;
     margin: 0px auto
+}
+
+img::backdrop {
+    background-color: var(--background-color);
 }
 
 div.image {
