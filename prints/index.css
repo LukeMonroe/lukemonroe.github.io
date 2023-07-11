@@ -6,15 +6,24 @@
     font-family: monospace;
 }
 
+::backdrop {
+    background-color: var(--background-color);
+}
+
 body {
     background-color: var(--background-color);
-    background-image: linear-gradient(to bottom right, var(--gradient-color-01), var(--gradient-color-02));
     color: var(--color);
     margin: 0px;
 }
 
 h1 {
+    background-image: linear-gradient(90deg, var(--gradient-color-01), var(--gradient-color-02));
+    border-radius: 25px;
     text-align: center;
+    width: 80%;
+    max-width: 800px;
+    padding: 50px 0px;
+    margin: 0px auto;
 }
 
 h2 {
@@ -32,7 +41,16 @@ img {
     display: block;
     border-radius: 25px;
     width: 80%;
-    max-width: 600px;
+    margin: 0px auto
+}
+
+div.image {
+    display: block;
+    background-image: linear-gradient(90deg, var(--gradient-color-01), var(--gradient-color-02));
+    border-radius: 25px;
+    width: 80%;
+    max-width: 800px;
+    padding: 50px 0px;
     margin: 50px auto
 }
 
@@ -41,15 +59,24 @@ div.description {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 25px 50px 100px 50px;
+    background-image: linear-gradient(90deg, var(--gradient-color-01), var(--gradient-color-02));
+    border-radius: 25px;
+    width: 80%;
+    max-width: 800px;
+    padding: 25px 0px;
+    margin: 50px auto;
 }
 
 header {
-    text-align: center;
-    padding: 50px;
+    padding: 50px 0px 0px;
 }
 
 footer {
+    background-image: linear-gradient(90deg, var(--gradient-color-01), var(--gradient-color-02));
+    border-radius: 25px;
     text-align: center;
-    padding: 25px 50px;
+    width: 80%;
+    max-width: 800px;
+    padding: 25px 0px;
+    margin: 50px auto;
 }
