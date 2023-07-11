@@ -1,13 +1,14 @@
 :root {
-    --gs: ghostwhite;
-    --ge: black;
-    --text-color: black;
+    --background-color: hsl(240, 100%, 99%);
+    --color: black;
+    --gradient-color-01: hsl(240, 100%, 99%);
+    --gradient-color-02: hsl(0, 0%, 50%);
+    font-family: monospace;
 }
 
 body {
-    background-image: linear-gradient(to right, var(--gs), var(--ge));
-    color: var(--text-color);
-    font-family: monospace;
+    background-image: linear-gradient(to right, var(--gradient-color-01), var(--gradient-color-02));
+    color: var(--color);
     margin: 0px;
 }
 

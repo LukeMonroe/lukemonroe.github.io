@@ -1,67 +1,68 @@
 :root {
-    --background-color: ghostwhite;
-    --text-color: black;
+    --background-color: hsl(240, 100%, 99%);
+    --color: hsl(0, 0%, 0%);
+    font-family: monospace;
 }
 
 ::backdrop {
-  background-color: var(--background-color);
+    background-color: var(--background-color);
 }
 
 body {
-  background-color: var(--background-color);
+    background-color: var(--background-color);
 }
 
 canvas {
-  position: relative;
-  display: block;
-  background-color: var(--background-color);
-  border: 1px solid var(--text-color);
-  left: 50%;
-  transform: translate(-50%);
+    position: relative;
+    display: block;
+    background-color: var(--background-color);
+    border: 1px solid var(--color);
+    left: 50%;
+    transform: translate(-50%);
 }
 
 button {
-  position: relative;
-  display: block;
-  cursor: pointer;
-  background-color:darkgrey;
-  color: var(--text-color);
-  border: none;
-  font-size: 18px;
-  font-family: monospace;
-  text-align: center;
-  padding: 15px;
-  width: 250px;
+    position: relative;
+    display: block;
+    cursor: pointer;
+    background-color:darkgrey;
+    color: var(--color);
+    border: none;
+    font-size: 18px;
+    font-family: monospace;
+    text-align: center;
+    padding: 15px;
+    width: 250px;
 }
 
 button.play {
-  background-color: firebrick;
+    background-color: firebrick;
 }
 
 button.pause {
-  background-color: firebrick;
+    background-color: firebrick;
 }
 
 button.resume {
-  position: absolute;
-  background-color: firebrick;
+    position: absolute;
+    background-color: firebrick;
 }
 
 button.again {
-  background-color: tomato;
+    background-color: tomato;
 }
 
 button.quit {
-  background-color: palevioletred;
+    background-color: palevioletred;
 }
 
 div.buttons {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  top: 350px;
-  left: 50%;
-  transform: translate(-50%);
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    top: 350px;
+    left: 50%;
+    transform: translate(-50%);
 }

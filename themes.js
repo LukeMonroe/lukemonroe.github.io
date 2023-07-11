@@ -4,18 +4,13 @@ const CLICK = 'click'
 const THEME = 'theme'
 const LIGHT = 'light'
 const DARK = 'dark'
-const BACKGROUND_COLOR = 'backgroundColor'
-const TEXT_COLOR = 'textColor'
 const NEXT = 'next'
-const BLACK = 'black'
-const GHOST_WHITE = 'ghostwhite'
 
 class Themes {
   loadInitialValues = true
-  themeButton = null
   themes = new Map([
-    [LIGHT, new Map([[BACKGROUND_COLOR, GHOST_WHITE], [TEXT_COLOR, BLACK], [NEXT, DARK]])],
-    [DARK, new Map([[BACKGROUND_COLOR, BLACK], [TEXT_COLOR, GHOST_WHITE], [NEXT, LIGHT]])]
+    [LIGHT, new Map([[NEXT, DARK]])],
+    [DARK, new Map([[NEXT, LIGHT]])]
   ])
 
   getTheme () {
@@ -68,14 +63,6 @@ class Themes {
 
   dark (theme) {
     return theme === DARK
-  }
-
-  backgroundColor (theme) {
-    return this.themes.get(theme).get(BACKGROUND_COLOR)
-  }
-
-  textColor (theme) {
-    return this.themes.get(theme).get(TEXT_COLOR)
   }
 }
 

@@ -3,23 +3,37 @@ import { Colors } from '../colors.js'
 
 class PrintsThemes extends Themes {
   changeTheme (theme) {
-    let color01 = Colors.randomColor()
-    if (this.light(theme)) {
-      while (color01.grayscale <= 150) { color01 = Colors.randomColor() }
-    } else {
-      while (color01.grayscale > 150) { color01 = Colors.randomColor() }
+    if (this.loadInitialValues) {
+      this.backgroundColor00 = window.getComputedStyle(document.documentElement).getPropertyValue('--background-color')
+      this.color00 = window.getComputedStyle(document.documentElement).getPropertyValue('--color')
+      this.gradientColor01 = window.getComputedStyle(document.documentElement).getPropertyValue('--gradient-color-01')
+      this.gradientColor02 = window.getComputedStyle(document.documentElement).getPropertyValue('--gradient-color-02')
+      this.loadInitialValues = false
     }
 
-    let color02 = Colors.randomColor()
+    let randomColor01 = Colors.randomColor()
+    let randomColor02 = Colors.randomColor()
     if (this.light(theme)) {
-      while (color02.grayscale <= 150) { color02 = Colors.randomColor() }
-    } else {
-      while (color02.grayscale > 150) { color02 = Colors.randomColor() }
-    }
+      while (randomColor01.grayscale <= 150) { randomColor01 = Colors.randomColor() }
+      while (randomColor02.grayscale <= 150) { randomColor02 = Colors.randomColor() }
 
-    document.documentElement.style.setProperty('--gs', Colors.formatHSL(color01))
-    document.documentElement.style.setProperty('--ge', Colors.formatHSL(color02))
-    document.documentElement.style.setProperty('--text-color', this.textColor(theme))
+      this.gradientColor01 = Colors.formatHSL(randomColor01)
+      this.gradientColor02 = Colors.formatHSL(randomColor02)
+
+      document.documentElement.style.setProperty('--gradient-color-01', this.gradientColor01)
+      document.documentElement.style.setProperty('--gradient-color-02', this.gradientColor02)
+      document.documentElement.style.setProperty('--color', this.color00)
+    } else {
+      while (randomColor01.grayscale > 150) { randomColor01 = Colors.randomColor() }
+      while (randomColor02.grayscale > 150) { randomColor02 = Colors.randomColor() }
+
+      this.gradientColor01 = Colors.formatHSL(randomColor01)
+      this.gradientColor02 = Colors.formatHSL(randomColor02)
+
+      document.documentElement.style.setProperty('--gradient-color-01', this.gradientColor01)
+      document.documentElement.style.setProperty('--gradient-color-02', this.gradientColor02)
+      document.documentElement.style.setProperty('--color', this.backgroundColor00)
+    }
   }
 }
 
