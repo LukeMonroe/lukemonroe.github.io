@@ -11,7 +11,7 @@ const BLACK = 'black'
 const GHOST_WHITE = 'ghostwhite'
 
 class Themes {
-  #loadInitialValues = true
+  loadInitialValues = true
   themeButton = null
   themes = new Map([
     [LIGHT, new Map([[BACKGROUND_COLOR, GHOST_WHITE], [TEXT_COLOR, BLACK], [NEXT, DARK]])],
@@ -36,7 +36,7 @@ class Themes {
   }
 
   changeTheme (theme) {
-    if (this.#loadInitialValues) {
+    if (this.loadInitialValues) {
       this.themeButton = document.getElementById(THEME)
       this.themeButton.addEventListener(CLICK, () => this.nextTheme())
 
@@ -44,7 +44,7 @@ class Themes {
       this.color00 = window.getComputedStyle(document.documentElement).getPropertyValue('--color')
       this.linkColor01 = window.getComputedStyle(document.documentElement).getPropertyValue('--link-color-01')
       this.linkColor02 = window.getComputedStyle(document.documentElement).getPropertyValue('--link-color-02')
-      this.#loadInitialValues = false
+      this.loadInitialValues = false
     }
 
     this.themeButton.innerText = theme
