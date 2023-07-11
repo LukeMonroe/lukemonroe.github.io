@@ -14,8 +14,8 @@ class PrintsThemes extends Themes {
     let randomColor01 = Colors.randomColor()
     let randomColor02 = Colors.randomColor()
     if (this.light(theme)) {
-      while (randomColor01.grayscale <= 150) { randomColor01 = Colors.randomColor() }
-      while (randomColor02.grayscale <= 150) { randomColor02 = Colors.randomColor() }
+      while (randomColor01.grayscale < 200) { randomColor01 = Colors.randomColor() }
+      while (randomColor02.grayscale < 200) { randomColor02 = Colors.randomColor() }
 
       this.gradientColor01 = Colors.formatHSL(randomColor01)
       this.gradientColor02 = Colors.formatHSL(randomColor02)
@@ -25,8 +25,8 @@ class PrintsThemes extends Themes {
       document.documentElement.style.setProperty('--gradient-color-01', this.gradientColor01)
       document.documentElement.style.setProperty('--gradient-color-02', this.gradientColor02)
     } else {
-      while (randomColor01.grayscale > 150) { randomColor01 = Colors.randomColor() }
-      while (randomColor02.grayscale > 150) { randomColor02 = Colors.randomColor() }
+      while (randomColor01.grayscale > 100) { randomColor01 = Colors.randomColor() }
+      while (randomColor02.grayscale > 100) { randomColor02 = Colors.randomColor() }
 
       this.gradientColor01 = Colors.formatHSL(randomColor01)
       this.gradientColor02 = Colors.formatHSL(randomColor02)
