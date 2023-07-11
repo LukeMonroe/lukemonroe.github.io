@@ -35,8 +35,8 @@ class Themes {
       this.themeButton = document.getElementById(THEME)
       this.themeButton.addEventListener(CLICK, () => this.nextTheme())
 
-      this.backgroundColor00 = window.getComputedStyle(document.documentElement).getPropertyValue('--background-color')
-      this.color00 = window.getComputedStyle(document.documentElement).getPropertyValue('--color')
+      this.backgroundColor = window.getComputedStyle(document.documentElement).getPropertyValue('--background-color')
+      this.color = window.getComputedStyle(document.documentElement).getPropertyValue('--color')
       this.linkColor01 = window.getComputedStyle(document.documentElement).getPropertyValue('--link-color-01')
       this.linkColor02 = window.getComputedStyle(document.documentElement).getPropertyValue('--link-color-02')
       this.loadInitialValues = false
@@ -45,13 +45,13 @@ class Themes {
     this.themeButton.innerText = theme
 
     if (this.light(theme)) {
-      document.documentElement.style.setProperty('--background-color', this.backgroundColor00)
-      document.documentElement.style.setProperty('--color', this.color00)
+      document.documentElement.style.setProperty('--background-color', this.backgroundColor)
+      document.documentElement.style.setProperty('--color', this.color)
       document.documentElement.style.setProperty('--link-color-01', this.linkColor01)
       document.documentElement.style.setProperty('--link-color-02', this.linkColor02)
     } else {
-      document.documentElement.style.setProperty('--background-color', this.color00)
-      document.documentElement.style.setProperty('--color', this.backgroundColor00)
+      document.documentElement.style.setProperty('--background-color', this.color)
+      document.documentElement.style.setProperty('--color', this.backgroundColor)
       document.documentElement.style.setProperty('--link-color-01', Colors.darkenHSL(this.linkColor01, 50))
       document.documentElement.style.setProperty('--link-color-02', Colors.darkenHSL(this.linkColor02, 50))
     }

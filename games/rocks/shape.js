@@ -272,7 +272,7 @@ class Polygon extends Shape {
 class Player extends Polygon {
   #themes = null
   #theme = null
-  #textColor = null
+  #lifeColor = null
 
   constructor (canvas, scale, themes) {
     super(canvas.width / 2, canvas.height / 2, 30, 5)
@@ -281,7 +281,7 @@ class Player extends Polygon {
 
     this.#themes = themes
     this.#theme = themes.getTheme()
-    this.#textColor = this.#themes.textColor(this.#theme)
+    this.#lifeColor = this.#themes.color
   }
 
   draw (context) {
@@ -309,7 +309,7 @@ class Player extends Polygon {
   }
 
   alternateColor () {
-    this.color = this.color === DARK_GREY ? this.#textColor : DARK_GREY
+    this.color = this.color === DARK_GREY ? this.#lifeColor : DARK_GREY
   }
 
   rotateLeft () {
@@ -356,7 +356,7 @@ class Player extends Polygon {
 
     this.#themes = player.#themes
     this.#theme = player.#theme
-    this.#textColor = player.#textColor
+    this.#lifeColor = player.#lifeColor
   }
 
   static create (canvas, scale, themes) {
