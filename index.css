@@ -1,29 +1,27 @@
 :root {
-    --background-color: ghostwhite;
-    --text-color: black;
-    --link-color: hsl(300, 25%, 80%);
-    --visited-color: hsl(260, 25%, 75%);
+    --background-color: hsl(240, 100%, 99%);
+    --color: hsl(0, 0%, 0%);
+    --link-color-01: hsl(300, 25%, 80%);
+    --link-color-02: hsl(260, 25%, 75%);
+    font-family: monospace;
 }
 
 body {
-    background-color:  var(--background-color);
-    color: var(--visited-color);
-    font-family: monospace;
+    background-color: var(--background-color);
+    color: var(--color);
     margin: 0px;
 }
 
 h1 {
-    color: var(--text-color);
     text-align: center;
 }
 
 h2 {
-    color: var(--text-color);
     text-align: center;
 }
 
 a {
-    color: var(--text-color);
+    color: var(--color);
     text-decoration: none;
     text-align: center;
     border-radius: 5px;
@@ -33,11 +31,11 @@ a {
 }
 
 a:link {
-    background-color: var(--link-color);
+    background-color: var(--link-color-01);
 }
 
 a:visited {
-    background-color: var(--visited-color);
+    background-color: var(--link-color-02);
 }
 
 a:hover {
@@ -57,13 +55,13 @@ a:hover {
 }
 
 hr {
-    border: 1px solid var(--text-color);
+    border: 1px solid var(--color);
     width: 98%;
     margin: 0px auto;
 }
 
 button.theme {
-    background-color: var(--text-color);
+    background-color: var(--color);
     color: var(--background-color);
     font-family: monospace;
     border: none;
@@ -102,7 +100,6 @@ header {
 }
 
 footer {
-    color: var(--text-color);
     text-align: center;
     padding: 25px 50px;
 }

@@ -9,10 +9,9 @@ const TEXT_COLOR = 'textColor'
 const NEXT = 'next'
 const BLACK = 'black'
 const GHOST_WHITE = 'ghostwhite'
-const COLOR_A = 'hsl(300, 25%, 80%)'
-const COLOR_B = 'hsl(260, 25%, 75%)'
 
 class Themes {
+  #loadInitialValues = true
   themeButton = null
   themes = new Map([
     [LIGHT, new Map([[BACKGROUND_COLOR, GHOST_WHITE], [TEXT_COLOR, BLACK], [NEXT, DARK]])],
@@ -37,21 +36,29 @@ class Themes {
   }
 
   changeTheme (theme) {
-    if (this.themeButton !== null) {
-      this.themeButton.innerText = theme
-    }
-    const a = this.light(theme) ? COLOR_A : Colors.darkenHSL(COLOR_A, 50)
-    const b = this.light(theme) ? COLOR_B : Colors.darkenHSL(COLOR_B, 50)
-    document.documentElement.style.setProperty('--background-color', this.backgroundColor(theme))
-    document.documentElement.style.setProperty('--text-color', this.textColor(theme))
-    document.documentElement.style.setProperty('--link-color', a)
-    document.documentElement.style.setProperty('--visited-color', b)
-  }
-
-  setThemeButton () {
-    this.themeButton = document.getElementById(THEME)
-    if (this.themeButton !== null) {
+    if (this.#loadInitialValues) {
+      this.themeButton = document.getElementById(THEME)
       this.themeButton.addEventListener(CLICK, () => this.nextTheme())
+
+      this.backgroundColor00 = window.getComputedStyle(document.documentElement).getPropertyValue('--background-color')
+      this.color00 = window.getComputedStyle(document.documentElement).getPropertyValue('--color')
+      this.linkColor01 = window.getComputedStyle(document.documentElement).getPropertyValue('--link-color-01')
+      this.linkColor02 = window.getComputedStyle(document.documentElement).getPropertyValue('--link-color-02')
+      this.#loadInitialValues = false
+    }
+
+    this.themeButton.innerText = theme
+
+    if (this.light(theme)) {
+      document.documentElement.style.setProperty('--background-color', this.backgroundColor00)
+      document.documentElement.style.setProperty('--color', this.color00)
+      document.documentElement.style.setProperty('--link-color-01', this.linkColor01)
+      document.documentElement.style.setProperty('--link-color-02', this.linkColor02)
+    } else {
+      document.documentElement.style.setProperty('--background-color', this.color00)
+      document.documentElement.style.setProperty('--color', this.backgroundColor00)
+      document.documentElement.style.setProperty('--link-color-01', Colors.darkenHSL(this.linkColor01, 50))
+      document.documentElement.style.setProperty('--link-color-02', Colors.darkenHSL(this.linkColor02, 50))
     }
   }
 
