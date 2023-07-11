@@ -20,9 +20,10 @@ class PrintsThemes extends Themes {
       this.gradientColor01 = Colors.formatHSL(randomColor01)
       this.gradientColor02 = Colors.formatHSL(randomColor02)
 
+      document.documentElement.style.setProperty('--background-color', this.backgroundColor)
+      document.documentElement.style.setProperty('--color', this.color)
       document.documentElement.style.setProperty('--gradient-color-01', this.gradientColor01)
       document.documentElement.style.setProperty('--gradient-color-02', this.gradientColor02)
-      document.documentElement.style.setProperty('--color', this.color)
     } else {
       while (randomColor01.grayscale > 150) { randomColor01 = Colors.randomColor() }
       while (randomColor02.grayscale > 150) { randomColor02 = Colors.randomColor() }
@@ -30,9 +31,10 @@ class PrintsThemes extends Themes {
       this.gradientColor01 = Colors.formatHSL(randomColor01)
       this.gradientColor02 = Colors.formatHSL(randomColor02)
 
+      document.documentElement.style.setProperty('--background-color', this.color)
+      document.documentElement.style.setProperty('--color', this.backgroundColor)
       document.documentElement.style.setProperty('--gradient-color-01', this.gradientColor01)
       document.documentElement.style.setProperty('--gradient-color-02', this.gradientColor02)
-      document.documentElement.style.setProperty('--color', this.backgroundColor)
     }
   }
 }
