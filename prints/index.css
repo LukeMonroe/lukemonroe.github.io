@@ -8,7 +8,7 @@
 
 body {
     background-color: var(--background-color);
-    background-image: linear-gradient(to right, var(--gradient-color-01), var(--gradient-color-02));
+    background-image: linear-gradient(to bottom right, var(--gradient-color-01), var(--gradient-color-02));
     color: var(--color);
     margin: 0px;
 }
