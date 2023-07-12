@@ -21,6 +21,7 @@ h2 {
 }
 
 a {
+    background-color: var(--link-color-01);
     color: var(--color);
     text-decoration: none;
     text-align: center;
