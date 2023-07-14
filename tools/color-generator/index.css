@@ -1,0 +1,71 @@
+:root {
+    --background-color: hsl(240, 100%, 99%);
+    --color: black;
+    --gradient-color-01: hsl(240, 100%, 99%);
+    --gradient-color-02: hsl(0, 0%, 50%);
+    font-family: monospace;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--color);
+    margin: 0px;
+}
+
+img {
+    width: 100%;
+}
+
+div.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin: 50px auto;
+}
+
+div.column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: center;
+    flex: 33.33%;
+    max-width: 26.67%;
+}
+
+header {
+    text-align: center;
+    width: calc(80% + 30px);
+    padding: 15px 0px;
+    margin: 50px auto;
+}
+
+footer {
+    text-align: center;
+    width: calc(80% + 30px);
+    padding: 25px 0px;
+    margin: 50px auto;
+}
+
+@media screen and (max-width: 1200px) {
+    div.column {
+        flex: 50%;
+        max-width: 40%;
+    }
+
+    header, footer {
+        width: calc(80% + 15px);
+    }
+}
+
+@media screen and (max-width: 600px) {
+    div.column {
+        flex: 100%;
+        max-width: 80%;
+    }
+
+    header, footer {
+        width: 80%;
+    }
+}
