@@ -1,4 +1,12 @@
 class Colors {
+  static buildColor (h, s, l) {
+    const hsl = { h, s, l }
+    const rgb = Colors.hslToRGB(hsl)
+    const grayscale = Math.round((0.2126 * rgb.r) + (0.7152 * rgb.g) + (0.0722 * rgb.b))
+
+    return { hsl, rgb, grayscale }
+  }
+
   static randomColor () {
     const hsl = Colors.randomHSL()
     const rgb = Colors.hslToRGB(hsl)
@@ -73,6 +81,14 @@ class Colors {
 
   static formatRGB (color) {
     return `rgb(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})`
+  }
+
+  static white () {
+    return Colors.buildColor(0, 0, 100)
+  }
+
+  static black () {
+    return Colors.buildColor(0, 0, 0)
   }
 }
 

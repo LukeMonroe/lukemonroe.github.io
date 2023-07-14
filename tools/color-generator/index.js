@@ -5,34 +5,40 @@ const themes = new ColorGeneratorThemes()
 themes.setTheme()
 
 const row = document.getElementById('row')
-for (let index = 0; index < 50; index++) {
-  const randomColor = Colors.randomColor()
+const colorsRGB = new Set()
+const colors = new Set()
+while (colorsRGB.size < 50) {
+  colorsRGB.add(Colors.formatRGB(Colors.randomColor()))
+  colors.add(Colors.randomColor())
+}
 
+// colors = Array.from(colors)
+// colors.sort(function (color01, color02) { return color01.grayscale > color02.grayscale })
+
+colors.forEach(color => {
   const hsl = document.createElement('h3')
-  hsl.innerText = Colors.formatHSL(randomColor)
+  hsl.innerText = Colors.formatHSL(color)
 
   const rgb = document.createElement('h3')
-  rgb.innerText = Colors.formatRGB(randomColor)
+  rgb.innerText = Colors.formatRGB(color)
 
   const grayscale = document.createElement('h3')
-  grayscale.innerText = `Grayscale: ${randomColor.grayscale}`
+  grayscale.innerText = `Grayscale: ${color.grayscale}`
 
-  if (randomColor.grayscale > 150) {
-    hsl.style.color = 'rgb(0, 0, 0)'
-    rgb.style.color = 'rgb(0, 0, 0)'
-    grayscale.style.color = 'rgb(0, 0, 0)'
-  } else {
-    hsl.style.color = 'rgb(255, 255, 255)'
-    rgb.style.color = 'rgb(255, 255, 255)'
-    grayscale.style.color = 'rgb(255, 255, 255)'
+  let textColor = Colors.formatHSL(Colors.white())
+  if (color.grayscale > 150) {
+    textColor = Colors.formatHSL(Colors.black())
   }
+  hsl.style.color = textColor
+  rgb.style.color = textColor
+  grayscale.style.color = textColor
 
   const column = document.createElement('div')
   column.className = 'column'
-  column.style.backgroundColor = Colors.formatHSL(randomColor)
+  column.style.backgroundColor = Colors.formatHSL(color)
   column.appendChild(hsl)
   column.appendChild(rgb)
   column.appendChild(grayscale)
 
   row.appendChild(column)
-}
+})

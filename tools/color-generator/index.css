@@ -1,8 +1,6 @@
 :root {
     --background-color: hsl(240, 100%, 99%);
     --color: black;
-    --gradient-color-01: hsl(240, 100%, 99%);
-    --gradient-color-02: hsl(0, 0%, 50%);
     font-family: monospace;
 }
 
@@ -30,22 +28,37 @@ div.column {
     justify-content: flex-end;
     align-items: center;
     text-align: center;
-    flex: 33.33%;
-    max-width: 26.67%;
+    flex: 25%;
+    max-width: 20%;
 }
 
 header {
+    background-color: var(--color);
+    color: var(--background-color);
     text-align: center;
-    width: calc(80% + 30px);
+    width: calc(80% + 45px);
     padding: 15px 0px;
     margin: 50px auto;
 }
 
 footer {
+    background-color: var(--color);
+    color: var(--background-color);
     text-align: center;
-    width: calc(80% + 30px);
+    width: calc(80% + 45px);
     padding: 25px 0px;
     margin: 50px auto;
+}
+
+@media screen and (max-width: 1800px) {
+    div.column {
+        flex: 33.33%;
+        max-width: 26.67%;
+    }
+
+    header, footer {
+        width: calc(80% + 30px);
+    }
 }
 
 @media screen and (max-width: 1200px) {
