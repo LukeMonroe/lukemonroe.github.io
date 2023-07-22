@@ -57,6 +57,14 @@ class Colors {
     return { r, g, b }
   }
 
+  static darkenColor (color, darkness) {
+    let l = color.hsl.l
+    l -= darkness
+    l = l > 0 ? l : 0
+
+    return Colors.buildColor(color.hsl.h, color.hsl.s, l)
+  }
+
   static darkenHSL (hsl, darkness) {
     let darkHSL = hsl.trim().replaceAll(' ', '')
     darkHSL = darkHSL.match(/hsl\(([\d]{1,3}),([\d]{1,3})%,([\d]{1,3})%\)/i)
