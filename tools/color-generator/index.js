@@ -12,17 +12,14 @@ while (colorsRGB.size < 50) {
   colors.add(Colors.randomColor())
 }
 
-// colors = Array.from(colors)
-// colors.sort(function (color01, color02) { return color01.grayscale > color02.grayscale })
-
 colors.forEach(color => {
-  const hsl = document.createElement('h3')
+  const hsl = document.createElement('div')
   hsl.innerText = Colors.formatHSL(color)
 
-  const rgb = document.createElement('h3')
+  const rgb = document.createElement('div')
   rgb.innerText = Colors.formatRGB(color)
 
-  const grayscale = document.createElement('h3')
+  const grayscale = document.createElement('div')
   grayscale.innerText = `Grayscale: ${color.grayscale}`
 
   let textColor = Colors.formatHSL(Colors.white())
@@ -39,6 +36,12 @@ colors.forEach(color => {
   column.appendChild(hsl)
   column.appendChild(rgb)
   column.appendChild(grayscale)
+  column.onclick = function () {
+    localStorage.setItem('h', color.hsl.h)
+    localStorage.setItem('s', color.hsl.s)
+    localStorage.setItem('l', color.hsl.l)
+    window.location.href = './color/index.html'
+  }
 
   row.appendChild(column)
 })

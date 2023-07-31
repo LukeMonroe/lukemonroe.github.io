@@ -28,24 +28,23 @@ div.column {
     justify-content: flex-end;
     align-items: center;
     text-align: center;
+    border-radius: 10px;
     flex: 25%;
+    gap: 8px;
     max-width: 20%;
+    padding: 50px 0px;
 }
 
 header {
-    background-color: var(--color);
-    color: var(--background-color);
+    color: var(--color);
     text-align: center;
-    width: calc(80% + 45px);
     padding: 15px 0px;
     margin: 50px auto;
 }
 
 footer {
-    background-color: var(--color);
-    color: var(--background-color);
+    color: var(--color);
     text-align: center;
-    width: calc(80% + 45px);
     padding: 25px 0px;
     margin: 50px auto;
 }
@@ -55,10 +54,6 @@ footer {
         flex: 33.33%;
         max-width: 26.67%;
     }
-
-    header, footer {
-        width: calc(80% + 30px);
-    }
 }
 
 @media screen and (max-width: 1200px) {
@@ -66,19 +61,11 @@ footer {
         flex: 50%;
         max-width: 40%;
     }
-
-    header, footer {
-        width: calc(80% + 15px);
-    }
 }
 
 @media screen and (max-width: 600px) {
     div.column {
         flex: 100%;
         max-width: 80%;
-    }
-
-    header, footer {
-        width: 80%;
     }
 }
