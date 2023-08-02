@@ -1,4 +1,8 @@
 class Colors {
+  static copy (color) {
+    return Colors.buildColor(color.hsl.h, color.hsl.s, color.hsl.l)
+  }
+
   static buildColor (h, s, l) {
     const hsl = { h, s, l }
     const rgb = Colors.hslToRGB(hsl)
@@ -58,11 +62,37 @@ class Colors {
   }
 
   static darkenColor (color, darkness) {
-    let l = color.hsl.l
-    l -= darkness
+    let l = Number(color.hsl.l) - Number(darkness)
     l = l > 0 ? l : 0
 
     return Colors.buildColor(color.hsl.h, color.hsl.s, l)
+  }
+
+  static lightenColor (color, lightness) {
+    let l = Number(color.hsl.l) + Number(lightness)
+    l = l < 100 ? l : 100
+
+    return Colors.buildColor(color.hsl.h, color.hsl.s, l)
+  }
+
+  static desaturateColor (color, saturation) {
+    let s = Number(color.hsl.s) - Number(saturation)
+    s = s > 0 ? s : 0
+
+    return Colors.buildColor(color.hsl.h, s, color.hsl.l)
+  }
+
+  static saturateColor (color, saturation) {
+    let s = Number(color.hsl.s) + Number(saturation)
+    s = s < 100 ? s : 100
+
+    return Colors.buildColor(color.hsl.h, s, color.hsl.l)
+  }
+
+  static hueColor (color, hue) {
+    const h = (Number(color.hsl.h) + Number(hue)) % 360
+
+    return Colors.buildColor(h, color.hsl.s, color.hsl.l)
   }
 
   static darkenHSL (hsl, darkness) {

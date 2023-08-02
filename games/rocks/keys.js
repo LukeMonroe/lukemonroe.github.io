@@ -80,7 +80,7 @@ class Keys {
 
   reset () {
     this.#spacePressed = false
-    for (const key in this.#keys.keys()) {
+    for (const key of this.#keys.keys()) {
       this.#keys.set(key, false)
     }
   }
