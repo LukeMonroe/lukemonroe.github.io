@@ -90,7 +90,9 @@ class Colors {
   }
 
   static hueColor (color, hue) {
-    const h = (Number(color.hsl.h) + Number(hue)) % 360
+    let h = Number(color.hsl.h) + Number(hue)
+    h %= 360
+    h = h < 0 ? 360 + h : h
 
     return Colors.buildColor(h, color.hsl.s, color.hsl.l)
   }
