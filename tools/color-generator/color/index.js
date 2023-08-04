@@ -5,248 +5,280 @@ const themes = new ColorThemes()
 themes.setTheme()
 
 const row = document.getElementById('row')
+
+// ------------------
+const colorsRGB = new Set()
 const colors = new Set()
+while (colorsRGB.size < 32) {
+  let color = Colors.randomColor()
+  while (color.grayscale < 20 || color.grayscale > 235) {
+    color = Colors.randomColor()
+  }
+  colorsRGB.add(Colors.formatRGB(color))
+  colors.add(color)
+}
+
+// colors = Array.from(colors)
+// colors.sort(function (color01, color02) { return color01.grayscale < color02.grayscale })
+
+const randomColumn = createColumnR()
+let randomRow = createRowR()
+let count = 0
+colors.forEach(color => {
+  if (count > 0 && count % 8 === 0) {
+    randomColumn.appendChild(randomRow)
+    randomRow = createRowR()
+  }
+  randomRow.appendChild(createItemR(Colors.copy(color)))
+  count++
+})
+randomColumn.appendChild(randomRow)
+// --------------
+
 const h = localStorage.getItem('h')
 const s = localStorage.getItem('s')
 const l = localStorage.getItem('l')
-colors.add(Colors.buildColor(h, s, l))
+const color = Colors.buildColor(h, s, l)
 
-// colors = Array.from(colors)
-// colors.sort(function (color01, color02) { return color01.grayscale > color02.grayscale })
+const hsl = document.createElement('div')
+hsl.innerText = Colors.formatHSL(color)
 
-colors.forEach(color => {
-  const hsl = document.createElement('div')
-  hsl.innerText = Colors.formatHSL(color)
+const rgb = document.createElement('div')
+rgb.innerText = Colors.formatRGB(color)
 
-  const rgb = document.createElement('div')
-  rgb.innerText = Colors.formatRGB(color)
+const grayscale = document.createElement('div')
+grayscale.innerText = `Grayscale: ${color.grayscale}`
 
-  const grayscale = document.createElement('div')
-  grayscale.innerText = `Grayscale: ${color.grayscale}`
+let textColor = Colors.formatHSL(Colors.white())
+if (color.grayscale > 150) {
+  textColor = Colors.formatHSL(Colors.black())
+}
+hsl.style.color = textColor
+rgb.style.color = textColor
+grayscale.style.color = textColor
 
-  let textColor = Colors.formatHSL(Colors.white())
-  if (color.grayscale > 150) {
-    textColor = Colors.formatHSL(Colors.black())
-  }
-  hsl.style.color = textColor
-  rgb.style.color = textColor
-  grayscale.style.color = textColor
+const colorColumn = createColumn()
+colorColumn.style.backgroundColor = Colors.formatHSL(color)
+colorColumn.appendChild(hsl)
+colorColumn.appendChild(rgb)
+colorColumn.appendChild(grayscale)
 
-  const colorColumn = createColumn()
-  colorColumn.style.backgroundColor = Colors.formatHSL(color)
-  colorColumn.appendChild(hsl)
-  colorColumn.appendChild(rgb)
-  colorColumn.appendChild(grayscale)
+// ------------------
+const lightnessRow = createRow()
+const lightnessItems = []
+let lightenedColor = Colors.copy(color)
+lightnessItems.push(createItemWithMarker(lightenedColor))
 
-  // ------------------
-  const lightnessRow = createRow()
-  const lightnessItems = []
-  let lightenedColor = Colors.copy(color)
-  lightnessItems.push(createItemWithMarker(lightenedColor))
+while (lightenedColor.hsl.l < 100) {
+  lightenedColor = Colors.lightenColor(lightenedColor, 8)
+  lightnessItems.push(createItem(lightenedColor))
+}
+lightnessItems.reverse()
 
-  while (lightenedColor.hsl.l < 100) {
-    lightenedColor = Colors.lightenColor(lightenedColor, 8)
-    lightnessItems.push(createItem(lightenedColor))
-  }
-  lightnessItems.reverse()
+let darkenedColor = Colors.copy(color)
+while (darkenedColor.hsl.l > 0) {
+  darkenedColor = Colors.darkenColor(darkenedColor, 8)
+  lightnessItems.push(createItem(darkenedColor))
+}
 
-  let darkenedColor = Colors.copy(color)
-  while (darkenedColor.hsl.l > 0) {
-    darkenedColor = Colors.darkenColor(darkenedColor, 8)
-    lightnessItems.push(createItem(darkenedColor))
-  }
-
-  lightnessItems.forEach(item => {
-    lightnessRow.appendChild(item)
-  })
-  // --------------
-
-  // ------------------
-  const saturationRow = createRow()
-  const saturationItems = []
-  let saturatedColor = Colors.copy(color)
-  saturationItems.push(createItemWithMarker(saturatedColor))
-
-  while (saturatedColor.hsl.s < 100) {
-    saturatedColor = Colors.saturateColor(saturatedColor, 8)
-    saturationItems.push(createItem(saturatedColor))
-  }
-  saturationItems.reverse()
-
-  let desaturatedColor = Colors.copy(color)
-  while (desaturatedColor.hsl.s > 0) {
-    desaturatedColor = Colors.desaturateColor(desaturatedColor, 8)
-    saturationItems.push(createItem(desaturatedColor))
-  }
-
-  saturationItems.forEach(item => {
-    saturationRow.appendChild(item)
-  })
-  // --------------
-
-  // ------------------
-  const hueRow = createRow()
-  const hueItems = []
-  let huedColor = Colors.copy(color)
-  hueItems.push(createItemWithMarker(huedColor))
-
-  let i = 14
-  while (i > 7) {
-    huedColor = Colors.hueColor(huedColor, 24)
-    hueItems.push(createItem(huedColor))
-    i--
-  }
-  hueItems.reverse()
-
-  const hueItems01 = []
-  while (i > 0) {
-    huedColor = Colors.hueColor(huedColor, 24)
-    hueItems01.push(createItem(huedColor))
-    i--
-  }
-  hueItems01.reverse()
-
-  hueItems.forEach(item => {
-    hueRow.appendChild(item)
-  })
-  hueItems01.forEach(item => {
-    hueRow.appendChild(item)
-  })
-  // --------------
-
-  // ------------------
-  const complementaryRow = createRow()
-  const complementaryItems = []
-  complementaryItems.push(createItemWithMarker(Colors.copy(color)))
-  complementaryItems.push(createItem(Colors.hueColor(color, 180)))
-  complementaryItems.forEach(item => {
-    complementaryRow.appendChild(item)
-  })
-  // --------------
-
-  // ------------------
-  const splitComplementaryRow = createRow()
-  const splitComplementaryItems = []
-  splitComplementaryItems.push(createItemWithMarker(Colors.copy(color)))
-  const splitComplementaryColor = Colors.hueColor(color, 180)
-  splitComplementaryItems.push(createItem(Colors.hueColor(splitComplementaryColor, -30)))
-  splitComplementaryItems.push(createItem(Colors.hueColor(splitComplementaryColor, 30)))
-  splitComplementaryItems.forEach(item => {
-    splitComplementaryRow.appendChild(item)
-  })
-  // --------------
-
-  // ------------------
-  const analogousRow = createRow()
-  const analogousItems = []
-  analogousItems.push(createItem(Colors.hueColor(color, -30)))
-  analogousItems.push(createItemWithMarker(Colors.copy(color)))
-  analogousItems.push(createItem(Colors.hueColor(color, 30)))
-  analogousItems.forEach(item => {
-    analogousRow.appendChild(item)
-  })
-  // --------------
-
-  // ------------------
-  const triadicRow = createRow()
-  const triadicItems = []
-  triadicItems.push(createItem(Colors.hueColor(color, -120)))
-  triadicItems.push(createItemWithMarker(Colors.copy(color)))
-  triadicItems.push(createItem(Colors.hueColor(color, 120)))
-  triadicItems.forEach(item => {
-    triadicRow.appendChild(item)
-  })
-  // --------------
-
-  // ------------------
-  const tetradicRow = createRow()
-  const tetradicItems = []
-  tetradicItems.push(createItem(Colors.hueColor(color, -30)))
-  tetradicItems.push(createItem(Colors.hueColor(color, 30)))
-  tetradicItems.push(createItem(Colors.hueColor(color, -150)))
-  tetradicItems.push(createItem(Colors.hueColor(color, 150)))
-  tetradicItems.forEach(item => {
-    tetradicRow.appendChild(item)
-  })
-  // --------------
-
-  // ------------------
-  const squareRow = createRow()
-  const squareItems = []
-  squareItems.push(createItemWithMarker(Colors.copy(color)))
-  squareItems.push(createItem(Colors.hueColor(color, 90)))
-  squareItems.push(createItem(Colors.hueColor(color, 180)))
-  squareItems.push(createItem(Colors.hueColor(color, 270)))
-  squareItems.forEach(item => {
-    squareRow.appendChild(item)
-  })
-  // --------------
-
-  const variationsH2 = createH2()
-  variationsH2.innerText = 'Variations'
-
-  const lightnessH3 = createH3()
-  lightnessH3.innerText = 'Lightness'
-
-  const saturationH3 = createH3()
-  saturationH3.innerText = 'Saturation'
-
-  const hueH3 = createH3()
-  hueH3.innerText = 'Hue'
-
-  const harmoniesH2 = createH2()
-  harmoniesH2.innerText = 'Harmonies'
-
-  const complementaryH3 = createH3()
-  complementaryH3.innerText = 'Complementary'
-
-  const splitComplementaryH3 = createH3()
-  splitComplementaryH3.innerText = 'Split Complementary'
-
-  const analogousH3 = createH3()
-  analogousH3.innerText = 'Analogous'
-
-  const triadicH3 = createH3()
-  triadicH3.innerText = 'Triadic'
-
-  const tetradicH3 = createH3()
-  tetradicH3.innerText = 'Tetradic'
-
-  const squareH3 = createH3()
-  squareH3.innerText = 'Square'
-
-  const variationsColumn = createColumn()
-  variationsColumn.appendChild(variationsH2)
-  variationsColumn.appendChild(lightnessH3)
-  variationsColumn.appendChild(lightnessRow)
-  variationsColumn.appendChild(saturationH3)
-  variationsColumn.appendChild(saturationRow)
-  variationsColumn.appendChild(hueH3)
-  variationsColumn.appendChild(hueRow)
-
-  const harmoniesColumn = createColumn()
-  harmoniesColumn.appendChild(harmoniesH2)
-  harmoniesColumn.appendChild(complementaryH3)
-  harmoniesColumn.appendChild(complementaryRow)
-  harmoniesColumn.appendChild(splitComplementaryH3)
-  harmoniesColumn.appendChild(splitComplementaryRow)
-  harmoniesColumn.appendChild(analogousH3)
-  harmoniesColumn.appendChild(analogousRow)
-  harmoniesColumn.appendChild(triadicH3)
-  harmoniesColumn.appendChild(triadicRow)
-  harmoniesColumn.appendChild(tetradicH3)
-  harmoniesColumn.appendChild(tetradicRow)
-  harmoniesColumn.appendChild(squareH3)
-  harmoniesColumn.appendChild(squareRow)
-
-  row.appendChild(colorColumn)
-  row.appendChild(variationsColumn)
-  row.appendChild(harmoniesColumn)
+lightnessItems.forEach(item => {
+  lightnessRow.appendChild(item)
 })
+// --------------
+
+// ------------------
+const saturationRow = createRow()
+const saturationItems = []
+let saturatedColor = Colors.copy(color)
+saturationItems.push(createItemWithMarker(saturatedColor))
+
+while (saturatedColor.hsl.s < 100) {
+  saturatedColor = Colors.saturateColor(saturatedColor, 8)
+  saturationItems.push(createItem(saturatedColor))
+}
+saturationItems.reverse()
+
+let desaturatedColor = Colors.copy(color)
+while (desaturatedColor.hsl.s > 0) {
+  desaturatedColor = Colors.desaturateColor(desaturatedColor, 8)
+  saturationItems.push(createItem(desaturatedColor))
+}
+
+saturationItems.forEach(item => {
+  saturationRow.appendChild(item)
+})
+// --------------
+
+// ------------------
+const hueRow = createRow()
+const hueItems = []
+let huedColor = Colors.copy(color)
+hueItems.push(createItemWithMarker(huedColor))
+
+let i = 14
+while (i > 7) {
+  huedColor = Colors.hueColor(huedColor, 24)
+  hueItems.push(createItem(huedColor))
+  i--
+}
+hueItems.reverse()
+
+const hueItems01 = []
+while (i > 0) {
+  huedColor = Colors.hueColor(huedColor, 24)
+  hueItems01.push(createItem(huedColor))
+  i--
+}
+hueItems01.reverse()
+
+hueItems.forEach(item => {
+  hueRow.appendChild(item)
+})
+hueItems01.forEach(item => {
+  hueRow.appendChild(item)
+})
+// --------------
+
+// ------------------
+const complementaryRow = createRow()
+const complementaryItems = []
+complementaryItems.push(createItemWithMarker(Colors.copy(color)))
+complementaryItems.push(createItem(Colors.hueColor(color, 180)))
+complementaryItems.forEach(item => {
+  complementaryRow.appendChild(item)
+})
+// --------------
+
+// ------------------
+const splitComplementaryRow = createRow()
+const splitComplementaryItems = []
+splitComplementaryItems.push(createItemWithMarker(Colors.copy(color)))
+const splitComplementaryColor = Colors.hueColor(color, 180)
+splitComplementaryItems.push(createItem(Colors.hueColor(splitComplementaryColor, -30)))
+splitComplementaryItems.push(createItem(Colors.hueColor(splitComplementaryColor, 30)))
+splitComplementaryItems.forEach(item => {
+  splitComplementaryRow.appendChild(item)
+})
+// --------------
+
+// ------------------
+const analogousRow = createRow()
+const analogousItems = []
+analogousItems.push(createItem(Colors.hueColor(color, -30)))
+analogousItems.push(createItemWithMarker(Colors.copy(color)))
+analogousItems.push(createItem(Colors.hueColor(color, 30)))
+analogousItems.forEach(item => {
+  analogousRow.appendChild(item)
+})
+// --------------
+
+// ------------------
+const triadicRow = createRow()
+const triadicItems = []
+triadicItems.push(createItem(Colors.hueColor(color, -120)))
+triadicItems.push(createItemWithMarker(Colors.copy(color)))
+triadicItems.push(createItem(Colors.hueColor(color, 120)))
+triadicItems.forEach(item => {
+  triadicRow.appendChild(item)
+})
+// --------------
+
+// ------------------
+const tetradicRow = createRow()
+const tetradicItems = []
+tetradicItems.push(createItem(Colors.hueColor(color, -30)))
+tetradicItems.push(createItem(Colors.hueColor(color, 30)))
+tetradicItems.push(createItem(Colors.hueColor(color, -150)))
+tetradicItems.push(createItem(Colors.hueColor(color, 150)))
+tetradicItems.forEach(item => {
+  tetradicRow.appendChild(item)
+})
+// --------------
+
+// ------------------
+const squareRow = createRow()
+const squareItems = []
+squareItems.push(createItemWithMarker(Colors.copy(color)))
+squareItems.push(createItem(Colors.hueColor(color, 90)))
+squareItems.push(createItem(Colors.hueColor(color, 180)))
+squareItems.push(createItem(Colors.hueColor(color, 270)))
+squareItems.forEach(item => {
+  squareRow.appendChild(item)
+})
+// --------------
+
+const variationsH2 = createH2()
+variationsH2.innerText = 'Variations'
+
+const lightnessH3 = createH3()
+lightnessH3.innerText = 'Lightness'
+
+const saturationH3 = createH3()
+saturationH3.innerText = 'Saturation'
+
+const hueH3 = createH3()
+hueH3.innerText = 'Hue'
+
+const harmoniesH2 = createH2()
+harmoniesH2.innerText = 'Harmonies'
+
+const complementaryH3 = createH3()
+complementaryH3.innerText = 'Complementary'
+
+const splitComplementaryH3 = createH3()
+splitComplementaryH3.innerText = 'Split Complementary'
+
+const analogousH3 = createH3()
+analogousH3.innerText = 'Analogous'
+
+const triadicH3 = createH3()
+triadicH3.innerText = 'Triadic'
+
+const tetradicH3 = createH3()
+tetradicH3.innerText = 'Tetradic'
+
+const squareH3 = createH3()
+squareH3.innerText = 'Square'
+
+const variationsColumn = createColumn()
+variationsColumn.appendChild(variationsH2)
+variationsColumn.appendChild(lightnessH3)
+variationsColumn.appendChild(lightnessRow)
+variationsColumn.appendChild(saturationH3)
+variationsColumn.appendChild(saturationRow)
+variationsColumn.appendChild(hueH3)
+variationsColumn.appendChild(hueRow)
+
+const harmoniesColumn = createColumn()
+harmoniesColumn.appendChild(harmoniesH2)
+harmoniesColumn.appendChild(complementaryH3)
+harmoniesColumn.appendChild(complementaryRow)
+harmoniesColumn.appendChild(splitComplementaryH3)
+harmoniesColumn.appendChild(splitComplementaryRow)
+harmoniesColumn.appendChild(analogousH3)
+harmoniesColumn.appendChild(analogousRow)
+harmoniesColumn.appendChild(triadicH3)
+harmoniesColumn.appendChild(triadicRow)
+harmoniesColumn.appendChild(tetradicH3)
+harmoniesColumn.appendChild(tetradicRow)
+harmoniesColumn.appendChild(squareH3)
+harmoniesColumn.appendChild(squareRow)
+
+row.appendChild(randomColumn)
+row.appendChild(colorColumn)
+row.appendChild(variationsColumn)
+row.appendChild(harmoniesColumn)
 
 function createColumn () {
   const column = document.createElement('div')
   column.className = 'column'
+
+  return column
+}
+
+function createColumnR () {
+  const column = document.createElement('div')
+  column.className = 'column-r'
 
   return column
 }
@@ -258,6 +290,19 @@ function createRow () {
   return row
 }
 
+function createRowR () {
+  const row = document.createElement('div')
+  row.className = 'color-row-r'
+
+  return row
+}
+
+function createItemR (color) {
+  const item = createItem(color)
+  item.className = 'item-r'
+
+  return item
+}
 function createItem (color) {
   const hsl = document.createElement('div')
   hsl.innerText = Colors.formatHSL(color)
