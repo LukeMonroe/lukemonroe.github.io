@@ -99,7 +99,7 @@ footer {
     margin: 50px auto;
 }
 
-@media screen and (max-width: 800px) {
+/* @media screen and (max-width: 800px) {
     div.color-row {
         flex-direction: column;
     }
@@ -110,7 +110,7 @@ footer {
         height: 50px;
         width: 100%;
     }
-}
+} */
 
 @media screen and (min-width: 1000px) {
     div.column-r {
