@@ -68,16 +68,16 @@ colorColumn.appendChild(grayscale)
 
 const lightnessRow = createRow()
 updateLightnessRow(lightnessRow, 8)
-const lightnessSlider = createRangeSlider(1, 10, 1, 8, lightnessRow, updateLightnessRow)
+const lightnessSlider = createRangeSlider(1, 30, 1, 'Separation', 8, lightnessRow, updateLightnessRow)
 
 const saturationRow = createRow()
 updateSaturationRow(saturationRow, 8)
-const saturationSlider = createRangeSlider(1, 10, 1, 8, saturationRow, updateSaturationRow)
+const saturationSlider = createRangeSlider(1, 30, 1, 'Separation', 8, saturationRow, updateSaturationRow)
 
 const hueRow = createRow()
 updateHueRow(hueRow, 24)
-const hueSlider = createRangeSlider(1, 30, 1, 24, hueRow, updateHueRow)
-const hueDegreeSlider = createRangeSlider(1, 360, 1, 360, hueRow, updateHueDegreeRow)
+const hueSlider = createRangeSlider(1, 30, 1, 'Separation', 24, hueRow, updateHueRow)
+const hueDegreeSlider = createRangeSlider(1, 360, 1, 'Degrees', 360, hueRow, updateHueDegreeRow)
 
 // ------------------
 const complementaryRow = createRow()
@@ -279,6 +279,18 @@ function createItem (color) {
     grayscale.style.display = 'none'
     item.style.boxShadow = 'none'
   })
+  item.addEventListener('touchstart', () => {
+    hsl.style.display = 'block'
+    rgb.style.display = 'block'
+    grayscale.style.display = 'block'
+    item.style.boxShadow = `2px 2px ${item.style.color} inset, -2px -2px ${item.style.color} inset`
+  })
+  item.addEventListener('touchend', () => {
+    hsl.style.display = 'none'
+    rgb.style.display = 'none'
+    grayscale.style.display = 'none'
+    item.style.boxShadow = 'none'
+  })
   item.addEventListener('dblclick', () => {
     localStorage.setItem('h', color.hsl.h)
     localStorage.setItem('s', color.hsl.s)
@@ -303,13 +315,19 @@ function createItemWithMarker (color) {
   item.addEventListener('mouseleave', () => {
     marker.style.display = 'block'
   })
+  item.addEventListener('touchstart', () => {
+    marker.style.display = 'none'
+  })
+  item.addEventListener('touchend', () => {
+    marker.style.display = 'block'
+  })
 
   return item
 }
 
-function createRangeSlider (min, max, step, value, row, updateFunction) {
+function createRangeSlider (min, max, step, text, value, row, updateFunction) {
   const sliderH4 = createH4()
-  sliderH4.innerText = value
+  sliderH4.innerText = `${text}: ${value}`
 
   const sliderInput = document.createElement('input')
   sliderInput.className = 'slider'
@@ -319,14 +337,14 @@ function createRangeSlider (min, max, step, value, row, updateFunction) {
   sliderInput.step = step
   sliderInput.value = value
   sliderInput.oninput = function () {
-    sliderH4.innerText = this.value
+    sliderH4.innerText = `${text}: ${this.value}`
     updateFunction(row, this.value)
   }
 
   const sliderDiv = createDiv()
   sliderDiv.className = 'slider'
-  sliderDiv.appendChild(sliderInput)
   sliderDiv.appendChild(sliderH4)
+  sliderDiv.appendChild(sliderInput)
 
   return sliderDiv
 }
