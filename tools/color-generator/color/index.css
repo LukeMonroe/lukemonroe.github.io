@@ -67,6 +67,7 @@ div.color-row {
     align-items: center;
     text-align: center;
     width: 100%;
+    touch-action: none;
 }
 
 div.item {
@@ -77,12 +78,14 @@ div.item {
     height: 100px;
     flex: auto;
     gap: 5px;
+    touch-action: none;
 }
 
 div.marker {
     position: relative;
     height: 10px;
     width: 10px;
+    touch-action: none;
 }
 
 header {
