@@ -9,34 +9,7 @@ themes.setTheme()
 
 const row = document.getElementById('row')
 
-// ------------------
-const colorsRGB = new Set()
-const colors = new Set()
-while (colorsRGB.size < 32) {
-  let color = Colors.randomColor()
-  while (color.grayscale < 20 || color.grayscale > 235) {
-    color = Colors.randomColor()
-  }
-  colorsRGB.add(Colors.formatRGB(color))
-  colors.add(color)
-}
-
-// colors = Array.from(colors)
-// colors.sort(function (color01, color02) { return color01.grayscale < color02.grayscale })
-
-const randomColumn = createColumnR()
-let randomRow = createRowR()
-let count = 0
-colors.forEach(color => {
-  if (count > 0 && count % 8 === 0) {
-    randomColumn.appendChild(randomRow)
-    randomRow = createRowR()
-  }
-  randomRow.appendChild(createItemR(Colors.copy(color)))
-  count++
-})
-randomColumn.appendChild(randomRow)
-// --------------
+// Add sliders to create my own color picker.
 
 const h = localStorage.getItem('h')
 const s = localStorage.getItem('s')
@@ -68,15 +41,15 @@ colorColumn.appendChild(grayscale)
 
 const lightnessRow = createRow()
 updateLightnessRow(lightnessRow, 8)
-const lightnessSlider = createRangeSlider(1, 30, 1, 'Separation', 8, lightnessRow, updateLightnessRow)
+const lightnessSlider = createRangeSlider(1, 24, 1, 'Separation', 8, lightnessRow, updateLightnessRow)
 
 const saturationRow = createRow()
 updateSaturationRow(saturationRow, 8)
-const saturationSlider = createRangeSlider(1, 30, 1, 'Separation', 8, saturationRow, updateSaturationRow)
+const saturationSlider = createRangeSlider(1, 24, 1, 'Separation', 8, saturationRow, updateSaturationRow)
 
 const hueRow = createRow()
 updateHueRow(hueRow, 24)
-const hueSlider = createRangeSlider(1, 30, 1, 'Separation', 24, hueRow, updateHueRow)
+const hueSlider = createRangeSlider(1, 90, 1, 'Separation', 24, hueRow, updateHueRow)
 const hueDegreeSlider = createRangeSlider(1, 360, 1, 'Degrees', 360, hueRow, updateHueDegreeRow)
 
 // ------------------
@@ -208,7 +181,6 @@ harmoniesColumn.appendChild(tetradicRow)
 harmoniesColumn.appendChild(squareH3)
 harmoniesColumn.appendChild(squareRow)
 
-row.appendChild(randomColumn)
 row.appendChild(colorColumn)
 row.appendChild(variationsColumn)
 row.appendChild(harmoniesColumn)
@@ -220,13 +192,6 @@ function createColumn () {
   return column
 }
 
-function createColumnR () {
-  const column = document.createElement('div')
-  column.className = 'column-r'
-
-  return column
-}
-
 function createRow () {
   const row = document.createElement('div')
   row.className = 'color-row'
@@ -234,31 +199,21 @@ function createRow () {
   return row
 }
 
-function createRowR () {
-  const row = document.createElement('div')
-  row.className = 'color-row-r'
-
-  return row
-}
-
-function createItemR (color) {
-  const item = createItem(color)
-  item.className = 'item-r'
-
-  return item
-}
 function createItem (color) {
   const hsl = document.createElement('div')
   hsl.innerText = Colors.formatHSL(color)
   hsl.style.display = 'none'
+  hsl.style.padding = '0px 10px'
 
   const rgb = document.createElement('div')
   rgb.innerText = Colors.formatRGB(color)
   rgb.style.display = 'none'
+  rgb.style.padding = '0px 10px'
 
   const grayscale = document.createElement('div')
   grayscale.innerText = `Grayscale: ${color.grayscale}`
   grayscale.style.display = 'none'
+  grayscale.style.padding = '0px 10px'
 
   const item = document.createElement('div')
   item.className = 'item'
