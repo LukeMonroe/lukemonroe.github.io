@@ -267,14 +267,14 @@ function createItem (color) {
   item.appendChild(hsl)
   item.appendChild(rgb)
   item.appendChild(grayscale)
-  item.addEventListener('pointerenter', event => {
+  item.addEventListener('mouseenter', event => {
     event.preventDefault()
     hsl.style.display = 'block'
     rgb.style.display = 'block'
     grayscale.style.display = 'block'
     item.style.boxShadow = `2px 2px ${item.style.color} inset, -2px -2px ${item.style.color} inset`
   })
-  item.addEventListener('pointerleave', event => {
+  item.addEventListener('mouseleave', event => {
     event.preventDefault()
     hsl.style.display = 'none'
     rgb.style.display = 'none'
@@ -299,11 +299,11 @@ function createItemWithMarker (color) {
 
   const item = createItem(color)
   item.appendChild(marker)
-  item.addEventListener('pointerenter', event => {
+  item.addEventListener('mouseenter', event => {
     event.preventDefault()
     marker.style.display = 'none'
   })
-  item.addEventListener('pointerleave', event => {
+  item.addEventListener('mouseleave', event => {
     event.preventDefault()
     marker.style.display = 'block'
   })
