@@ -267,25 +267,13 @@ function createItem (color) {
   item.appendChild(hsl)
   item.appendChild(rgb)
   item.appendChild(grayscale)
-  item.addEventListener('mouseenter', () => {
+  item.addEventListener('pointerenter', () => {
     hsl.style.display = 'block'
     rgb.style.display = 'block'
     grayscale.style.display = 'block'
     item.style.boxShadow = `2px 2px ${item.style.color} inset, -2px -2px ${item.style.color} inset`
   })
-  item.addEventListener('mouseleave', () => {
-    hsl.style.display = 'none'
-    rgb.style.display = 'none'
-    grayscale.style.display = 'none'
-    item.style.boxShadow = 'none'
-  })
-  item.addEventListener('touchstart', () => {
-    hsl.style.display = 'block'
-    rgb.style.display = 'block'
-    grayscale.style.display = 'block'
-    item.style.boxShadow = `2px 2px ${item.style.color} inset, -2px -2px ${item.style.color} inset`
-  })
-  item.addEventListener('touchend', () => {
+  item.addEventListener('pointerleave', () => {
     hsl.style.display = 'none'
     rgb.style.display = 'none'
     grayscale.style.display = 'none'
@@ -309,16 +297,10 @@ function createItemWithMarker (color) {
 
   const item = createItem(color)
   item.appendChild(marker)
-  item.addEventListener('mouseenter', () => {
+  item.addEventListener('pointerenter', () => {
     marker.style.display = 'none'
   })
-  item.addEventListener('mouseleave', () => {
-    marker.style.display = 'block'
-  })
-  item.addEventListener('touchstart', () => {
-    marker.style.display = 'none'
-  })
-  item.addEventListener('touchend', () => {
+  item.addEventListener('pointerleave', () => {
     marker.style.display = 'block'
   })
 
