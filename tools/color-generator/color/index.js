@@ -267,7 +267,7 @@ function createItem (color) {
   item.appendChild(hsl)
   item.appendChild(rgb)
   item.appendChild(grayscale)
-  item.addEventListener('pointerenter', () => {
+  item.addEventListener('pointermove', () => {
     hsl.style.display = 'block'
     rgb.style.display = 'block'
     grayscale.style.display = 'block'
@@ -297,7 +297,7 @@ function createItemWithMarker (color) {
 
   const item = createItem(color)
   item.appendChild(marker)
-  item.addEventListener('pointerenter', () => {
+  item.addEventListener('pointermove', () => {
     marker.style.display = 'none'
   })
   item.addEventListener('pointerleave', () => {
