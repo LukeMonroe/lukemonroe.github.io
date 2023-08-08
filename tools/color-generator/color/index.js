@@ -1,6 +1,9 @@
 import { ColorThemes } from './color-themes.js'
 import { Colors } from '../../../colors.js'
 
+let sValue = 0
+let dValue = 360
+
 const themes = new ColorThemes()
 themes.setTheme()
 
@@ -63,81 +66,18 @@ colorColumn.appendChild(hsl)
 colorColumn.appendChild(rgb)
 colorColumn.appendChild(grayscale)
 
-// ------------------
 const lightnessRow = createRow()
-const lightnessItems = []
-let lightenedColor = Colors.copy(color)
-lightnessItems.push(createItemWithMarker(lightenedColor))
+updateLightnessRow(lightnessRow, 8)
+const lightnessSlider = createRangeSlider(1, 10, 1, 8, lightnessRow, updateLightnessRow)
 
-while (lightenedColor.hsl.l < 100) {
-  lightenedColor = Colors.lightenColor(lightenedColor, 8)
-  lightnessItems.push(createItem(lightenedColor))
-}
-lightnessItems.reverse()
-
-let darkenedColor = Colors.copy(color)
-while (darkenedColor.hsl.l > 0) {
-  darkenedColor = Colors.darkenColor(darkenedColor, 8)
-  lightnessItems.push(createItem(darkenedColor))
-}
-
-lightnessItems.forEach(item => {
-  lightnessRow.appendChild(item)
-})
-// --------------
-
-// ------------------
 const saturationRow = createRow()
-const saturationItems = []
-let saturatedColor = Colors.copy(color)
-saturationItems.push(createItemWithMarker(saturatedColor))
+updateSaturationRow(saturationRow, 8)
+const saturationSlider = createRangeSlider(1, 10, 1, 8, saturationRow, updateSaturationRow)
 
-while (saturatedColor.hsl.s < 100) {
-  saturatedColor = Colors.saturateColor(saturatedColor, 8)
-  saturationItems.push(createItem(saturatedColor))
-}
-saturationItems.reverse()
-
-let desaturatedColor = Colors.copy(color)
-while (desaturatedColor.hsl.s > 0) {
-  desaturatedColor = Colors.desaturateColor(desaturatedColor, 8)
-  saturationItems.push(createItem(desaturatedColor))
-}
-
-saturationItems.forEach(item => {
-  saturationRow.appendChild(item)
-})
-// --------------
-
-// ------------------
 const hueRow = createRow()
-const hueItems = []
-let huedColor = Colors.copy(color)
-hueItems.push(createItemWithMarker(huedColor))
-
-let i = 14
-while (i > 7) {
-  huedColor = Colors.hueColor(huedColor, 24)
-  hueItems.push(createItem(huedColor))
-  i--
-}
-hueItems.reverse()
-
-const hueItems01 = []
-while (i > 0) {
-  huedColor = Colors.hueColor(huedColor, 24)
-  hueItems01.push(createItem(huedColor))
-  i--
-}
-hueItems01.reverse()
-
-hueItems.forEach(item => {
-  hueRow.appendChild(item)
-})
-hueItems01.forEach(item => {
-  hueRow.appendChild(item)
-})
-// --------------
+updateHueRow(hueRow, 24)
+const hueSlider = createRangeSlider(1, 30, 1, 24, hueRow, updateHueRow)
+const hueDegreeSlider = createRangeSlider(1, 360, 1, 360, hueRow, updateHueDegreeRow)
 
 // ------------------
 const complementaryRow = createRow()
@@ -243,10 +183,14 @@ squareH3.innerText = 'Square'
 const variationsColumn = createColumn()
 variationsColumn.appendChild(variationsH2)
 variationsColumn.appendChild(lightnessH3)
+variationsColumn.appendChild(lightnessSlider)
 variationsColumn.appendChild(lightnessRow)
 variationsColumn.appendChild(saturationH3)
+variationsColumn.appendChild(saturationSlider)
 variationsColumn.appendChild(saturationRow)
 variationsColumn.appendChild(hueH3)
+variationsColumn.appendChild(hueSlider)
+variationsColumn.appendChild(hueDegreeSlider)
 variationsColumn.appendChild(hueRow)
 
 const harmoniesColumn = createColumn()
@@ -363,6 +307,30 @@ function createItemWithMarker (color) {
   return item
 }
 
+function createRangeSlider (min, max, step, value, row, updateFunction) {
+  const sliderH4 = createH4()
+  sliderH4.innerText = value
+
+  const sliderInput = document.createElement('input')
+  sliderInput.className = 'slider'
+  sliderInput.type = 'range'
+  sliderInput.min = min
+  sliderInput.max = max
+  sliderInput.step = step
+  sliderInput.value = value
+  sliderInput.oninput = function () {
+    sliderH4.innerText = this.value
+    updateFunction(row, this.value)
+  }
+
+  const sliderDiv = createDiv()
+  sliderDiv.className = 'slider'
+  sliderDiv.appendChild(sliderInput)
+  sliderDiv.appendChild(sliderH4)
+
+  return sliderDiv
+}
+
 function createH2 () {
   return document.createElement('h2')
 }
@@ -371,6 +339,112 @@ function createH3 () {
   return document.createElement('h3')
 }
 
-// function createDiv () {
-//   return document.createElement('div')
-// }
+function createH4 () {
+  return document.createElement('h4')
+}
+
+function createDiv () {
+  return document.createElement('div')
+}
+
+function updateLightnessRow (lightnessRow, value) {
+  const lightnessItems = []
+  let lightenedColor = Colors.copy(color)
+  lightnessItems.push(createItemWithMarker(lightenedColor))
+
+  while (lightenedColor.hsl.l < 100) {
+    lightenedColor = Colors.lightenColor(lightenedColor, value)
+    lightnessItems.push(createItem(lightenedColor))
+  }
+  lightnessItems.reverse()
+
+  let darkenedColor = Colors.copy(color)
+  while (darkenedColor.hsl.l > 0) {
+    darkenedColor = Colors.darkenColor(darkenedColor, value)
+    lightnessItems.push(createItem(darkenedColor))
+  }
+
+  lightnessRow.replaceChildren()
+  lightnessItems.forEach(item => {
+    lightnessRow.appendChild(item)
+  })
+}
+
+function updateSaturationRow (saturationRow, value) {
+  const saturationItems = []
+  let saturatedColor = Colors.copy(color)
+  saturationItems.push(createItemWithMarker(saturatedColor))
+
+  while (saturatedColor.hsl.s < 100) {
+    saturatedColor = Colors.saturateColor(saturatedColor, value)
+    saturationItems.push(createItem(saturatedColor))
+  }
+  saturationItems.reverse()
+
+  let desaturatedColor = Colors.copy(color)
+  while (desaturatedColor.hsl.s > 0) {
+    desaturatedColor = Colors.desaturateColor(desaturatedColor, value)
+    saturationItems.push(createItem(desaturatedColor))
+  }
+
+  saturationRow.replaceChildren()
+  saturationItems.forEach(item => {
+    saturationRow.appendChild(item)
+  })
+}
+
+function updateHueRow (hueRow, value) {
+  sValue = value
+  const hueItems = []
+  let huedColor = Colors.copy(color)
+  hueItems.push(createItemWithMarker(huedColor))
+
+  const x = Math.max(Math.round(dValue / value) - 1, 0)
+  let i = x
+  while (i > x / 2) {
+    huedColor = Colors.hueColor(huedColor, value)
+    hueItems.push(createItem(huedColor))
+    i--
+  }
+  hueItems.reverse()
+
+  huedColor = Colors.copy(color)
+  while (i > 0) {
+    huedColor = Colors.hueColor(huedColor, -value)
+    hueItems.push(createItem(huedColor))
+    i--
+  }
+
+  hueRow.replaceChildren()
+  hueItems.forEach(item => {
+    hueRow.appendChild(item)
+  })
+}
+
+function updateHueDegreeRow (hueRow, value) {
+  dValue = value
+  const hueItems = []
+  let huedColor = Colors.copy(color)
+  hueItems.push(createItemWithMarker(huedColor))
+
+  const x = Math.max(Math.round(value / sValue) - 1, 0)
+  let i = x
+  while (i > x / 2) {
+    huedColor = Colors.hueColor(huedColor, sValue)
+    hueItems.push(createItem(huedColor))
+    i--
+  }
+  hueItems.reverse()
+
+  huedColor = Colors.copy(color)
+  while (i > 0) {
+    huedColor = Colors.hueColor(huedColor, -sValue)
+    hueItems.push(createItem(huedColor))
+    i--
+  }
+
+  hueRow.replaceChildren()
+  hueItems.forEach(item => {
+    hueRow.appendChild(item)
+  })
+}
