@@ -24,9 +24,9 @@ div.column {
     justify-content: center;
     align-items: center;
     text-align: center;
-    flex: 100%;
     gap: 25px;
-    max-width: 80%;
+    width: 80%;
+    max-width: 1000px;
     padding: 50px 0px;
 }
 
@@ -67,12 +67,6 @@ footer {
     text-align: center;
     padding: 25px 0px;
     margin: 50px auto;
-}
-
-@media screen and (min-width: 1000px) {
-    div.column-r {
-        max-width: 800px;
-    }
 }
 
 div.slider {
