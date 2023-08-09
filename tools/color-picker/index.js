@@ -1,10 +1,10 @@
-import { ColorThemes } from './color-themes.js'
-import { Colors } from '../../../colors.js'
+import { ColorPickerThemes } from './color-picker-themes.js'
+import { Colors } from '../../colors.js'
 
 let sValue = 0
 let dValue = 360
 
-const themes = new ColorThemes()
+const themes = new ColorPickerThemes()
 themes.setTheme()
 
 const row = document.getElementById('row')
@@ -14,7 +14,13 @@ const row = document.getElementById('row')
 const h = localStorage.getItem('h')
 const s = localStorage.getItem('s')
 const l = localStorage.getItem('l')
-const color = Colors.buildColor(h, s, l)
+let color = null
+
+if (h === null || s === null || l === null) {
+  color = Colors.randomColor()
+} else {
+  color = Colors.buildColor(h, s, l)
+}
 
 const hsl = document.createElement('div')
 hsl.innerText = Colors.formatHSL(color)

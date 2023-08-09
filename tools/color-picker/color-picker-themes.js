@@ -1,6 +1,6 @@
-import { Themes } from '../../../themes.js'
+import { Themes } from '../../themes.js'
 
-class ColorThemes extends Themes {
+class ColorPickerThemes extends Themes {
   changeTheme (theme) {
     if (this.loadInitialValues) {
       this.backgroundColor = window.getComputedStyle(document.documentElement).getPropertyValue('--background-color')
@@ -18,4 +18,4 @@ class ColorThemes extends Themes {
   }
 }
 
-export { ColorThemes }
+export { ColorPickerThemes }
