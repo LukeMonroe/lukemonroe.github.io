@@ -173,7 +173,7 @@ function resizeCanvas () {
 }
 
 function start () {
-  document.body.requestFullscreen()
+  // document.body.requestFullscreen()
   startButtons.style.visibility = HIDDEN
   scale = canvas.width / CANVAS_MAX_WIDTH
   player = Player.create(canvas, scale, themes)

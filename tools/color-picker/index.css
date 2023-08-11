@@ -1,6 +1,7 @@
 :root {
     --background-color: hsl(240, 100%, 99%);
     --color: black;
+    --thumb: grey;
     font-family: monospace;
 }
 
@@ -100,7 +101,7 @@ input[type=range].slider:hover {
 input[type=range].slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    background-color: var(--color);
+    background-color: var(--thumb);
     border-radius: 0px;
     border: none;
     height: 20px;
@@ -108,7 +109,7 @@ input[type=range].slider::-webkit-slider-thumb {
 }
 
 input[type=range].slider::-moz-range-thumb {
-    background-color: grey;
+    background-color: var(--thumb);
     border-radius: 0px;
     border: none;
     height: 20px;

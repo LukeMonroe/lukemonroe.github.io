@@ -18,6 +18,8 @@ if (h === null || s === null || l === null) {
   color = Colors.buildColor(h, s, l)
 }
 
+document.documentElement.style.setProperty('--thumb', Colors.formatHSL(color))
+
 const lightnessRow = createDivColorRow()
 updateLightnessRow(lightnessRow, 8)
 const lightnessSlider = createRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, updateLightnessRow)
@@ -32,7 +34,7 @@ const hueSlider = createRangeSlider(1, 90, 1, 'Separation', 24, hueRow, updateHu
 const hueDegreeSlider = createRangeSlider(1, 360, 1, 'Degrees', 360, hueRow, updateHueDegreeRow)
 
 const colorColumn = createDivInnerColumn()
-colorColumn.appendChild(createMainDivColorWithDivMarker(color))
+colorColumn.appendChild(createDivColorPicked(color))
 
 const variationsColumn = createDivInnerColumn()
 variationsColumn.appendChild(createH2('Variations'))
@@ -81,7 +83,7 @@ function createDivColorRow () {
   return row
 }
 
-function createMainDivColorWithDivMarker (color) {
+function createDivColorPicked (color) {
   const divColor = createDivColorWithDivMarker(color)
   divColor.style.flex = 'none'
   divColor.style.height = '200px'
@@ -164,8 +166,7 @@ function createDivColor (color) {
 }
 
 function createRangeSlider (min, max, step, text, value, row, updateFunction) {
-  const sliderH4 = createH4()
-  sliderH4.innerText = `${text}: ${value}`
+  const sliderH4 = createH4(`${text}: ${value}`)
 
   const sliderInput = document.createElement('input')
   sliderInput.className = 'slider'
