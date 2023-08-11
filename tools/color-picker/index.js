@@ -95,11 +95,9 @@ function createDivColorWithDivMarker (color) {
   const divMarker = createDivMarker(color)
   const divColor = createDivColor(color)
   divColor.appendChild(divMarker)
-
   divColor.addEventListener('mouseenter', () => {
     divMarker.style.display = 'none'
   })
-
   divColor.addEventListener('mouseleave', () => {
     divMarker.style.display = 'block'
   })
@@ -116,26 +114,22 @@ function createDivMarker (color) {
   return divMarker
 }
 
+function createDivColorText (innerText) {
+  const divColorText = createDiv()
+  divColorText.className = 'color-text'
+  divColorText.innerText = innerText
+  divColorText.addEventListener('click', () => {
+    navigator.clipboard.writeText(divColorText.innerText)
+  })
+
+  return divColorText
+}
+
 function createDivColor (color) {
-  const hex = createDiv()
-  hex.innerText = color.hex
-  hex.style.display = 'none'
-  hex.style.padding = '0px 10px'
-
-  const rgb = createDiv()
-  rgb.innerText = Colors.formatRGB(color)
-  rgb.style.display = 'none'
-  rgb.style.padding = '0px 10px'
-
-  const hsl = createDiv()
-  hsl.innerText = Colors.formatHSL(color)
-  hsl.style.display = 'none'
-  hsl.style.padding = '0px 10px'
-
-  const grayscale = createDiv()
-  grayscale.innerText = `Grayscale: ${color.grayscale}`
-  grayscale.style.display = 'none'
-  grayscale.style.padding = '0px 10px'
+  const hex = createDivColorText(color.hex)
+  const rgb = createDivColorText(Colors.formatRGB(color))
+  const hsl = createDivColorText(Colors.formatHSL(color))
+  const grayscale = createDivColorText(`Grayscale: ${color.grayscale}`)
 
   const divColor = createDiv()
   divColor.className = 'color'
@@ -145,7 +139,6 @@ function createDivColor (color) {
   divColor.appendChild(rgb)
   divColor.appendChild(hsl)
   divColor.appendChild(grayscale)
-
   divColor.addEventListener('mouseenter', () => {
     hex.style.display = 'block'
     rgb.style.display = 'block'
@@ -153,7 +146,6 @@ function createDivColor (color) {
     grayscale.style.display = 'block'
     divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
   })
-
   divColor.addEventListener('mouseleave', () => {
     hex.style.display = 'none'
     rgb.style.display = 'none'
@@ -161,7 +153,6 @@ function createDivColor (color) {
     grayscale.style.display = 'none'
     divColor.style.boxShadow = 'none'
   })
-
   divColor.addEventListener('dblclick', () => {
     localStorage.setItem('h', color.hsl.h)
     localStorage.setItem('s', color.hsl.s)

@@ -42,7 +42,17 @@ div.color {
     align-items: center;
     flex: auto;
     gap: 5px;
+    cursor: pointer;
     height: 100px;
+}
+
+div.color-text {
+  display: none;
+  padding: 0px 10px
+}
+
+div.color-text:hover {
+    text-decoration: underline;
 }
 
 div.marker {
@@ -76,6 +86,7 @@ input[type=range].slider {
     background-color: var(--color);
     outline: none;
     opacity: 0.8;
+    cursor: pointer;
     height: 10px;
     width: 80%;
     margin: 0px;
@@ -91,7 +102,6 @@ input[type=range].slider::-webkit-slider-thumb {
     background-color: var(--color);
     border-radius: 0px;
     border: none;
-    cursor: pointer;
     height: 20px;
     width: 10px;
 }
@@ -100,7 +110,6 @@ input[type=range].slider::-moz-range-thumb {
     background-color: grey;
     border-radius: 0px;
     border: none;
-    cursor: pointer;
     height: 20px;
     width: 10px;
 }
