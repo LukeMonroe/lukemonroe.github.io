@@ -35,7 +35,7 @@ div.color-row {
     width: 100%;
 }
 
-div.item {
+div.color {
     display: flex;
     flex-direction: column;
     justify-content: center;

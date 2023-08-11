@@ -7,7 +7,7 @@ let dValue = 360
 const themes = new ColorPickerThemes()
 themes.setTheme()
 
-const row = document.getElementById('outer-column')
+const outerColumn = document.getElementById('outer-column')
 
 // Add sliders to create my own color picker.
 
@@ -42,63 +42,26 @@ hsl.style.color = textColor
 rgb.style.color = textColor
 grayscale.style.color = textColor
 
-const colorColumn = createColumn()
+const colorColumn = createDivInnerColumn()
 colorColumn.style.backgroundColor = Colors.formatHSL(color)
 colorColumn.appendChild(hsl)
 colorColumn.appendChild(rgb)
 colorColumn.appendChild(grayscale)
 
-const lightnessRow = createRow()
+const lightnessRow = createDivColorRow()
 updateLightnessRow(lightnessRow, 8)
 const lightnessSlider = createRangeSlider(1, 24, 1, 'Separation', 8, lightnessRow, updateLightnessRow)
 
-const saturationRow = createRow()
+const saturationRow = createDivColorRow()
 updateSaturationRow(saturationRow, 8)
 const saturationSlider = createRangeSlider(1, 24, 1, 'Separation', 8, saturationRow, updateSaturationRow)
 
-const hueRow = createRow()
+const hueRow = createDivColorRow()
 updateHueRow(hueRow, 24)
 const hueSlider = createRangeSlider(1, 90, 1, 'Separation', 24, hueRow, updateHueRow)
 const hueDegreeSlider = createRangeSlider(1, 360, 1, 'Degrees', 360, hueRow, updateHueDegreeRow)
 
-const complementary = Colors.complementary(color)
-const complementaryRow = createRow()
-complementaryRow.appendChild(createItemWithMarker(complementary[0]))
-complementaryRow.appendChild(createItem(complementary[1]))
-
-const splitComplementary = Colors.splitComplementary(color)
-const splitComplementaryRow = createRow()
-splitComplementaryRow.appendChild(createItemWithMarker(splitComplementary[0]))
-splitComplementaryRow.appendChild(createItem(splitComplementary[1]))
-splitComplementaryRow.appendChild(createItem(splitComplementary[2]))
-
-const analogous = Colors.analogous(color)
-const analogousRow = createRow()
-analogousRow.appendChild(createItemWithMarker(analogous[0]))
-analogousRow.appendChild(createItem(analogous[1]))
-analogousRow.appendChild(createItem(analogous[2]))
-
-const triadic = Colors.triadic(color)
-const triadicRow = createRow()
-triadicRow.appendChild(createItemWithMarker(triadic[0]))
-triadicRow.appendChild(createItem(triadic[1]))
-triadicRow.appendChild(createItem(triadic[2]))
-
-const tetradic = Colors.tetradic(color)
-const tetradicRow = createRow()
-tetradicRow.appendChild(createItem(tetradic[0]))
-tetradicRow.appendChild(createItem(tetradic[1]))
-tetradicRow.appendChild(createItem(tetradic[2]))
-tetradicRow.appendChild(createItem(tetradic[3]))
-
-const square = Colors.square(color)
-const squareRow = createRow()
-squareRow.appendChild(createItemWithMarker(square[0]))
-squareRow.appendChild(createItem(square[1]))
-squareRow.appendChild(createItem(square[2]))
-squareRow.appendChild(createItem(square[3]))
-
-const variationsColumn = createColumn()
+const variationsColumn = createDivInnerColumn()
 variationsColumn.appendChild(createH2('Variations'))
 variationsColumn.appendChild(createH3('Lightness'))
 variationsColumn.appendChild(lightnessSlider)
@@ -111,104 +74,103 @@ variationsColumn.appendChild(hueSlider)
 variationsColumn.appendChild(hueDegreeSlider)
 variationsColumn.appendChild(hueRow)
 
-const harmoniesColumn = createColumn()
+const harmoniesColumn = createDivInnerColumn()
 harmoniesColumn.appendChild(createH2('Harmonies'))
 harmoniesColumn.appendChild(createH3('Complementary'))
-harmoniesColumn.appendChild(complementaryRow)
+harmoniesColumn.appendChild(complementaryRow())
 harmoniesColumn.appendChild(createH3('Split Complementary'))
-harmoniesColumn.appendChild(splitComplementaryRow)
+harmoniesColumn.appendChild(splitComplementaryRow())
 harmoniesColumn.appendChild(createH3('Analogous'))
-harmoniesColumn.appendChild(analogousRow)
+harmoniesColumn.appendChild(analogousRow())
 harmoniesColumn.appendChild(createH3('Triadic'))
-harmoniesColumn.appendChild(triadicRow)
+harmoniesColumn.appendChild(triadicRow())
 harmoniesColumn.appendChild(createH3('Tetradic'))
-harmoniesColumn.appendChild(tetradicRow)
+harmoniesColumn.appendChild(tetradicRow())
 harmoniesColumn.appendChild(createH3('Square'))
-harmoniesColumn.appendChild(squareRow)
+harmoniesColumn.appendChild(squareRow())
 
-row.appendChild(colorColumn)
-row.appendChild(variationsColumn)
-row.appendChild(harmoniesColumn)
+outerColumn.appendChild(colorColumn)
+outerColumn.appendChild(variationsColumn)
+outerColumn.appendChild(harmoniesColumn)
 
-function createColumn () {
-  const column = document.createElement('div')
+function createDivInnerColumn () {
+  const column = createDiv()
   column.className = 'inner-column'
 
   return column
 }
 
-function createRow () {
-  const row = document.createElement('div')
+function createDivColorRow () {
+  const row = createDiv()
   row.className = 'color-row'
 
   return row
 }
 
-function createItem (color) {
-  const hsl = document.createElement('div')
+function createDivColorWithDivMarker (color) {
+  const divMarker = createDiv()
+  divMarker.className = 'marker'
+  divMarker.style.backgroundColor = Colors.formatTextColor(color)
+  divMarker.style.display = 'block'
+
+  const divColor = createDivColor(color)
+  divColor.appendChild(divMarker)
+  divColor.addEventListener('mouseenter', () => {
+    divMarker.style.display = 'none'
+  })
+  divColor.addEventListener('mouseleave', () => {
+    divMarker.style.display = 'block'
+  })
+
+  return divColor
+}
+
+function createDivColor (color) {
+  const hsl = createDiv()
   hsl.innerText = Colors.formatHSL(color)
   hsl.style.display = 'none'
   hsl.style.padding = '0px 10px'
 
-  const rgb = document.createElement('div')
+  const rgb = createDiv()
   rgb.innerText = Colors.formatRGB(color)
   rgb.style.display = 'none'
   rgb.style.padding = '0px 10px'
 
-  const grayscale = document.createElement('div')
+  const grayscale = createDiv()
   grayscale.innerText = `Grayscale: ${color.grayscale}`
   grayscale.style.display = 'none'
   grayscale.style.padding = '0px 10px'
 
-  const item = document.createElement('div')
-  item.className = 'item'
-  item.style.backgroundColor = Colors.formatHSL(color)
-  item.style.color = color.grayscale > 150 ? Colors.formatHSL(Colors.black()) : Colors.formatHSL(Colors.white())
-  item.appendChild(hsl)
-  item.appendChild(rgb)
-  item.appendChild(grayscale)
-  item.addEventListener('mouseenter', event => {
-    event.preventDefault()
+  const divColor = createDiv()
+  divColor.className = 'color'
+  divColor.style.backgroundColor = Colors.formatHSL(color)
+  divColor.style.color = Colors.formatTextColor(color)
+  divColor.appendChild(hsl)
+  divColor.appendChild(rgb)
+  divColor.appendChild(grayscale)
+
+  divColor.addEventListener('mouseenter', () => {
     hsl.style.display = 'block'
     rgb.style.display = 'block'
     grayscale.style.display = 'block'
-    item.style.boxShadow = `2px 2px ${item.style.color} inset, -2px -2px ${item.style.color} inset`
+    divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
   })
-  item.addEventListener('mouseleave', event => {
-    event.preventDefault()
+
+  divColor.addEventListener('mouseleave', () => {
     hsl.style.display = 'none'
     rgb.style.display = 'none'
     grayscale.style.display = 'none'
-    item.style.boxShadow = 'none'
+    divColor.style.boxShadow = 'none'
   })
-  item.addEventListener('dblclick', () => {
+
+  divColor.addEventListener('dblclick', () => {
     localStorage.setItem('h', color.hsl.h)
     localStorage.setItem('s', color.hsl.s)
     localStorage.setItem('l', color.hsl.l)
     window.location.href = './index.html'
   })
 
-  return item
-}
-
-function createItemWithMarker (color) {
-  const marker = document.createElement('div')
-  marker.className = 'marker'
-  marker.style.backgroundColor = color.grayscale > 150 ? Colors.formatHSL(Colors.black()) : Colors.formatHSL(Colors.white())
-  marker.style.display = 'block'
-
-  const item = createItem(color)
-  item.appendChild(marker)
-  item.addEventListener('mouseenter', event => {
-    event.preventDefault()
-    marker.style.display = 'none'
-  })
-  item.addEventListener('mouseleave', event => {
-    event.preventDefault()
-    marker.style.display = 'block'
-  })
-
-  return item
+  return divColor
 }
 
 function createRangeSlider (min, max, step, text, value, row, updateFunction) {
@@ -261,103 +223,164 @@ function createDiv () {
 }
 
 function updateLightnessRow (lightnessRow, value) {
-  const lightnessItems = []
+  const lightnessColors = []
   let lightenedColor = Colors.copy(color)
-  lightnessItems.push(createItemWithMarker(lightenedColor))
+  lightnessColors.push(createDivColorWithDivMarker(lightenedColor))
 
   while (lightenedColor.hsl.l < 100) {
     lightenedColor = Colors.lightenColor(lightenedColor, value)
-    lightnessItems.push(createItem(lightenedColor))
+    lightnessColors.push(createDivColor(lightenedColor))
   }
-  lightnessItems.reverse()
+  lightnessColors.reverse()
 
   let darkenedColor = Colors.copy(color)
   while (darkenedColor.hsl.l > 0) {
     darkenedColor = Colors.darkenColor(darkenedColor, value)
-    lightnessItems.push(createItem(darkenedColor))
+    lightnessColors.push(createDivColor(darkenedColor))
   }
 
   lightnessRow.replaceChildren()
-  lightnessItems.forEach(item => {
+  lightnessColors.forEach(item => {
     lightnessRow.appendChild(item)
   })
 }
 
 function updateSaturationRow (saturationRow, value) {
-  const saturationItems = []
+  const saturationColors = []
   let saturatedColor = Colors.copy(color)
-  saturationItems.push(createItemWithMarker(saturatedColor))
+  saturationColors.push(createDivColorWithDivMarker(saturatedColor))
 
   while (saturatedColor.hsl.s < 100) {
     saturatedColor = Colors.saturateColor(saturatedColor, value)
-    saturationItems.push(createItem(saturatedColor))
+    saturationColors.push(createDivColor(saturatedColor))
   }
-  saturationItems.reverse()
+  saturationColors.reverse()
 
   let desaturatedColor = Colors.copy(color)
   while (desaturatedColor.hsl.s > 0) {
     desaturatedColor = Colors.desaturateColor(desaturatedColor, value)
-    saturationItems.push(createItem(desaturatedColor))
+    saturationColors.push(createDivColor(desaturatedColor))
   }
 
   saturationRow.replaceChildren()
-  saturationItems.forEach(item => {
+  saturationColors.forEach(item => {
     saturationRow.appendChild(item)
   })
 }
 
 function updateHueRow (hueRow, value) {
   sValue = value
-  const hueItems = []
+  const hueColors = []
   let huedColor = Colors.copy(color)
-  hueItems.push(createItemWithMarker(huedColor))
+  hueColors.push(createDivColorWithDivMarker(huedColor))
 
   const x = Math.max(Math.round(dValue / value) - 1, 0)
   let i = x
   while (i > x / 2) {
     huedColor = Colors.hueColor(huedColor, value)
-    hueItems.push(createItem(huedColor))
+    hueColors.push(createDivColor(huedColor))
     i--
   }
-  hueItems.reverse()
+  hueColors.reverse()
 
   huedColor = Colors.copy(color)
   while (i > 0) {
     huedColor = Colors.hueColor(huedColor, -value)
-    hueItems.push(createItem(huedColor))
+    hueColors.push(createDivColor(huedColor))
     i--
   }
 
   hueRow.replaceChildren()
-  hueItems.forEach(item => {
+  hueColors.forEach(item => {
     hueRow.appendChild(item)
   })
 }
 
 function updateHueDegreeRow (hueRow, value) {
   dValue = value
-  const hueItems = []
+  const hueColors = []
   let huedColor = Colors.copy(color)
-  hueItems.push(createItemWithMarker(huedColor))
+  hueColors.push(createDivColorWithDivMarker(huedColor))
 
   const x = Math.max(Math.round(value / sValue) - 1, 0)
   let i = x
   while (i > x / 2) {
     huedColor = Colors.hueColor(huedColor, sValue)
-    hueItems.push(createItem(huedColor))
+    hueColors.push(createDivColor(huedColor))
     i--
   }
-  hueItems.reverse()
+  hueColors.reverse()
 
   huedColor = Colors.copy(color)
   while (i > 0) {
     huedColor = Colors.hueColor(huedColor, -sValue)
-    hueItems.push(createItem(huedColor))
+    hueColors.push(createDivColor(huedColor))
     i--
   }
 
   hueRow.replaceChildren()
-  hueItems.forEach(item => {
+  hueColors.forEach(item => {
     hueRow.appendChild(item)
   })
+}
+
+function complementaryRow () {
+  const complementary = Colors.complementary(color)
+  const row = createDivColorRow()
+  row.appendChild(createDivColorWithDivMarker(complementary[0]))
+  row.appendChild(createDivColor(complementary[1]))
+
+  return row
+}
+
+function splitComplementaryRow () {
+  const splitComplementary = Colors.splitComplementary(color)
+  const row = createDivColorRow()
+  row.appendChild(createDivColorWithDivMarker(splitComplementary[0]))
+  row.appendChild(createDivColor(splitComplementary[1]))
+  row.appendChild(createDivColor(splitComplementary[2]))
+
+  return row
+}
+
+function analogousRow () {
+  const analogous = Colors.analogous(color)
+  const row = createDivColorRow()
+  row.appendChild(createDivColorWithDivMarker(analogous[0]))
+  row.appendChild(createDivColor(analogous[1]))
+  row.appendChild(createDivColor(analogous[2]))
+
+  return row
+}
+
+function triadicRow () {
+  const triadic = Colors.triadic(color)
+  const row = createDivColorRow()
+  row.appendChild(createDivColorWithDivMarker(triadic[0]))
+  row.appendChild(createDivColor(triadic[1]))
+  row.appendChild(createDivColor(triadic[2]))
+
+  return row
+}
+
+function tetradicRow () {
+  const tetradic = Colors.tetradic(color)
+  const row = createDivColorRow()
+  row.appendChild(createDivColor(tetradic[0]))
+  row.appendChild(createDivColor(tetradic[1]))
+  row.appendChild(createDivColor(tetradic[2]))
+  row.appendChild(createDivColor(tetradic[3]))
+
+  return row
+}
+
+function squareRow () {
+  const square = Colors.square(color)
+  const row = createDivColorRow()
+  row.appendChild(createDivColorWithDivMarker(square[0]))
+  row.appendChild(createDivColor(square[1]))
+  row.appendChild(createDivColor(square[2]))
+  row.appendChild(createDivColor(square[3]))
+
+  return row
 }

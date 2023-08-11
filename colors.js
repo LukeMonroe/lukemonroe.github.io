@@ -123,6 +123,10 @@ class Colors {
     return `rgb(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})`
   }
 
+  static formatTextColor (color) {
+    return color.grayscale > 150 ? Colors.formatHSL(Colors.black()) : Colors.formatHSL(Colors.white())
+  }
+
   static white () {
     return Colors.buildColor(0, 0, 100)
   }
