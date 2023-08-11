@@ -21,16 +21,16 @@ if (h === null || s === null || l === null) {
 document.documentElement.style.setProperty('--thumb', Colors.formatHSL(color))
 
 const lightnessRow = createDivColorRow()
-updateLightnessRow(lightnessRow, 8)
-const lightnessSlider = createRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, updateLightnessRow)
+buildLightnessRow(lightnessRow, 8)
+const lightnessSlider = createRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, buildLightnessRow)
 
 const saturationRow = createDivColorRow()
-updateSaturationRow(saturationRow, 8)
-const saturationSlider = createRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, updateSaturationRow)
+buildSaturationRow(saturationRow, 8)
+const saturationSlider = createRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, buildSaturationRow)
 
 const hueRow = createDivColorRow()
-updateHueRow(hueRow, 24)
-const hueSlider = createRangeSlider(1, 90, 1, 'Separation', 24, hueRow, updateHueRow)
+buildHueRow(hueRow, 24)
+const hueSlider = createRangeSlider(1, 90, 1, 'Separation', 24, hueRow, buildHueRow)
 const hueDegreeSlider = createRangeSlider(1, 360, 1, 'Degrees', 360, hueRow, updateHueDegreeRow)
 
 const colorColumn = createDivInnerColumn()
@@ -175,10 +175,10 @@ function createRangeSlider (min, max, step, text, value, row, updateFunction) {
   sliderInput.max = max
   sliderInput.step = step
   sliderInput.value = value
-  sliderInput.oninput = function () {
-    sliderH4.innerText = `${text}: ${this.value}`
-    updateFunction(row, this.value)
-  }
+  sliderInput.addEventListener('input', () => {
+    sliderH4.innerText = `${text}: ${sliderInput.value}`
+    updateFunction(row, sliderInput.value)
+  })
 
   const sliderDiv = createDiv()
   sliderDiv.className = 'slider'
@@ -213,53 +213,33 @@ function createDiv () {
   return document.createElement('div')
 }
 
-function updateLightnessRow (lightnessRow, value) {
-  const lightnessColors = []
-  let lightenedColor = Colors.copy(color)
-  lightnessColors.push(createDivColorWithDivMarker(lightenedColor))
-
-  while (lightenedColor.hsl.l < 100) {
-    lightenedColor = Colors.lightenColor(lightenedColor, value)
-    lightnessColors.push(createDivColor(lightenedColor))
-  }
-  lightnessColors.reverse()
-
-  let darkenedColor = Colors.copy(color)
-  while (darkenedColor.hsl.l > 0) {
-    darkenedColor = Colors.darkenColor(darkenedColor, value)
-    lightnessColors.push(createDivColor(darkenedColor))
-  }
+function buildLightnessRow (lightnessRow, value) {
+  const lightnesses = Colors.lightnesses(color, value)
 
   lightnessRow.replaceChildren()
-  lightnessColors.forEach(item => {
-    lightnessRow.appendChild(item)
+  lightnesses.forEach(lightness => {
+    if (Colors.equal(color, lightness)) {
+      lightnessRow.appendChild(createDivColorWithDivMarker(lightness))
+    } else {
+      lightnessRow.appendChild(createDivColor(lightness))
+    }
   })
 }
 
-function updateSaturationRow (saturationRow, value) {
-  const saturationColors = []
-  let saturatedColor = Colors.copy(color)
-  saturationColors.push(createDivColorWithDivMarker(saturatedColor))
+function buildSaturationRow (row, value) {
+  const saturations = Colors.saturations(color, value)
 
-  while (saturatedColor.hsl.s < 100) {
-    saturatedColor = Colors.saturateColor(saturatedColor, value)
-    saturationColors.push(createDivColor(saturatedColor))
-  }
-  saturationColors.reverse()
-
-  let desaturatedColor = Colors.copy(color)
-  while (desaturatedColor.hsl.s > 0) {
-    desaturatedColor = Colors.desaturateColor(desaturatedColor, value)
-    saturationColors.push(createDivColor(desaturatedColor))
-  }
-
-  saturationRow.replaceChildren()
-  saturationColors.forEach(item => {
-    saturationRow.appendChild(item)
+  row.replaceChildren()
+  saturations.forEach(saturation => {
+    if (Colors.equal(color, saturation)) {
+      row.appendChild(createDivColorWithDivMarker(saturation))
+    } else {
+      row.appendChild(createDivColor(saturation))
+    }
   })
 }
 
-function updateHueRow (hueRow, value) {
+function buildHueRow (hueRow, value) {
   sValue = value
   const hueColors = []
   let huedColor = Colors.copy(color)

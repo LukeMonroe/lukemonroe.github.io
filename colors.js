@@ -1,4 +1,8 @@
 class Colors {
+  static equal (color01, color02) {
+    return color01.hsl.h === color02.hsl.h && color01.hsl.s === color02.hsl.s && color01.hsl.l === color02.hsl.l
+  }
+
   static copy (color) {
     return Colors.buildColor(color.hsl.h, color.hsl.s, color.hsl.l)
   }
@@ -76,32 +80,20 @@ class Colors {
     return `#${h}${e}${x}`
   }
 
-  static darkenColor (color, darkness) {
-    let l = Number(color.hsl.l) - Number(darkness)
-    l = l > 0 ? l : 0
-
-    return Colors.buildColor(color.hsl.h, color.hsl.s, l)
-  }
-
-  static lightenColor (color, lightness) {
-    let l = Number(color.hsl.l) + Number(lightness)
-    l = l < 100 ? l : 100
-
-    return Colors.buildColor(color.hsl.h, color.hsl.s, l)
-  }
-
-  static desaturateColor (color, saturation) {
-    let s = Number(color.hsl.s) - Number(saturation)
+  static saturation (color, value) {
+    let s = Number(color.hsl.s) + Number(value)
+    s = s < 100 ? s : 100
     s = s > 0 ? s : 0
 
     return Colors.buildColor(color.hsl.h, s, color.hsl.l)
   }
 
-  static saturateColor (color, saturation) {
-    let s = Number(color.hsl.s) + Number(saturation)
-    s = s < 100 ? s : 100
+  static lightness (color, value) {
+    let l = Number(color.hsl.l) + Number(value)
+    l = l < 100 ? l : 100
+    l = l > 0 ? l : 0
 
-    return Colors.buildColor(color.hsl.h, s, color.hsl.l)
+    return Colors.buildColor(color.hsl.h, color.hsl.s, l)
   }
 
   static hueColor (color, hue) {
@@ -150,15 +142,34 @@ class Colors {
     return Colors.buildColor(0, 0, 0)
   }
 
-  static harmonies (color) {
-    return new Map([
-      ['complementary', this.complementary(color)],
-      ['splitComplementary', this.splitComplementary(color)],
-      ['analogous', this.analogous(color)],
-      ['triadic', this.triadic(color)],
-      ['tetradic', this.tetradic(color)],
-      ['square', this.square(color)]
-    ])
+  static saturations (color, value) {
+    const colors = [Colors.copy(color)]
+
+    while (colors[colors.length - 1].hsl.s < 100) {
+      colors.push(Colors.saturation(colors[colors.length - 1], value))
+    }
+
+    colors.reverse()
+    while (colors[colors.length - 1].hsl.s > 0) {
+      colors.push(Colors.saturation(colors[colors.length - 1], -value))
+    }
+
+    return colors
+  }
+
+  static lightnesses (color, value) {
+    const colors = [Colors.copy(color)]
+
+    while (colors[colors.length - 1].hsl.l < 100) {
+      colors.push(Colors.lightness(colors[colors.length - 1], value))
+    }
+
+    colors.reverse()
+    while (colors[colors.length - 1].hsl.l > 0) {
+      colors.push(Colors.lightness(colors[colors.length - 1], -value))
+    }
+
+    return colors
   }
 
   static complementary (color) {
