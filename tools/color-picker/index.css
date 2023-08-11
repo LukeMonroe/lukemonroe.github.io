@@ -10,7 +10,7 @@ body {
     margin: 0px;
 }
 
-div.row {
+div.outer-column {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -18,7 +18,7 @@ div.row {
     gap: 60px;
 }
 
-div.column {
+div.inner-column {
     display: flex;
     flex-direction: column;
     justify-content: center;

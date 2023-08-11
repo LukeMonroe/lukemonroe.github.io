@@ -130,6 +130,41 @@ class Colors {
   static black () {
     return Colors.buildColor(0, 0, 0)
   }
+
+  static harmonies (color) {
+    return new Map([
+      ['complementary', this.complementary(color)],
+      ['splitComplementary', this.splitComplementary(color)],
+      ['analogous', this.analogous(color)],
+      ['triadic', this.triadic(color)],
+      ['tetradic', this.tetradic(color)],
+      ['square', this.square(color)]
+    ])
+  }
+
+  static complementary (color) {
+    return [Colors.copy(color), Colors.hueColor(color, 180)]
+  }
+
+  static splitComplementary (color) {
+    return [Colors.copy(color), Colors.hueColor(color, 150), Colors.hueColor(color, 210)]
+  }
+
+  static analogous (color) {
+    return [Colors.copy(color), Colors.hueColor(color, 30), Colors.hueColor(color, 330)]
+  }
+
+  static triadic (color) {
+    return [Colors.copy(color), Colors.hueColor(color, 120), Colors.hueColor(color, 240)]
+  }
+
+  static tetradic (color) {
+    return [Colors.hueColor(color, 30), Colors.hueColor(color, 150), Colors.hueColor(color, 300), Colors.hueColor(color, 330)]
+  }
+
+  static square (color) {
+    return [Colors.copy(color), Colors.hueColor(color, 90), Colors.hueColor(color, 180), Colors.hueColor(color, 270)]
+  }
 }
 
 export { Colors }

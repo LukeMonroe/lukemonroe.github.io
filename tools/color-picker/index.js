@@ -7,7 +7,7 @@ let dValue = 360
 const themes = new ColorPickerThemes()
 themes.setTheme()
 
-const row = document.getElementById('row')
+const row = document.getElementById('outer-column')
 
 // Add sliders to create my own color picker.
 
@@ -22,14 +22,17 @@ if (h === null || s === null || l === null) {
   color = Colors.buildColor(h, s, l)
 }
 
-const hsl = document.createElement('div')
+const hsl = createDiv()
 hsl.innerText = Colors.formatHSL(color)
+hsl.style.padding = '0px 10px'
 
-const rgb = document.createElement('div')
+const rgb = createDiv()
 rgb.innerText = Colors.formatRGB(color)
+rgb.style.padding = '0px 10px'
 
-const grayscale = document.createElement('div')
+const grayscale = createDiv()
 grayscale.innerText = `Grayscale: ${color.grayscale}`
+grayscale.style.padding = '0px 10px'
 
 let textColor = Colors.formatHSL(Colors.white())
 if (color.grayscale > 150) {
@@ -58,133 +61,69 @@ updateHueRow(hueRow, 24)
 const hueSlider = createRangeSlider(1, 90, 1, 'Separation', 24, hueRow, updateHueRow)
 const hueDegreeSlider = createRangeSlider(1, 360, 1, 'Degrees', 360, hueRow, updateHueDegreeRow)
 
-// ------------------
+const complementary = Colors.complementary(color)
 const complementaryRow = createRow()
-const complementaryItems = []
-complementaryItems.push(createItemWithMarker(Colors.copy(color)))
-complementaryItems.push(createItem(Colors.hueColor(color, 180)))
-complementaryItems.forEach(item => {
-  complementaryRow.appendChild(item)
-})
-// --------------
+complementaryRow.appendChild(createItemWithMarker(complementary[0]))
+complementaryRow.appendChild(createItem(complementary[1]))
 
-// ------------------
+const splitComplementary = Colors.splitComplementary(color)
 const splitComplementaryRow = createRow()
-const splitComplementaryItems = []
-splitComplementaryItems.push(createItemWithMarker(Colors.copy(color)))
-const splitComplementaryColor = Colors.hueColor(color, 180)
-splitComplementaryItems.push(createItem(Colors.hueColor(splitComplementaryColor, -30)))
-splitComplementaryItems.push(createItem(Colors.hueColor(splitComplementaryColor, 30)))
-splitComplementaryItems.forEach(item => {
-  splitComplementaryRow.appendChild(item)
-})
-// --------------
+splitComplementaryRow.appendChild(createItemWithMarker(splitComplementary[0]))
+splitComplementaryRow.appendChild(createItem(splitComplementary[1]))
+splitComplementaryRow.appendChild(createItem(splitComplementary[2]))
 
-// ------------------
+const analogous = Colors.analogous(color)
 const analogousRow = createRow()
-const analogousItems = []
-analogousItems.push(createItem(Colors.hueColor(color, -30)))
-analogousItems.push(createItemWithMarker(Colors.copy(color)))
-analogousItems.push(createItem(Colors.hueColor(color, 30)))
-analogousItems.forEach(item => {
-  analogousRow.appendChild(item)
-})
-// --------------
+analogousRow.appendChild(createItemWithMarker(analogous[0]))
+analogousRow.appendChild(createItem(analogous[1]))
+analogousRow.appendChild(createItem(analogous[2]))
 
-// ------------------
+const triadic = Colors.triadic(color)
 const triadicRow = createRow()
-const triadicItems = []
-triadicItems.push(createItem(Colors.hueColor(color, -120)))
-triadicItems.push(createItemWithMarker(Colors.copy(color)))
-triadicItems.push(createItem(Colors.hueColor(color, 120)))
-triadicItems.forEach(item => {
-  triadicRow.appendChild(item)
-})
-// --------------
+triadicRow.appendChild(createItemWithMarker(triadic[0]))
+triadicRow.appendChild(createItem(triadic[1]))
+triadicRow.appendChild(createItem(triadic[2]))
 
-// ------------------
+const tetradic = Colors.tetradic(color)
 const tetradicRow = createRow()
-const tetradicItems = []
-tetradicItems.push(createItem(Colors.hueColor(color, -30)))
-tetradicItems.push(createItem(Colors.hueColor(color, 30)))
-tetradicItems.push(createItem(Colors.hueColor(color, -150)))
-tetradicItems.push(createItem(Colors.hueColor(color, 150)))
-tetradicItems.forEach(item => {
-  tetradicRow.appendChild(item)
-})
-// --------------
+tetradicRow.appendChild(createItem(tetradic[0]))
+tetradicRow.appendChild(createItem(tetradic[1]))
+tetradicRow.appendChild(createItem(tetradic[2]))
+tetradicRow.appendChild(createItem(tetradic[3]))
 
-// ------------------
+const square = Colors.square(color)
 const squareRow = createRow()
-const squareItems = []
-squareItems.push(createItemWithMarker(Colors.copy(color)))
-squareItems.push(createItem(Colors.hueColor(color, 90)))
-squareItems.push(createItem(Colors.hueColor(color, 180)))
-squareItems.push(createItem(Colors.hueColor(color, 270)))
-squareItems.forEach(item => {
-  squareRow.appendChild(item)
-})
-// --------------
-
-const variationsH2 = createH2()
-variationsH2.innerText = 'Variations'
-
-const lightnessH3 = createH3()
-lightnessH3.innerText = 'Lightness'
-
-const saturationH3 = createH3()
-saturationH3.innerText = 'Saturation'
-
-const hueH3 = createH3()
-hueH3.innerText = 'Hue'
-
-const harmoniesH2 = createH2()
-harmoniesH2.innerText = 'Harmonies'
-
-const complementaryH3 = createH3()
-complementaryH3.innerText = 'Complementary'
-
-const splitComplementaryH3 = createH3()
-splitComplementaryH3.innerText = 'Split Complementary'
-
-const analogousH3 = createH3()
-analogousH3.innerText = 'Analogous'
-
-const triadicH3 = createH3()
-triadicH3.innerText = 'Triadic'
-
-const tetradicH3 = createH3()
-tetradicH3.innerText = 'Tetradic'
-
-const squareH3 = createH3()
-squareH3.innerText = 'Square'
+squareRow.appendChild(createItemWithMarker(square[0]))
+squareRow.appendChild(createItem(square[1]))
+squareRow.appendChild(createItem(square[2]))
+squareRow.appendChild(createItem(square[3]))
 
 const variationsColumn = createColumn()
-variationsColumn.appendChild(variationsH2)
-variationsColumn.appendChild(lightnessH3)
+variationsColumn.appendChild(createH2('Variations'))
+variationsColumn.appendChild(createH3('Lightness'))
 variationsColumn.appendChild(lightnessSlider)
 variationsColumn.appendChild(lightnessRow)
-variationsColumn.appendChild(saturationH3)
+variationsColumn.appendChild(createH3('Saturation'))
 variationsColumn.appendChild(saturationSlider)
 variationsColumn.appendChild(saturationRow)
-variationsColumn.appendChild(hueH3)
+variationsColumn.appendChild(createH3('Hue'))
 variationsColumn.appendChild(hueSlider)
 variationsColumn.appendChild(hueDegreeSlider)
 variationsColumn.appendChild(hueRow)
 
 const harmoniesColumn = createColumn()
-harmoniesColumn.appendChild(harmoniesH2)
-harmoniesColumn.appendChild(complementaryH3)
+harmoniesColumn.appendChild(createH2('Harmonies'))
+harmoniesColumn.appendChild(createH3('Complementary'))
 harmoniesColumn.appendChild(complementaryRow)
-harmoniesColumn.appendChild(splitComplementaryH3)
+harmoniesColumn.appendChild(createH3('Split Complementary'))
 harmoniesColumn.appendChild(splitComplementaryRow)
-harmoniesColumn.appendChild(analogousH3)
+harmoniesColumn.appendChild(createH3('Analogous'))
 harmoniesColumn.appendChild(analogousRow)
-harmoniesColumn.appendChild(triadicH3)
+harmoniesColumn.appendChild(createH3('Triadic'))
 harmoniesColumn.appendChild(triadicRow)
-harmoniesColumn.appendChild(tetradicH3)
+harmoniesColumn.appendChild(createH3('Tetradic'))
 harmoniesColumn.appendChild(tetradicRow)
-harmoniesColumn.appendChild(squareH3)
+harmoniesColumn.appendChild(createH3('Square'))
 harmoniesColumn.appendChild(squareRow)
 
 row.appendChild(colorColumn)
@@ -193,7 +132,7 @@ row.appendChild(harmoniesColumn)
 
 function createColumn () {
   const column = document.createElement('div')
-  column.className = 'column'
+  column.className = 'inner-column'
 
   return column
 }
@@ -296,16 +235,25 @@ function createRangeSlider (min, max, step, text, value, row, updateFunction) {
   return sliderDiv
 }
 
-function createH2 () {
-  return document.createElement('h2')
+function createH2 (innerText) {
+  const h2 = document.createElement('h2')
+  h2.innerText = innerText
+
+  return h2
 }
 
-function createH3 () {
-  return document.createElement('h3')
+function createH3 (innerText) {
+  const h3 = document.createElement('h3')
+  h3.innerText = innerText
+
+  return h3
 }
 
-function createH4 () {
-  return document.createElement('h4')
+function createH4 (innerText) {
+  const h4 = document.createElement('h4')
+  h4.innerText = innerText
+
+  return h4
 }
 
 function createDiv () {
