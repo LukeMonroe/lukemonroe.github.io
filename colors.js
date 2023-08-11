@@ -73,7 +73,7 @@ class Colors {
     if (e.length !== 2) { e = `0${e}` }
     if (x.length !== 2) { x = `0${x}` }
 
-    return `${h}${e}${x}`
+    return `#${h}${e}${x}`
   }
 
   static darkenColor (color, darkness) {
