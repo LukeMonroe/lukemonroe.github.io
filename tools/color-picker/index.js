@@ -64,10 +64,13 @@ harmoniesColumn.appendChild(tetradicRow())
 harmoniesColumn.appendChild(createH3('Square'))
 harmoniesColumn.appendChild(squareRow())
 
+const divCopied = createDivCopied()
+
 const outerColumn = document.getElementById('outer-column')
 outerColumn.appendChild(colorColumn)
 outerColumn.appendChild(variationsColumn)
 outerColumn.appendChild(harmoniesColumn)
+outerColumn.appendChild(divCopied)
 
 function createDivInnerColumn () {
   const column = createDiv()
@@ -116,12 +119,22 @@ function createDivMarker (color) {
   return divMarker
 }
 
+function createDivCopied () {
+  const divCopied = createDiv()
+  divCopied.className = 'copied'
+  divCopied.appendChild(createH4('Color copied to clipboard'))
+
+  return divCopied
+}
+
 function createDivColorText (innerText) {
   const divColorText = createDiv()
   divColorText.className = 'color-text'
   divColorText.innerText = innerText
   divColorText.addEventListener('click', () => {
     navigator.clipboard.writeText(divColorText.innerText)
+    divCopied.style.opacity = '1'
+    setTimeout(function () { divCopied.style.opacity = '0' }, 3000)
   })
 
   return divColorText
