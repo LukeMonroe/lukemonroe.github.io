@@ -1,8 +1,8 @@
 import { ColorPickerThemes } from './color-picker-themes.js'
 import { Colors } from '../../colors.js'
 
-let sValue = 0
-let dValue = 360
+let hueSeparation = 24
+let hueDegrees = 360
 
 const themes = new ColorPickerThemes()
 themes.setTheme()
@@ -10,37 +10,34 @@ themes.setTheme()
 const h = localStorage.getItem('h')
 const s = localStorage.getItem('s')
 const l = localStorage.getItem('l')
-let color = null
+let colorPicked = null
 
 if (h === null || s === null || l === null) {
-  color = Colors.randomColor()
+  colorPicked = Colors.random()
 } else {
-  color = Colors.buildColor(h, s, l)
+  colorPicked = Colors.build(h, s, l)
 }
 
-document.documentElement.style.setProperty('--thumb', Colors.formatHSL(color))
+document.documentElement.style.setProperty('--thumb', colorPicked.formattedHSL)
 
 const hueRow = createDivColorRow()
-buildHueRow(hueRow, 24)
-const hueSlider = createRangeSlider(1, 90, 1, 'Separation', 24, hueRow, buildHueRow)
-const hueDegreeSlider = createRangeSlider(1, 360, 1, 'Degrees', 360, hueRow, buildHueRowDegree)
+const hueSliderSeparation = createInputRangeSlider(1, 90, 1, 'Separation', 24, hueRow, buildHueRowSeparation)
+const hueSliderDegree = createInputRangeSlider(1, 360, 1, 'Degrees', 360, hueRow, buildHueRowDegree)
 
 const saturationRow = createDivColorRow()
-buildSaturationRow(saturationRow, 8)
-const saturationSlider = createRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, buildSaturationRow)
+const saturationSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, buildSaturationRow)
 
 const lightnessRow = createDivColorRow()
-buildLightnessRow(lightnessRow, 8)
-const lightnessSlider = createRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, buildLightnessRow)
+const lightnessSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, buildLightnessRow)
 
 const colorColumn = createDivInnerColumn()
-colorColumn.appendChild(createDivColorPicked(color))
+colorColumn.appendChild(createDivColorPicked(colorPicked))
 
 const variationsColumn = createDivInnerColumn()
 variationsColumn.appendChild(createH2('Variations'))
 variationsColumn.appendChild(createH3('Hue'))
-variationsColumn.appendChild(hueSlider)
-variationsColumn.appendChild(hueDegreeSlider)
+variationsColumn.appendChild(hueSliderSeparation)
+variationsColumn.appendChild(hueSliderDegree)
 variationsColumn.appendChild(hueRow)
 variationsColumn.appendChild(createH3('Saturation'))
 variationsColumn.appendChild(saturationSlider)
@@ -113,7 +110,7 @@ function createDivColorWithDivMarker (color) {
 function createDivMarker (color) {
   const divMarker = createDiv()
   divMarker.className = 'marker'
-  divMarker.style.backgroundColor = Colors.formatTextColor(color)
+  divMarker.style.backgroundColor = color.formattedText
   divMarker.style.display = 'block'
 
   return divMarker
@@ -141,15 +138,15 @@ function createDivColorText (innerText) {
 }
 
 function createDivColor (color) {
-  const hex = createDivColorText(color.hex)
-  const rgb = createDivColorText(Colors.formatRGB(color))
-  const hsl = createDivColorText(Colors.formatHSL(color))
+  const hex = createDivColorText(color.formattedHex)
+  const rgb = createDivColorText(color.formattedRGB)
+  const hsl = createDivColorText(color.formattedHSL)
   const grayscale = createDivColorText(`Grayscale: ${color.grayscale}`)
 
   const divColor = createDiv()
   divColor.className = 'color'
-  divColor.style.backgroundColor = Colors.formatHSL(color)
-  divColor.style.color = Colors.formatTextColor(color)
+  divColor.style.backgroundColor = color.formattedHSL
+  divColor.style.color = color.formattedText
   divColor.appendChild(hex)
   divColor.appendChild(rgb)
   divColor.appendChild(hsl)
@@ -178,27 +175,29 @@ function createDivColor (color) {
   return divColor
 }
 
-function createRangeSlider (min, max, step, text, value, row, updateFunction) {
-  const sliderH4 = createH4(`${text}: ${value}`)
+function createInputRangeSlider (min, max, step, text, value, row, updateFunction) {
+  const h4Slider = createH4(`${text}: ${value}`)
 
-  const sliderInput = document.createElement('input')
-  sliderInput.className = 'slider'
-  sliderInput.type = 'range'
-  sliderInput.min = min
-  sliderInput.max = max
-  sliderInput.step = step
-  sliderInput.value = value
-  sliderInput.addEventListener('input', () => {
-    sliderH4.innerText = `${text}: ${sliderInput.value}`
-    updateFunction(row, sliderInput.value)
+  const inputRangeSlider = document.createElement('input')
+  inputRangeSlider.className = 'slider'
+  inputRangeSlider.type = 'range'
+  inputRangeSlider.min = min
+  inputRangeSlider.max = max
+  inputRangeSlider.step = step
+  inputRangeSlider.value = value
+  inputRangeSlider.addEventListener('input', () => {
+    h4Slider.innerText = `${text}: ${inputRangeSlider.value}`
+    updateFunction(row, inputRangeSlider.value)
   })
 
-  const sliderDiv = createDiv()
-  sliderDiv.className = 'slider'
-  sliderDiv.appendChild(sliderH4)
-  sliderDiv.appendChild(sliderInput)
+  const divSlider = createDiv()
+  divSlider.className = 'slider'
+  divSlider.appendChild(h4Slider)
+  divSlider.appendChild(inputRangeSlider)
 
-  return sliderDiv
+  updateFunction(row, inputRangeSlider.value)
+
+  return divSlider
 }
 
 function createH2 (innerText) {
@@ -226,90 +225,33 @@ function createDiv () {
   return document.createElement('div')
 }
 
-function buildLightnessRow (lightnessRow, value) {
-  const lightnesses = Colors.lightnesses(color, value)
+function buildHueRowSeparation (row, value) {
+  hueSeparation = value
+  buildColorRow(row, Colors.hues(colorPicked, hueDegrees, hueSeparation))
+}
 
-  lightnessRow.replaceChildren()
-  lightnesses.forEach(lightness => {
-    if (Colors.equal(color, lightness)) {
-      lightnessRow.appendChild(createDivColorWithDivMarker(lightness))
-    } else {
-      lightnessRow.appendChild(createDivColor(lightness))
-    }
-  })
+function buildHueRowDegree (row, value) {
+  hueDegrees = value
+  buildColorRow(row, Colors.hues(colorPicked, hueDegrees, hueSeparation))
 }
 
 function buildSaturationRow (row, value) {
-  const saturations = Colors.saturations(color, value)
+  buildColorRow(row, Colors.saturations(colorPicked, value))
+}
 
+function buildLightnessRow (row, value) {
+  buildColorRow(row, Colors.lightnesses(colorPicked, value))
+}
+
+function buildColorRow (row, colors) {
   row.replaceChildren()
-  saturations.forEach(saturation => {
-    if (Colors.equal(color, saturation)) {
-      row.appendChild(createDivColorWithDivMarker(saturation))
-    } else {
-      row.appendChild(createDivColor(saturation))
-    }
-  })
-}
-
-function buildHueRow (hueRow, value) {
-  sValue = value
-  const hueColors = []
-  let huedColor = Colors.copy(color)
-  hueColors.push(createDivColorWithDivMarker(huedColor))
-
-  const x = Math.max(Math.round(dValue / value) - 1, 0)
-  let i = x
-  while (i > x / 2) {
-    huedColor = Colors.hueColor(huedColor, value)
-    hueColors.push(createDivColor(huedColor))
-    i--
-  }
-  hueColors.reverse()
-
-  huedColor = Colors.copy(color)
-  while (i > 0) {
-    huedColor = Colors.hueColor(huedColor, -value)
-    hueColors.push(createDivColor(huedColor))
-    i--
-  }
-
-  hueRow.replaceChildren()
-  hueColors.forEach(item => {
-    hueRow.appendChild(item)
-  })
-}
-
-function buildHueRowDegree (hueRow, value) {
-  dValue = value
-  const hueColors = []
-  let huedColor = Colors.copy(color)
-  hueColors.push(createDivColorWithDivMarker(huedColor))
-
-  const x = Math.max(Math.round(value / sValue) - 1, 0)
-  let i = x
-  while (i > x / 2) {
-    huedColor = Colors.hueColor(huedColor, sValue)
-    hueColors.push(createDivColor(huedColor))
-    i--
-  }
-  hueColors.reverse()
-
-  huedColor = Colors.copy(color)
-  while (i > 0) {
-    huedColor = Colors.hueColor(huedColor, -sValue)
-    hueColors.push(createDivColor(huedColor))
-    i--
-  }
-
-  hueRow.replaceChildren()
-  hueColors.forEach(item => {
-    hueRow.appendChild(item)
+  colors.forEach(color => {
+    row.appendChild(Colors.equal(color, colorPicked) ? createDivColorWithDivMarker(color) : createDivColor(color))
   })
 }
 
 function complementaryRow () {
-  const complementary = Colors.complementary(color)
+  const complementary = Colors.complementary(colorPicked)
   const row = createDivColorRow()
   row.appendChild(createDivColorWithDivMarker(complementary[0]))
   row.appendChild(createDivColor(complementary[1]))
@@ -318,7 +260,7 @@ function complementaryRow () {
 }
 
 function splitComplementaryRow () {
-  const splitComplementary = Colors.splitComplementary(color)
+  const splitComplementary = Colors.splitComplementary(colorPicked)
   const row = createDivColorRow()
   row.appendChild(createDivColorWithDivMarker(splitComplementary[0]))
   row.appendChild(createDivColor(splitComplementary[1]))
@@ -328,7 +270,7 @@ function splitComplementaryRow () {
 }
 
 function analogousRow () {
-  const analogous = Colors.analogous(color)
+  const analogous = Colors.analogous(colorPicked)
   const row = createDivColorRow()
   row.appendChild(createDivColorWithDivMarker(analogous[0]))
   row.appendChild(createDivColor(analogous[1]))
@@ -338,7 +280,7 @@ function analogousRow () {
 }
 
 function triadicRow () {
-  const triadic = Colors.triadic(color)
+  const triadic = Colors.triadic(colorPicked)
   const row = createDivColorRow()
   row.appendChild(createDivColorWithDivMarker(triadic[0]))
   row.appendChild(createDivColor(triadic[1]))
@@ -348,7 +290,7 @@ function triadicRow () {
 }
 
 function tetradicRow () {
-  const tetradic = Colors.tetradic(color)
+  const tetradic = Colors.tetradic(colorPicked)
   const row = createDivColorRow()
   row.appendChild(createDivColor(tetradic[0]))
   row.appendChild(createDivColor(tetradic[1]))
@@ -359,7 +301,7 @@ function tetradicRow () {
 }
 
 function squareRow () {
-  const square = Colors.square(color)
+  const square = Colors.square(colorPicked)
   const row = createDivColorRow()
   row.appendChild(createDivColorWithDivMarker(square[0]))
   row.appendChild(createDivColor(square[1]))

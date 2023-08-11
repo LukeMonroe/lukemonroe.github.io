@@ -4,30 +4,45 @@ class Colors {
   }
 
   static copy (color) {
-    return Colors.buildColor(color.hsl.h, color.hsl.s, color.hsl.l)
+    return Colors.build(color.hsl.h, color.hsl.s, color.hsl.l)
   }
 
-  static buildColor (h, s, l) {
+  static build (h, s, l) {
     const hsl = { h, s, l }
     const rgb = Colors.hslToRGB(hsl)
     const hex = Colors.rgbToHex(rgb)
     const grayscale = Math.round((0.2126 * rgb.r) + (0.7152 * rgb.g) + (0.0722 * rgb.b))
 
-    return { hex, rgb, hsl, grayscale }
+    const formattedHex = hex
+    const formattedRGB = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`
+    const formattedHSL = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`
+    const formattedText = grayscale > 150 ? 'hsl(0, 0%, 0%)' : 'hsl(0, 0%, 100%)'
+
+    return { hex, rgb, hsl, grayscale, formattedHex, formattedRGB, formattedHSL, formattedText }
   }
 
-  static randomColor () {
-    const hsl = Colors.randomHSL()
-
-    return Colors.buildColor(hsl.h, hsl.s, hsl.l)
-  }
-
-  static randomHSL () {
+  static random () {
     const h = Math.round(Math.random() * 359)
     const s = Math.round(Math.random() * 100)
     const l = Math.round(Math.random() * 100)
 
-    return { h, s, l }
+    return Colors.build(h, s, l)
+  }
+
+  static rgbToHex (rgb) {
+    const r = rgb.r
+    const g = rgb.g
+    const b = rgb.b
+
+    let h = r.toString(16).toUpperCase()
+    let e = g.toString(16).toUpperCase()
+    let x = b.toString(16).toUpperCase()
+
+    if (h.length !== 2) { h = `0${h}` }
+    if (e.length !== 2) { e = `0${e}` }
+    if (x.length !== 2) { x = `0${x}` }
+
+    return `#${h}${e}${x}`
   }
 
   static hslToRGB (hsl) {
@@ -64,20 +79,12 @@ class Colors {
     return { r, g, b }
   }
 
-  static rgbToHex (rgb) {
-    const r = rgb.r
-    const g = rgb.g
-    const b = rgb.b
+  static hue (color, value) {
+    let h = Number(color.hsl.h) + Number(value)
+    h %= 360
+    h = h < 0 ? 360 + h : h
 
-    let h = r.toString(16).toUpperCase()
-    let e = g.toString(16).toUpperCase()
-    let x = b.toString(16).toUpperCase()
-
-    if (h.length !== 2) { h = `0${h}` }
-    if (e.length !== 2) { e = `0${e}` }
-    if (x.length !== 2) { x = `0${x}` }
-
-    return `#${h}${e}${x}`
+    return Colors.build(h, color.hsl.s, color.hsl.l)
   }
 
   static saturation (color, value) {
@@ -85,7 +92,7 @@ class Colors {
     s = s < 100 ? s : 100
     s = s > 0 ? s : 0
 
-    return Colors.buildColor(color.hsl.h, s, color.hsl.l)
+    return Colors.build(color.hsl.h, s, color.hsl.l)
   }
 
   static lightness (color, value) {
@@ -93,18 +100,10 @@ class Colors {
     l = l < 100 ? l : 100
     l = l > 0 ? l : 0
 
-    return Colors.buildColor(color.hsl.h, color.hsl.s, l)
+    return Colors.build(color.hsl.h, color.hsl.s, l)
   }
 
-  static hueColor (color, hue) {
-    let h = Number(color.hsl.h) + Number(hue)
-    h %= 360
-    h = h < 0 ? 360 + h : h
-
-    return Colors.buildColor(h, color.hsl.s, color.hsl.l)
-  }
-
-  static darkenHSL (hsl, darkness) {
+  static darkenHSL (hsl, value) {
     let darkHSL = hsl.trim().replaceAll(' ', '')
     darkHSL = darkHSL.match(/hsl\(([\d]{1,3}),([\d]{1,3})%,([\d]{1,3})%\)/i)
 
@@ -116,30 +115,26 @@ class Colors {
     const s = Number(darkHSL[2])
     let l = Number(darkHSL[3])
 
-    l -= darkness
+    l -= value
     l = l > 0 ? l : 0
 
     return `hsl(${h}, ${s}%, ${l}%)`
   }
 
-  static formatHSL (color) {
-    return `hsl(${color.hsl.h}, ${color.hsl.s}%, ${color.hsl.l}%)`
-  }
+  static hues (color, degrees, value) {
+    const colors = [Colors.copy(color)]
 
-  static formatRGB (color) {
-    return `rgb(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})`
-  }
+    const huesToCreate = Math.round(degrees / value)
+    while (colors.length < huesToCreate / 2) {
+      colors.push(Colors.hue(colors[colors.length - 1], value))
+    }
 
-  static formatTextColor (color) {
-    return color.grayscale > 150 ? Colors.formatHSL(Colors.black()) : Colors.formatHSL(Colors.white())
-  }
+    colors.reverse()
+    while (colors.length < huesToCreate) {
+      colors.push(Colors.hue(colors[colors.length - 1], -value))
+    }
 
-  static white () {
-    return Colors.buildColor(0, 0, 100)
-  }
-
-  static black () {
-    return Colors.buildColor(0, 0, 0)
+    return colors
   }
 
   static saturations (color, value) {
@@ -173,27 +168,27 @@ class Colors {
   }
 
   static complementary (color) {
-    return [Colors.copy(color), Colors.hueColor(color, 180)]
+    return [Colors.copy(color), Colors.hue(color, 180)]
   }
 
   static splitComplementary (color) {
-    return [Colors.copy(color), Colors.hueColor(color, 150), Colors.hueColor(color, 210)]
+    return [Colors.copy(color), Colors.hue(color, 150), Colors.hue(color, 210)]
   }
 
   static analogous (color) {
-    return [Colors.copy(color), Colors.hueColor(color, 30), Colors.hueColor(color, 330)]
+    return [Colors.copy(color), Colors.hue(color, 30), Colors.hue(color, 330)]
   }
 
   static triadic (color) {
-    return [Colors.copy(color), Colors.hueColor(color, 120), Colors.hueColor(color, 240)]
+    return [Colors.copy(color), Colors.hue(color, 120), Colors.hue(color, 240)]
   }
 
   static tetradic (color) {
-    return [Colors.hueColor(color, 30), Colors.hueColor(color, 150), Colors.hueColor(color, 300), Colors.hueColor(color, 330)]
+    return [Colors.hue(color, 30), Colors.hue(color, 150), Colors.hue(color, 300), Colors.hue(color, 330)]
   }
 
   static square (color) {
-    return [Colors.copy(color), Colors.hueColor(color, 90), Colors.hueColor(color, 180), Colors.hueColor(color, 270)]
+    return [Colors.copy(color), Colors.hue(color, 90), Colors.hue(color, 180), Colors.hue(color, 270)]
   }
 }
 
