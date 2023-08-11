@@ -7,10 +7,6 @@ let dValue = 360
 const themes = new ColorPickerThemes()
 themes.setTheme()
 
-const outerColumn = document.getElementById('outer-column')
-
-// Add sliders to create my own color picker.
-
 const h = localStorage.getItem('h')
 const s = localStorage.getItem('s')
 const l = localStorage.getItem('l')
@@ -22,44 +18,21 @@ if (h === null || s === null || l === null) {
   color = Colors.buildColor(h, s, l)
 }
 
-const hsl = createDiv()
-hsl.innerText = Colors.formatHSL(color)
-hsl.style.padding = '0px 10px'
-
-const rgb = createDiv()
-rgb.innerText = Colors.formatRGB(color)
-rgb.style.padding = '0px 10px'
-
-const grayscale = createDiv()
-grayscale.innerText = `Grayscale: ${color.grayscale}`
-grayscale.style.padding = '0px 10px'
-
-let textColor = Colors.formatHSL(Colors.white())
-if (color.grayscale > 150) {
-  textColor = Colors.formatHSL(Colors.black())
-}
-hsl.style.color = textColor
-rgb.style.color = textColor
-grayscale.style.color = textColor
-
-const colorColumn = createDivInnerColumn()
-colorColumn.style.backgroundColor = Colors.formatHSL(color)
-colorColumn.appendChild(hsl)
-colorColumn.appendChild(rgb)
-colorColumn.appendChild(grayscale)
-
 const lightnessRow = createDivColorRow()
 updateLightnessRow(lightnessRow, 8)
-const lightnessSlider = createRangeSlider(1, 24, 1, 'Separation', 8, lightnessRow, updateLightnessRow)
+const lightnessSlider = createRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, updateLightnessRow)
 
 const saturationRow = createDivColorRow()
 updateSaturationRow(saturationRow, 8)
-const saturationSlider = createRangeSlider(1, 24, 1, 'Separation', 8, saturationRow, updateSaturationRow)
+const saturationSlider = createRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, updateSaturationRow)
 
 const hueRow = createDivColorRow()
 updateHueRow(hueRow, 24)
 const hueSlider = createRangeSlider(1, 90, 1, 'Separation', 24, hueRow, updateHueRow)
 const hueDegreeSlider = createRangeSlider(1, 360, 1, 'Degrees', 360, hueRow, updateHueDegreeRow)
+
+const colorColumn = createDivInnerColumn()
+colorColumn.appendChild(createMainDivColorWithDivMarker(color))
 
 const variationsColumn = createDivInnerColumn()
 variationsColumn.appendChild(createH2('Variations'))
@@ -89,6 +62,7 @@ harmoniesColumn.appendChild(tetradicRow())
 harmoniesColumn.appendChild(createH3('Square'))
 harmoniesColumn.appendChild(squareRow())
 
+const outerColumn = document.getElementById('outer-column')
 outerColumn.appendChild(colorColumn)
 outerColumn.appendChild(variationsColumn)
 outerColumn.appendChild(harmoniesColumn)
@@ -107,22 +81,39 @@ function createDivColorRow () {
   return row
 }
 
-function createDivColorWithDivMarker (color) {
-  const divMarker = createDiv()
-  divMarker.className = 'marker'
-  divMarker.style.backgroundColor = Colors.formatTextColor(color)
-  divMarker.style.display = 'block'
+function createMainDivColorWithDivMarker (color) {
+  const divColor = createDivColorWithDivMarker(color)
+  divColor.style.flex = 'none'
+  divColor.style.height = '200px'
+  divColor.style.width = '50%'
+  divColor.style.minWidth = '300px'
 
+  return divColor
+}
+
+function createDivColorWithDivMarker (color) {
+  const divMarker = createDivMarker(color)
   const divColor = createDivColor(color)
   divColor.appendChild(divMarker)
+
   divColor.addEventListener('mouseenter', () => {
     divMarker.style.display = 'none'
   })
+
   divColor.addEventListener('mouseleave', () => {
     divMarker.style.display = 'block'
   })
 
   return divColor
+}
+
+function createDivMarker (color) {
+  const divMarker = createDiv()
+  divMarker.className = 'marker'
+  divMarker.style.backgroundColor = Colors.formatTextColor(color)
+  divMarker.style.display = 'block'
+
+  return divMarker
 }
 
 function createDivColor (color) {
