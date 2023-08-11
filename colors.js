@@ -6,17 +6,16 @@ class Colors {
   static buildColor (h, s, l) {
     const hsl = { h, s, l }
     const rgb = Colors.hslToRGB(hsl)
+    const hex = Colors.rgbToHex(rgb)
     const grayscale = Math.round((0.2126 * rgb.r) + (0.7152 * rgb.g) + (0.0722 * rgb.b))
 
-    return { hsl, rgb, grayscale }
+    return { hex, rgb, hsl, grayscale }
   }
 
   static randomColor () {
     const hsl = Colors.randomHSL()
-    const rgb = Colors.hslToRGB(hsl)
-    const grayscale = Math.round((0.2126 * rgb.r) + (0.7152 * rgb.g) + (0.0722 * rgb.b))
 
-    return { hsl, rgb, grayscale }
+    return Colors.buildColor(hsl.h, hsl.s, hsl.l)
   }
 
   static randomHSL () {
@@ -59,6 +58,22 @@ class Colors {
     b = Math.round((b + m) * 255)
 
     return { r, g, b }
+  }
+
+  static rgbToHex (rgb) {
+    const r = rgb.r
+    const g = rgb.g
+    const b = rgb.b
+
+    let h = r.toString(16).toUpperCase()
+    let e = g.toString(16).toUpperCase()
+    let x = b.toString(16).toUpperCase()
+
+    if (h.length !== 2) { h = `0${h}` }
+    if (e.length !== 2) { e = `0${e}` }
+    if (x.length !== 2) { x = `0${x}` }
+
+    return `${h}${e}${x}`
   }
 
   static darkenColor (color, darkness) {

@@ -117,15 +117,20 @@ function createDivMarker (color) {
 }
 
 function createDivColor (color) {
-  const hsl = createDiv()
-  hsl.innerText = Colors.formatHSL(color)
-  hsl.style.display = 'none'
-  hsl.style.padding = '0px 10px'
+  const hex = createDiv()
+  hex.innerText = color.hex
+  hex.style.display = 'none'
+  hex.style.padding = '0px 10px'
 
   const rgb = createDiv()
   rgb.innerText = Colors.formatRGB(color)
   rgb.style.display = 'none'
   rgb.style.padding = '0px 10px'
+
+  const hsl = createDiv()
+  hsl.innerText = Colors.formatHSL(color)
+  hsl.style.display = 'none'
+  hsl.style.padding = '0px 10px'
 
   const grayscale = createDiv()
   grayscale.innerText = `Grayscale: ${color.grayscale}`
@@ -136,20 +141,23 @@ function createDivColor (color) {
   divColor.className = 'color'
   divColor.style.backgroundColor = Colors.formatHSL(color)
   divColor.style.color = Colors.formatTextColor(color)
-  divColor.appendChild(hsl)
+  divColor.appendChild(hex)
   divColor.appendChild(rgb)
+  divColor.appendChild(hsl)
   divColor.appendChild(grayscale)
 
   divColor.addEventListener('mouseenter', () => {
-    hsl.style.display = 'block'
+    hex.style.display = 'block'
     rgb.style.display = 'block'
+    hsl.style.display = 'block'
     grayscale.style.display = 'block'
     divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
   })
 
   divColor.addEventListener('mouseleave', () => {
-    hsl.style.display = 'none'
+    hex.style.display = 'none'
     rgb.style.display = 'none'
+    hsl.style.display = 'none'
     grayscale.style.display = 'none'
     divColor.style.boxShadow = 'none'
   })
