@@ -7,16 +7,8 @@ let hueDegrees = 360
 const themes = new ColorPickerThemes()
 themes.setTheme()
 
-const h = localStorage.getItem('h')
-const s = localStorage.getItem('s')
-const l = localStorage.getItem('l')
-let colorPicked = null
-
-if (h === null || s === null || l === null) {
-  colorPicked = Colors.random()
-} else {
-  colorPicked = Colors.build(h, s, l)
-}
+const hex = localStorage.getItem('hex')
+const colorPicked = hex !== null ? Colors.buildHex(hex) : Colors.random()
 
 document.documentElement.style.setProperty('--thumb', colorPicked.formattedHSL)
 
@@ -166,9 +158,7 @@ function createDivColor (color) {
     divColor.style.boxShadow = 'none'
   })
   divColor.addEventListener('dblclick', () => {
-    localStorage.setItem('h', color.hsl.h)
-    localStorage.setItem('s', color.hsl.s)
-    localStorage.setItem('l', color.hsl.l)
+    localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   })
 
@@ -243,70 +233,35 @@ function buildLightnessRow (row, value) {
   buildColorRow(row, Colors.lightnesses(colorPicked, value))
 }
 
+function complementaryRow () {
+  return buildColorRow(createDivColorRow(), Colors.complementary(colorPicked))
+}
+
+function splitComplementaryRow () {
+  return buildColorRow(createDivColorRow(), Colors.splitComplementary(colorPicked))
+}
+
+function analogousRow () {
+  return buildColorRow(createDivColorRow(), Colors.analogous(colorPicked))
+}
+
+function triadicRow () {
+  return buildColorRow(createDivColorRow(), Colors.triadic(colorPicked))
+}
+
+function tetradicRow () {
+  return buildColorRow(createDivColorRow(), Colors.tetradic(colorPicked))
+}
+
+function squareRow () {
+  return buildColorRow(createDivColorRow(), Colors.square(colorPicked))
+}
+
 function buildColorRow (row, colors) {
   row.replaceChildren()
   colors.forEach(color => {
     row.appendChild(Colors.equal(color, colorPicked) ? createDivColorWithDivMarker(color) : createDivColor(color))
   })
-}
-
-function complementaryRow () {
-  const complementary = Colors.complementary(colorPicked)
-  const row = createDivColorRow()
-  row.appendChild(createDivColorWithDivMarker(complementary[0]))
-  row.appendChild(createDivColor(complementary[1]))
-
-  return row
-}
-
-function splitComplementaryRow () {
-  const splitComplementary = Colors.splitComplementary(colorPicked)
-  const row = createDivColorRow()
-  row.appendChild(createDivColorWithDivMarker(splitComplementary[0]))
-  row.appendChild(createDivColor(splitComplementary[1]))
-  row.appendChild(createDivColor(splitComplementary[2]))
-
-  return row
-}
-
-function analogousRow () {
-  const analogous = Colors.analogous(colorPicked)
-  const row = createDivColorRow()
-  row.appendChild(createDivColorWithDivMarker(analogous[0]))
-  row.appendChild(createDivColor(analogous[1]))
-  row.appendChild(createDivColor(analogous[2]))
-
-  return row
-}
-
-function triadicRow () {
-  const triadic = Colors.triadic(colorPicked)
-  const row = createDivColorRow()
-  row.appendChild(createDivColorWithDivMarker(triadic[0]))
-  row.appendChild(createDivColor(triadic[1]))
-  row.appendChild(createDivColor(triadic[2]))
-
-  return row
-}
-
-function tetradicRow () {
-  const tetradic = Colors.tetradic(colorPicked)
-  const row = createDivColorRow()
-  row.appendChild(createDivColor(tetradic[0]))
-  row.appendChild(createDivColor(tetradic[1]))
-  row.appendChild(createDivColor(tetradic[2]))
-  row.appendChild(createDivColor(tetradic[3]))
-
-  return row
-}
-
-function squareRow () {
-  const square = Colors.square(colorPicked)
-  const row = createDivColorRow()
-  row.appendChild(createDivColorWithDivMarker(square[0]))
-  row.appendChild(createDivColor(square[1]))
-  row.appendChild(createDivColor(square[2]))
-  row.appendChild(createDivColor(square[3]))
 
   return row
 }

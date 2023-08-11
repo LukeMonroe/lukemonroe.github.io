@@ -4,13 +4,25 @@ class Colors {
   }
 
   static copy (color) {
-    return Colors.build(color.hsl.h, color.hsl.s, color.hsl.l)
+    return Colors.buildHex(color.hex)
   }
 
-  static build (h, s, l) {
+  static buildHex (hex) {
+    const rgb = Colors.hexToRGB(hex)
+    const hsl = Colors.rgbToHSL(rgb)
+
+    return Colors.build(hex, rgb, hsl)
+  }
+
+  static buildHSL (h, s, l) {
     const hsl = { h, s, l }
     const rgb = Colors.hslToRGB(hsl)
     const hex = Colors.rgbToHex(rgb)
+
+    return Colors.build(hex, rgb, hsl)
+  }
+
+  static build (hex, rgb, hsl) {
     const grayscale = Math.round((0.2126 * rgb.r) + (0.7152 * rgb.g) + (0.0722 * rgb.b))
 
     const formattedHex = hex
@@ -26,7 +38,15 @@ class Colors {
     const s = Math.round(Math.random() * 100)
     const l = Math.round(Math.random() * 100)
 
-    return Colors.build(h, s, l)
+    return Colors.buildHSL(h, s, l)
+  }
+
+  static hexToRGB (hex) {
+    const r = parseInt(hex.slice(1, 3), 16)
+    const g = parseInt(hex.slice(3, 5), 16)
+    const b = parseInt(hex.slice(5), 16)
+
+    return { r, g, b }
   }
 
   static rgbToHex (rgb) {
@@ -79,12 +99,42 @@ class Colors {
     return { r, g, b }
   }
 
+  static rgbToHSL (rgb) {
+    const r = Number(rgb.r) / 255
+    const g = Number(rgb.g) / 255
+    const b = Number(rgb.b) / 255
+
+    const cMax = Math.max(r, g, b)
+    const cMin = Math.min(r, g, b)
+    const delta = cMax - cMin
+
+    let h = 0
+    if (delta > 0) {
+      if (cMax === r) {
+        h = (((g - b) / delta) % 6) * 60
+      } else if (cMax === g) {
+        h = (((b - r) / delta) + 2) * 60
+      } else {
+        h = (((r - g) / delta) + 4) * 60
+      }
+    }
+    let l = (cMax + cMin) / 2
+    let s = delta / (1 - Math.abs((2 * l) - 1))
+
+    h = Math.round(h)
+    h = h < 0 ? 360 + h : h
+    s = Math.round(s * 100)
+    l = Math.round(l * 100)
+
+    return { h, s, l }
+  }
+
   static hue (color, value) {
     let h = Number(color.hsl.h) + Number(value)
     h %= 360
     h = h < 0 ? 360 + h : h
 
-    return Colors.build(h, color.hsl.s, color.hsl.l)
+    return Colors.buildHSL(h, color.hsl.s, color.hsl.l)
   }
 
   static saturation (color, value) {
@@ -92,7 +142,7 @@ class Colors {
     s = s < 100 ? s : 100
     s = s > 0 ? s : 0
 
-    return Colors.build(color.hsl.h, s, color.hsl.l)
+    return Colors.buildHSL(color.hsl.h, s, color.hsl.l)
   }
 
   static lightness (color, value) {
@@ -100,7 +150,7 @@ class Colors {
     l = l < 100 ? l : 100
     l = l > 0 ? l : 0
 
-    return Colors.build(color.hsl.h, color.hsl.s, l)
+    return Colors.buildHSL(color.hsl.h, color.hsl.s, l)
   }
 
   static darkenHSL (hsl, value) {
