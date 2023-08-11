@@ -14,6 +14,14 @@ class Colors {
     return Colors.build(hex, rgb, hsl)
   }
 
+  static buildRGB (r, g, b) {
+    const rgb = { r, g, b }
+    const hsl = Colors.rgbToHSL(rgb)
+    const hex = Colors.rgbToHex(rgb)
+
+    return Colors.build(hex, rgb, hsl)
+  }
+
   static buildHSL (h, s, l) {
     const hsl = { h, s, l }
     const rgb = Colors.hslToRGB(hsl)
