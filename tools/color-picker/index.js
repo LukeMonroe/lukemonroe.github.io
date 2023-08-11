@@ -20,34 +20,34 @@ if (h === null || s === null || l === null) {
 
 document.documentElement.style.setProperty('--thumb', Colors.formatHSL(color))
 
-const lightnessRow = createDivColorRow()
-buildLightnessRow(lightnessRow, 8)
-const lightnessSlider = createRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, buildLightnessRow)
+const hueRow = createDivColorRow()
+buildHueRow(hueRow, 24)
+const hueSlider = createRangeSlider(1, 90, 1, 'Separation', 24, hueRow, buildHueRow)
+const hueDegreeSlider = createRangeSlider(1, 360, 1, 'Degrees', 360, hueRow, buildHueRowDegree)
 
 const saturationRow = createDivColorRow()
 buildSaturationRow(saturationRow, 8)
 const saturationSlider = createRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, buildSaturationRow)
 
-const hueRow = createDivColorRow()
-buildHueRow(hueRow, 24)
-const hueSlider = createRangeSlider(1, 90, 1, 'Separation', 24, hueRow, buildHueRow)
-const hueDegreeSlider = createRangeSlider(1, 360, 1, 'Degrees', 360, hueRow, updateHueDegreeRow)
+const lightnessRow = createDivColorRow()
+buildLightnessRow(lightnessRow, 8)
+const lightnessSlider = createRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, buildLightnessRow)
 
 const colorColumn = createDivInnerColumn()
 colorColumn.appendChild(createDivColorPicked(color))
 
 const variationsColumn = createDivInnerColumn()
 variationsColumn.appendChild(createH2('Variations'))
-variationsColumn.appendChild(createH3('Lightness'))
-variationsColumn.appendChild(lightnessSlider)
-variationsColumn.appendChild(lightnessRow)
-variationsColumn.appendChild(createH3('Saturation'))
-variationsColumn.appendChild(saturationSlider)
-variationsColumn.appendChild(saturationRow)
 variationsColumn.appendChild(createH3('Hue'))
 variationsColumn.appendChild(hueSlider)
 variationsColumn.appendChild(hueDegreeSlider)
 variationsColumn.appendChild(hueRow)
+variationsColumn.appendChild(createH3('Saturation'))
+variationsColumn.appendChild(saturationSlider)
+variationsColumn.appendChild(saturationRow)
+variationsColumn.appendChild(createH3('Lightness'))
+variationsColumn.appendChild(lightnessSlider)
+variationsColumn.appendChild(lightnessRow)
 
 const harmoniesColumn = createDivInnerColumn()
 harmoniesColumn.appendChild(createH2('Harmonies'))
@@ -267,7 +267,7 @@ function buildHueRow (hueRow, value) {
   })
 }
 
-function updateHueDegreeRow (hueRow, value) {
+function buildHueRowDegree (hueRow, value) {
   dValue = value
   const hueColors = []
   let huedColor = Colors.copy(color)
