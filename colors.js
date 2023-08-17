@@ -3,6 +3,10 @@ class Colors {
     return color01.hsl.h === color02.hsl.h && color01.hsl.s === color02.hsl.s && color01.hsl.l === color02.hsl.l
   }
 
+  static notEqual (color01, color02) {
+    return color01.hsl.h !== color02.hsl.h || color01.hsl.s !== color02.hsl.s || color01.hsl.l !== color02.hsl.l
+  }
+
   static copy (color) {
     return Colors.buildHex(color.hex)
   }
@@ -117,6 +121,8 @@ class Colors {
     const delta = cMax - cMin
 
     let h = 0
+    let s = 0
+    let l = 0
     if (delta > 0) {
       if (cMax === r) {
         h = (((g - b) / delta) % 6) * 60
@@ -126,8 +132,10 @@ class Colors {
         h = (((r - g) / delta) + 4) * 60
       }
     }
-    let l = (cMax + cMin) / 2
-    let s = delta / (1 - Math.abs((2 * l) - 1))
+    l = (cMax + cMin) / 2
+    if (l > 0 && l < 1) {
+      s = delta / (1 - Math.abs((2 * l) - 1))
+    }
 
     h = Math.round(h)
     h = h < 0 ? 360 + h : h

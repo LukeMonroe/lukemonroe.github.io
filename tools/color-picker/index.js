@@ -53,12 +53,18 @@ harmoniesColumn.appendChild(tetradicRow())
 harmoniesColumn.appendChild(createH3('Square'))
 harmoniesColumn.appendChild(squareRow())
 
+const historyColumn = createDivInnerColumn()
+historyColumn.appendChild(createH2('History'))
+historyColumn.appendChild(createH3('Colors'))
+historyColumn.appendChild(historyRow())
+
 const divCopied = createDivCopied()
 
 const outerColumn = document.getElementById('outer-column')
 outerColumn.appendChild(colorColumn)
 outerColumn.appendChild(variationsColumn)
 outerColumn.appendChild(harmoniesColumn)
+outerColumn.appendChild(historyColumn)
 outerColumn.appendChild(divCopied)
 
 function createDivInnerColumn () {
@@ -255,6 +261,25 @@ function tetradicRow () {
 
 function squareRow () {
   return buildColorRow(createDivColorRow(), Colors.square(colorPicked))
+}
+
+function historyRow () {
+  let colors = []
+  let index = 0
+  while (localStorage.getItem(`history${index}`) !== null) {
+    colors.push(Colors.buildHex(localStorage.getItem(`history${index++}`)))
+  }
+  if (Colors.notEqual(colors[colors.length - 1], colorPicked)) {
+    colors.push(colorPicked)
+  }
+  if (colors.length > 12) {
+    colors = colors.slice(colors.length - 12, colors.length)
+  }
+  for (let index = 0; index < colors.length; index++) {
+    localStorage.setItem(`history${index}`, colors[index].formattedHex)
+  }
+
+  return buildColorRow(createDivColorRow(), colors)
 }
 
 function buildColorRow (row, colors) {
