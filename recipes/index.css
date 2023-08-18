@@ -1,7 +1,7 @@
 :root {
-    --background-color: hsl(240, 100%, 99%);
-    --color: hsl(0, 0%, 0%);
-    --random-color: hsl(0, 0%, 0%);
+    --background-color: ghostwhite;
+    --color: black;
+    --random-color: darkgrey;
     font-family: monospace;
 }
 
@@ -12,8 +12,8 @@ body {
 }
 
 a {
-    color: var(--background-color);
     -webkit-tap-highlight-color: transparent;
+    color: var(--background-color);
 }
 
 h1 {

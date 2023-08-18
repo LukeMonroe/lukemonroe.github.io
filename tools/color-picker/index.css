@@ -1,7 +1,7 @@
 :root {
-    --background-color: hsl(240, 100%, 99%);
+    --background-color: ghostwhite;
     --color: black;
-    --thumb: grey;
+    --thumb: darkgrey;
     font-family: monospace;
 }
 
@@ -110,6 +110,7 @@ div.input-row {
 
 input[type=text].box {
     background-color: var(--background-color);
+    color: var(--color);
     font-family: monospace;
     text-align: center;
     border: 1px solid var(--color);

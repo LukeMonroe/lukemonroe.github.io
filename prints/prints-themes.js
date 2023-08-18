@@ -3,38 +3,24 @@ import { Colors } from '../colors.js'
 
 class PrintsThemes extends Themes {
   changeTheme (theme) {
-    if (this.loadInitialValues) {
-      this.backgroundColor = window.getComputedStyle(document.documentElement).getPropertyValue('--background-color')
-      this.color = window.getComputedStyle(document.documentElement).getPropertyValue('--color')
-      this.gradientColor01 = window.getComputedStyle(document.documentElement).getPropertyValue('--gradient-color-01')
-      this.gradientColor02 = window.getComputedStyle(document.documentElement).getPropertyValue('--gradient-color-02')
-      this.loadInitialValues = false
-    }
-
     let randomColor01 = Colors.random()
     let randomColor02 = Colors.random()
     if (this.light(theme)) {
       while (randomColor01.grayscale > 150) { randomColor01 = Colors.random() }
       while (randomColor02.grayscale > 150) { randomColor02 = Colors.random() }
 
-      this.gradientColor01 = randomColor01.formattedHSL
-      this.gradientColor02 = randomColor02.formattedHSL
-
-      document.documentElement.style.setProperty('--background-color', this.backgroundColor)
-      document.documentElement.style.setProperty('--color', this.backgroundColor)
-      document.documentElement.style.setProperty('--gradient-color-01', this.gradientColor01)
-      document.documentElement.style.setProperty('--gradient-color-02', this.gradientColor02)
+      document.documentElement.style.setProperty('--background-color', this.backgroundColor.formattedHex)
+      document.documentElement.style.setProperty('--color', this.backgroundColor.formattedHex)
+      document.documentElement.style.setProperty('--gradient-start-color', randomColor01.formattedHex)
+      document.documentElement.style.setProperty('--gradient-end-color', randomColor02.formattedHex)
     } else {
       while (randomColor01.grayscale <= 150) { randomColor01 = Colors.random() }
       while (randomColor02.grayscale <= 150) { randomColor02 = Colors.random() }
 
-      this.gradientColor01 = Colors.formatHSL(randomColor01)
-      this.gradientColor02 = Colors.formatHSL(randomColor02)
-
-      document.documentElement.style.setProperty('--background-color', this.color)
-      document.documentElement.style.setProperty('--color', this.color)
-      document.documentElement.style.setProperty('--gradient-color-01', this.gradientColor01)
-      document.documentElement.style.setProperty('--gradient-color-02', this.gradientColor02)
+      document.documentElement.style.setProperty('--background-color', this.color.formattedHex)
+      document.documentElement.style.setProperty('--color', this.color.formattedHex)
+      document.documentElement.style.setProperty('--gradient-start-color', randomColor01.formattedHex)
+      document.documentElement.style.setProperty('--gradient-end-color', randomColor02.formattedHex)
     }
   }
 }

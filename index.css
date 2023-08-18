@@ -1,8 +1,8 @@
 :root {
-    --background-color: hsl(240, 100%, 99%);
-    --color: hsl(0, 0%, 0%);
-    --link-color-01: hsl(300, 25%, 80%);
-    --link-color-02: hsl(260, 25%, 75%);
+    --background-color: ghostwhite;
+    --color: black;
+    --link-color: darkgrey;
+    --visited-color: dimgrey;
     font-family: monospace;
 }
 
@@ -32,11 +32,11 @@ a {
 }
 
 a:link {
-    background-color: var(--link-color-01);
+    background-color: var(--link-color);
 }
 
 a:visited {
-    background-color: var(--link-color-02);
+    background-color: var(--visited-color);
 }
 
 a:hover {
