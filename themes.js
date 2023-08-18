@@ -7,6 +7,9 @@ const DARK = 'dark'
 const NEXT = 'next'
 
 class Themes {
+  #linkColor001 = Colors.createHex('#D9BFD9')
+  #linkColor002 = Colors.createHex('#C2BFD9')
+
   loadInitialValues = true
   themes = new Map([
     [LIGHT, new Map([[NEXT, DARK]])],
@@ -47,13 +50,13 @@ class Themes {
     if (this.light(theme)) {
       document.documentElement.style.setProperty('--background-color', this.backgroundColor)
       document.documentElement.style.setProperty('--color', this.color)
-      document.documentElement.style.setProperty('--link-color-01', this.linkColor01)
-      document.documentElement.style.setProperty('--link-color-02', this.linkColor02)
+      document.documentElement.style.setProperty('--link-color-01', this.#linkColor001.formattedHex)
+      document.documentElement.style.setProperty('--link-color-02', this.#linkColor002.formattedHex)
     } else {
       document.documentElement.style.setProperty('--background-color', this.color)
       document.documentElement.style.setProperty('--color', this.backgroundColor)
-      document.documentElement.style.setProperty('--link-color-01', Colors.darkenHSL(this.linkColor01, 50))
-      document.documentElement.style.setProperty('--link-color-02', Colors.darkenHSL(this.linkColor02, 50))
+      document.documentElement.style.setProperty('--link-color-01', Colors.lightness(this.#linkColor001, -50).formattedHex)
+      document.documentElement.style.setProperty('--link-color-02', Colors.lightness(this.#linkColor002, -50).formattedHex)
     }
   }
 

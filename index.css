@@ -12,22 +12,23 @@ body {
     margin: 0px;
 }
 
-h1 {
-    text-align: center;
+h1, h2, h3, h4, h5, h6 {
+    margin: 0px;
 }
 
-h2 {
-    text-align: center;
+hr {
+    border: 1px solid var(--color);
+    width: 95%;
+    margin: 0px auto;
 }
 
 a {
+    -webkit-tap-highlight-color: transparent;
     color: var(--color);
     text-decoration: none;
     text-align: center;
-    border-radius: 5px;
     width: 80%;
     padding: 10px;
-    -webkit-tap-highlight-color: transparent;
 }
 
 a:link {
@@ -42,56 +43,34 @@ a:hover {
     animation: jiggle 0.20s 1;
 }
 
-@keyframes jiggle {
-  25% {
-    transform: translateX(2px);
-  }
-  75% {
-    transform: translateX(-2px);
-  }
-  100% {
-    transform: translateX(0px);
-  }
-}
-
-hr {
-    border: 1px solid var(--color);
-    width: 98%;
-    margin: 0px auto;
-}
-
 button.theme {
     background-color: var(--color);
     color: var(--background-color);
     font-family: monospace;
     border: none;
-    border-radius: 5px;
-    width: 100px;
-    padding: 20px;
+    width: 20%;
+    padding: 10px;
 }
 
 button.theme:hover {
     animation: jiggle 0.20s 1;
 }
 
-div.categories {
+div.outer-column {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     width: 80%;
+    gap: 75px;
     max-width: 800px;
-    margin: 25px auto 100px;
+    margin: 75px auto;
 }
 
-div.links {
+div.inner-column {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     width: 100%;
     gap: 25px;
-    margin-bottom: 50px;
 }
 
 header {
@@ -102,4 +81,16 @@ header {
 footer {
     text-align: center;
     padding: 25px 50px;
+}
+
+@keyframes jiggle {
+  25% {
+    transform: translateX(2px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
 }
