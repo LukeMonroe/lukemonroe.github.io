@@ -48,6 +48,7 @@ button.theme {
     color: var(--background-color);
     font-family: monospace;
     border: none;
+    cursor: pointer;
     width: 20%;
     padding: 10px;
 }

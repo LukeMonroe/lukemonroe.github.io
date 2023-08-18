@@ -8,7 +8,13 @@ const themes = new ColorPickerThemes()
 themes.setTheme()
 
 const hex = localStorage.getItem('hex')
-const colorPicked = hex !== null ? Colors.createHex(hex) : Colors.random()
+let colorPicked = null
+if (hex !== null) {
+  colorPicked = Colors.createHex(hex)
+} else {
+  colorPicked = Colors.random()
+  localStorage.setItem('hex', colorPicked.formattedHex)
+}
 
 document.documentElement.style.setProperty('--thumb', colorPicked.formattedHSL)
 
@@ -415,7 +421,7 @@ function historyRow () {
   while (localStorage.getItem(`historyHex${index}`) !== null) {
     colors.push(Colors.createHex(localStorage.getItem(`historyHex${index++}`)))
   }
-  if (Colors.length === 0 || Colors.notEqual(colors[colors.length - 1], colorPicked)) {
+  if (colors.length === 0 || Colors.notEqual(colors[colors.length - 1], colorPicked)) {
     colors.push(colorPicked)
   }
   if (colors.length > 12) {
