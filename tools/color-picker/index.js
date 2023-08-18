@@ -8,7 +8,7 @@ const themes = new ColorPickerThemes()
 themes.setTheme()
 
 const hex = localStorage.getItem('hex')
-const colorPicked = hex !== null ? Colors.buildHex(hex) : Colors.random()
+const colorPicked = hex !== null ? Colors.createHex(hex) : Colors.random()
 
 document.documentElement.style.setProperty('--thumb', colorPicked.formattedHSL)
 
@@ -22,8 +22,127 @@ const saturationSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, satur
 const lightnessRow = createDivColorRow()
 const lightnessSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, buildLightnessRow)
 
-const colorColumn = createDivInnerColumn()
-colorColumn.appendChild(createDivColorPicked(colorPicked))
+// ------
+const hexBoxRow = createDivInputRow()
+const hexBox = createInputTextBox()
+hexBox.maxLength = '7'
+hexBox.style.width = '87px'
+hexBox.value = colorPicked.formattedHex
+hexBox.addEventListener('focusout', () => {
+  const color = Colors.createHex(hexBox.value)
+  if (color !== null) {
+    localStorage.setItem('hex', color.formattedHex)
+    window.location.href = './index.html'
+  } else {
+    hexBox.value = colorPicked.formattedHex
+  }
+})
+
+hexBoxRow.appendChild(createH4('hex:'))
+hexBoxRow.appendChild(hexBox)
+
+const rgbBoxRow = createDivInputRow()
+const rBox = createInputTextBox()
+rBox.maxLength = '3'
+rBox.value = colorPicked.rgb.r
+const gBox = createInputTextBox()
+gBox.maxLength = '3'
+gBox.value = colorPicked.rgb.g
+const bBox = createInputTextBox()
+bBox.maxLength = '3'
+bBox.value = colorPicked.rgb.b
+
+rBox.addEventListener('focusout', () => {
+  const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
+  if (color !== null) {
+    localStorage.setItem('hex', color.formattedHex)
+    window.location.href = './index.html'
+  } else {
+    rBox.value = colorPicked.rgb.r
+  }
+})
+gBox.addEventListener('focusout', () => {
+  const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
+  if (color !== null) {
+    localStorage.setItem('hex', color.formattedHex)
+    window.location.href = './index.html'
+  } else {
+    gBox.value = colorPicked.rgb.g
+  }
+})
+bBox.addEventListener('focusout', () => {
+  const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
+  if (color !== null) {
+    localStorage.setItem('hex', color.formattedHex)
+    window.location.href = './index.html'
+  } else {
+    bBox.value = colorPicked.rgb.b
+  }
+})
+
+rgbBoxRow.appendChild(createH4('rgb:'))
+rgbBoxRow.appendChild(rBox)
+rgbBoxRow.appendChild(gBox)
+rgbBoxRow.appendChild(bBox)
+
+const hslBoxRow = createDivInputRow()
+const hBox = createInputTextBox()
+hBox.maxLength = '3'
+hBox.value = colorPicked.hsl.h
+const sBox = createInputTextBox()
+sBox.maxLength = '3'
+sBox.value = colorPicked.hsl.s
+const lBox = createInputTextBox()
+lBox.maxLength = '3'
+lBox.value = colorPicked.hsl.l
+
+hBox.addEventListener('focusout', () => {
+  const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
+  if (color !== null) {
+    localStorage.setItem('hex', color.formattedHex)
+    window.location.href = './index.html'
+  } else {
+    hBox.value = colorPicked.hsl.h
+  }
+})
+sBox.addEventListener('focusout', () => {
+  const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
+  if (color !== null) {
+    localStorage.setItem('hex', color.formattedHex)
+    window.location.href = './index.html'
+  } else {
+    sBox.value = colorPicked.hsl.s
+  }
+})
+lBox.addEventListener('focusout', () => {
+  const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
+  if (color !== null) {
+    localStorage.setItem('hex', color.formattedHex)
+    window.location.href = './index.html'
+  } else {
+    lBox.value = colorPicked.hsl.l
+  }
+})
+
+hslBoxRow.appendChild(createH4('hsl:'))
+hslBoxRow.appendChild(hBox)
+hslBoxRow.appendChild(sBox)
+hslBoxRow.appendChild(lBox)
+
+const boxRow = createDivInputRow()
+boxRow.appendChild(hexBoxRow)
+boxRow.appendChild(rgbBoxRow)
+boxRow.appendChild(hslBoxRow)
+
+const boxColumn = createDivInputColumn()
+boxColumn.appendChild(hexBoxRow)
+boxColumn.appendChild(rgbBoxRow)
+boxColumn.appendChild(hslBoxRow)
+// ------
+
+const colorRow = createDivInnerRow()
+colorRow.appendChild(createDivColorPicked(colorPicked))
+colorRow.appendChild(boxColumn)
 
 const variationsColumn = createDivInnerColumn()
 variationsColumn.appendChild(createH2('Variations'))
@@ -61,7 +180,7 @@ historyColumn.appendChild(historyRow())
 const divCopied = createDivCopied()
 
 const outerColumn = document.getElementById('outer-column')
-outerColumn.appendChild(colorColumn)
+outerColumn.appendChild(colorRow)
 outerColumn.appendChild(variationsColumn)
 outerColumn.appendChild(harmoniesColumn)
 outerColumn.appendChild(historyColumn)
@@ -74,6 +193,13 @@ function createDivInnerColumn () {
   return column
 }
 
+function createDivInnerRow () {
+  const row = createDiv()
+  row.className = 'inner-row'
+
+  return row
+}
+
 function createDivColorRow () {
   const row = createDiv()
   row.className = 'color-row'
@@ -83,10 +209,8 @@ function createDivColorRow () {
 
 function createDivColorPicked (color) {
   const divColor = createDivColorWithDivMarker(color)
-  divColor.style.flex = 'none'
-  divColor.style.height = '200px'
-  divColor.style.width = '50%'
-  divColor.style.minWidth = '300px'
+  divColor.style.height = '250px'
+  divColor.style.maxWidth = '50%'
 
   return divColor
 }
@@ -169,6 +293,28 @@ function createDivColor (color) {
   })
 
   return divColor
+}
+
+function createDivInputColumn () {
+  const divBoxColumn = createDiv()
+  divBoxColumn.className = 'input-column'
+
+  return divBoxColumn
+}
+
+function createDivInputRow () {
+  const divBoxRow = createDiv()
+  divBoxRow.className = 'input-row'
+
+  return divBoxRow
+}
+
+function createInputTextBox () {
+  const inputTextBox = document.createElement('input')
+  inputTextBox.className = 'box'
+  inputTextBox.type = 'text'
+
+  return inputTextBox
 }
 
 function createInputRangeSlider (min, max, step, text, value, row, updateFunction) {
@@ -266,17 +412,17 @@ function squareRow () {
 function historyRow () {
   let colors = []
   let index = 0
-  while (localStorage.getItem(`history${index}`) !== null) {
-    colors.push(Colors.buildHex(localStorage.getItem(`history${index++}`)))
+  while (localStorage.getItem(`historyHex${index}`) !== null) {
+    colors.push(Colors.createHex(localStorage.getItem(`historyHex${index++}`)))
   }
-  if (Colors.notEqual(colors[colors.length - 1], colorPicked)) {
+  if (Colors.length === 0 || Colors.notEqual(colors[colors.length - 1], colorPicked)) {
     colors.push(colorPicked)
   }
   if (colors.length > 12) {
     colors = colors.slice(colors.length - 12, colors.length)
   }
   for (let index = 0; index < colors.length; index++) {
-    localStorage.setItem(`history${index}`, colors[index].formattedHex)
+    localStorage.setItem(`historyHex${index}`, colors[index].formattedHex)
   }
 
   return buildColorRow(createDivColorRow(), colors)

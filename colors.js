@@ -8,33 +8,60 @@ class Colors {
   }
 
   static copy (color) {
-    return Colors.buildHex(color.hex)
+    return Colors.#buildHSL(color.hsl.h, color.hsl.s, color.hsl.l)
   }
 
-  static buildHex (hex) {
-    const rgb = Colors.hexToRGB(hex)
-    const hsl = Colors.rgbToHSL(rgb)
+  static createHex (hex) {
+    hex = hex.trim().replace('#', '').toUpperCase()
+    hex = hex.match(/^[A-F\d]{6}$/)
 
-    return Colors.build(hex, rgb, hsl)
+    return hex !== null ? Colors.#buildHex(`#${hex[0]}`) : null
   }
 
-  static buildRGB (r, g, b) {
+  static createRGB (r, g, b) {
+    r = Number(r.trim())
+    g = Number(g.trim())
+    b = Number(b.trim())
+
+    const rgb = r >= 0 && r <= 255 && g >= 0 && g <= 255 && b >= 0 && b <= 255
+
+    return rgb ? Colors.#buildRGB(r, g, b) : null
+  }
+
+  static createHSL (h, s, l) {
+    h = Number(h.trim())
+    s = Number(s.trim())
+    l = Number(l.trim())
+
+    const hsl = h >= 0 && h <= 359 && s >= 0 && s <= 100 && l >= 0 && l <= 100
+
+    return hsl ? Colors.#buildHSL(h, s, l) : null
+  }
+
+  static #buildHex (hex) {
+    const rgb = Colors.#hexToRGB(hex)
+    const hsl = Colors.#rgbToHSL(rgb)
+
+    return Colors.#build(hex, rgb, hsl)
+  }
+
+  static #buildRGB (r, g, b) {
     const rgb = { r, g, b }
-    const hsl = Colors.rgbToHSL(rgb)
-    const hex = Colors.rgbToHex(rgb)
+    const hsl = Colors.#rgbToHSL(rgb)
+    const hex = Colors.#rgbToHex(rgb)
 
-    return Colors.build(hex, rgb, hsl)
+    return Colors.#build(hex, rgb, hsl)
   }
 
-  static buildHSL (h, s, l) {
+  static #buildHSL (h, s, l) {
     const hsl = { h, s, l }
-    const rgb = Colors.hslToRGB(hsl)
-    const hex = Colors.rgbToHex(rgb)
+    const rgb = Colors.#hslToRGB(hsl)
+    const hex = Colors.#rgbToHex(rgb)
 
-    return Colors.build(hex, rgb, hsl)
+    return Colors.#build(hex, rgb, hsl)
   }
 
-  static build (hex, rgb, hsl) {
+  static #build (hex, rgb, hsl) {
     const grayscale = Math.round((0.2126 * rgb.r) + (0.7152 * rgb.g) + (0.0722 * rgb.b))
 
     const formattedHex = hex
@@ -50,10 +77,10 @@ class Colors {
     const s = Math.round(Math.random() * 100)
     const l = Math.round(Math.random() * 100)
 
-    return Colors.buildHSL(h, s, l)
+    return Colors.#buildHSL(h, s, l)
   }
 
-  static hexToRGB (hex) {
+  static #hexToRGB (hex) {
     const r = parseInt(hex.slice(1, 3), 16)
     const g = parseInt(hex.slice(3, 5), 16)
     const b = parseInt(hex.slice(5), 16)
@@ -61,7 +88,7 @@ class Colors {
     return { r, g, b }
   }
 
-  static rgbToHex (rgb) {
+  static #rgbToHex (rgb) {
     const r = rgb.r
     const g = rgb.g
     const b = rgb.b
@@ -77,7 +104,7 @@ class Colors {
     return `#${h}${e}${x}`
   }
 
-  static hslToRGB (hsl) {
+  static #hslToRGB (hsl) {
     const h = hsl.h
     const s = hsl.s / 100
     const l = hsl.l / 100
@@ -111,7 +138,7 @@ class Colors {
     return { r, g, b }
   }
 
-  static rgbToHSL (rgb) {
+  static #rgbToHSL (rgb) {
     const r = Number(rgb.r) / 255
     const g = Number(rgb.g) / 255
     const b = Number(rgb.b) / 255
@@ -150,23 +177,23 @@ class Colors {
     h %= 360
     h = h < 0 ? 360 + h : h
 
-    return Colors.buildHSL(h, color.hsl.s, color.hsl.l)
+    return Colors.#buildHSL(h, color.hsl.s, color.hsl.l)
   }
 
   static saturation (color, value) {
     let s = Number(color.hsl.s) + Number(value)
-    s = s < 100 ? s : 100
-    s = s > 0 ? s : 0
+    s = s <= 100 ? s : 100
+    s = s >= 0 ? s : 0
 
-    return Colors.buildHSL(color.hsl.h, s, color.hsl.l)
+    return Colors.#buildHSL(color.hsl.h, s, color.hsl.l)
   }
 
   static lightness (color, value) {
     let l = Number(color.hsl.l) + Number(value)
-    l = l < 100 ? l : 100
-    l = l > 0 ? l : 0
+    l = l <= 100 ? l : 100
+    l = l >= 0 ? l : 0
 
-    return Colors.buildHSL(color.hsl.h, color.hsl.s, l)
+    return Colors.#buildHSL(color.hsl.h, color.hsl.s, l)
   }
 
   static darkenHSL (hsl, value) {
