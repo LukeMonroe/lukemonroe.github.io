@@ -57,12 +57,16 @@ class Themes {
     return theme === DARK
   }
 
+  formatTheme (theme) {
+    return `${theme.substr(0, 1).toUpperCase()}${theme.substr(1)}`
+  }
+
   createButtonTheme () {
     const buttonTheme = document.createElement('button')
     buttonTheme.className = 'theme'
-    buttonTheme.innerText = this.getTheme()
+    buttonTheme.innerText = this.formatTheme(this.getTheme())
     buttonTheme.addEventListener('click', () => {
-      buttonTheme.innerText = this.nextTheme()
+      buttonTheme.innerText = this.formatTheme(this.nextTheme())
     })
 
     return buttonTheme
