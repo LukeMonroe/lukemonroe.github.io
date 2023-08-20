@@ -1,8 +1,6 @@
 :root {
     --background-color: ghostwhite;
     --color: black;
-    --gradient-start-color: darkgrey;
-    --gradient-end-color: dimgrey;
     font-family: monospace;
 }
 
@@ -12,43 +10,53 @@ body {
     margin: 0px;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    margin: 0px;
+}
+
+hr {
+    border: 1px solid var(--color);
+    width: 95%;
+    margin: 0px auto;
+}
+
 img {
     width: 100%;
+    border-radius: 50%;
 }
 
 div.row {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
-    margin: 50px auto;
+    flex-wrap: wrap;
+    gap: 75px;
+    margin: 75px auto;
 }
 
 div.column {
     display: flex;
-    background-image: linear-gradient(90deg, var(--gradient-start-color), var(--gradient-end-color));
     flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
     text-align: center;
-    flex: 33.33%;
-    max-width: 26.67%;
+    flex: 25%;
+    gap: 20px;
+    max-width: 20%;
 }
 
 header {
-    background-image: linear-gradient(90deg, var(--gradient-start-color), var(--gradient-end-color));
     text-align: center;
-    width: calc(80% + 30px);
-    padding: 15px 0px;
-    margin: 50px auto;
+    padding: 50px;
 }
 
 footer {
-    background-image: linear-gradient(90deg, var(--gradient-start-color), var(--gradient-end-color));
     text-align: center;
-    width: calc(80% + 30px);
-    padding: 25px 0px;
-    margin: 50px auto;
+    padding: 25px 50px;
+}
+
+@media screen and (max-width: 1800px) {
+    div.column {
+        flex: 33.33%;
+        max-width: 26.67%;
+    }
 }
 
 @media screen and (max-width: 1200px) {
@@ -56,19 +64,11 @@ footer {
         flex: 50%;
         max-width: 40%;
     }
-
-    header, footer {
-        width: calc(80% + 15px);
-    }
 }
 
 @media screen and (max-width: 600px) {
     div.column {
         flex: 100%;
         max-width: 80%;
-    }
-
-    header, footer {
-        width: 80%;
     }
 }
