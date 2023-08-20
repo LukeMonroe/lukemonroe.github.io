@@ -13,8 +13,8 @@ class Themes {
 
   backgroundColor = Colors.createHex('#F8F8FF')
   color = Colors.createHex('#000000')
-  #linkColor001 = Colors.createHex('#D9BFD9')
-  #linkColor002 = Colors.createHex('#C2BFD9')
+  #linkColor = Colors.createHex('#D9BFD9')
+  #visitedColor = Colors.lightness(this.#linkColor, -20)
 
   getTheme () {
     const theme = localStorage.getItem(THEME)
@@ -39,13 +39,13 @@ class Themes {
     if (this.light(theme)) {
       document.documentElement.style.setProperty('--background-color', this.backgroundColor.formattedHex)
       document.documentElement.style.setProperty('--color', this.color.formattedHex)
-      document.documentElement.style.setProperty('--link-color', this.#linkColor001.formattedHex)
-      document.documentElement.style.setProperty('--visited-color', this.#linkColor002.formattedHex)
+      document.documentElement.style.setProperty('--link-color', this.#linkColor.formattedHex)
+      document.documentElement.style.setProperty('--visited-color', this.#visitedColor.formattedHex)
     } else {
       document.documentElement.style.setProperty('--background-color', this.color.formattedHex)
       document.documentElement.style.setProperty('--color', this.backgroundColor.formattedHex)
-      document.documentElement.style.setProperty('--link-color', Colors.lightness(this.#linkColor001, -50).formattedHex)
-      document.documentElement.style.setProperty('--visited-color', Colors.lightness(this.#linkColor002, -50).formattedHex)
+      document.documentElement.style.setProperty('--link-color', Colors.lightness(this.#linkColor, -40).formattedHex)
+      document.documentElement.style.setProperty('--visited-color', Colors.lightness(this.#visitedColor, -40).formattedHex)
     }
   }
 

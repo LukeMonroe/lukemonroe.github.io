@@ -16,12 +16,19 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0px;
 }
 
+hr {
+    border: 1px solid var(--color);
+    width: 95%;
+    margin: 0px auto;
+}
+
 div.outer-column {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 60px;
+    margin: 75px auto;
 }
 
 div.inner-column {
@@ -77,12 +84,12 @@ div.marker {
 
 header {
     text-align: center;
-    margin: 80px auto;
+    padding: 50px;
 }
 
 footer {
     text-align: center;
-    margin: 80px auto;
+    padding: 25px 50px;
 }
 
 div.slider {
