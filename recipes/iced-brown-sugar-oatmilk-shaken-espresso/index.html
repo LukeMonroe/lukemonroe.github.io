@@ -9,24 +9,36 @@
 </head>
 
 <body>
-    <header><h1>Iced Brown Sugar Oatmilk Shaken Espresso</h1></header>
+    <header>
+        <h1>Iced Brown Sugar Oatmilk Shaken Espresso</h1>
+        <div class="servings-row">
+            <h2 id="servings"></h2>
+            <button class="minus" id="minus"></button>
+            <button class="plus" id="plus"></button>
+        </div>
+    </header>
+    <div class="outter-column">
+        <h2>Overview</h2>
+        <p>Yield: <span name="number">1</span> coffee</p>
+        <p>Cook Time: <span name="number">10</span> minutes</p>
+    </div>
     <div class="outter-row">
         <div class="inner-column">
             <h2>Ingredients</h2>
             <ul>
-                <li>1/2 cup medium roast coffee</li>
-                <li>1/2 cup oatmilk</li>
-                <li>2 tbsp light brown sugar</li>
-                <li>1/4 tsp cinnamon</li>
-                <li>1/2 tsp vanilla extract</li>
-                <li>1 1/2 cups ice</li>
+                <li><span name="number">1/2</span> cup medium roast coffee</li>
+                <li><span name="number">1/2</span> cup oatmilk</li>
+                <li><span name="number">2</span> tbsp light brown sugar</li>
+                <li><span name="number">1/4</span> tsp cinnamon</li>
+                <li><span name="number">1/2</span> tsp vanilla extract</li>
+                <li><span name="number">1 1/2</span> cups ice</li>
             </ul>
         </div>
         <div class="inner-column">
             <h2>Utensils</h2>
             <ul>
-                <li>1 liquid measuring cup</li>
-                <li>1 cocktail shaker</li>
+                <li>liquid measuring cup</li>
+                <li>cocktail shaker</li>
             </ul>
         </div>
     </div>
