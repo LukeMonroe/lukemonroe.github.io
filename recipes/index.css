@@ -94,6 +94,7 @@ div.servings-row {
 }
 
 button {
+    -webkit-tap-highlight-color: transparent;
     background-color: var(--background-color);
     border: none;
     cursor: pointer;

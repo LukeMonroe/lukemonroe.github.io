@@ -44,6 +44,7 @@ a:hover {
 }
 
 button.theme {
+    -webkit-tap-highlight-color: transparent;
     background-color: var(--color);
     color: var(--background-color);
     font-family: monospace;
