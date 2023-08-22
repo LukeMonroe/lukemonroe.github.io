@@ -86,16 +86,14 @@ div.outter-column {
 
 div.servings-row {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 20px;
-    width: 80%;
+    gap: 30px;
     margin: 0px auto;
 }
 
 button {
     -webkit-tap-highlight-color: transparent;
-    background-color: var(--background-color);
+    background-color: var(--random-color);
     border: none;
     cursor: pointer;
     width: 50px;
@@ -104,7 +102,7 @@ button {
 
 button.minus::before, button.plus::before {
     position: absolute;
-    background-color: var(--random-color);
+    background-color: var(--background-color);
     content: '';
     height: 6px;
     width: 24px;
@@ -113,7 +111,7 @@ button.minus::before, button.plus::before {
 
 button.plus::after {
     position: absolute;
-    background-color: var(--random-color);
+    background-color: var(--background-color);
     content: '';
     height: 24px;
     width: 6px;
@@ -121,7 +119,15 @@ button.plus::after {
 }
 
 button:hover {
-    animation: jiggle 0.20s 1;
+    animation: roundOutter 2s 1;
+}
+
+button:hover::before {
+    animation: roundInner 2s 1;
+}
+
+button:hover::after {
+    animation: roundInner 2s 1;
 }
 
 @media screen and (max-width: 600px) {
@@ -132,14 +138,20 @@ button:hover {
     }
 }
 
-@keyframes jiggle {
-  25% {
-    transform: translateX(2px);
-  }
-  75% {
-    transform: translateX(-2px);
+@keyframes roundOutter {
+  10% {
+    border-radius: 50%;
   }
   100% {
-    transform: translateX(0px);
+    border-radius: 0%;
+  }
+}
+
+@keyframes roundInner {
+  10% {
+    border-radius: 3px;
+  }
+  100% {
+    border-radius: 0px;
   }
 }

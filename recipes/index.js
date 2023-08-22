@@ -12,9 +12,9 @@ const numbers = document.getElementsByName('number')
 
 const buttonMinus = document.getElementById('minus')
 buttonMinus.addEventListener('click', () => {
-  if (servings - increment >= increment) {
+  if (servings - increment > 0) {
     servings -= increment
-    h2Servings.innerText = `Servings: ${servings}`
+    h2Servings.innerText = `Servings: ${numberToMixedFraction(servings)}`
     numbers.forEach(number => {
       number.innerText = numberToMixedFraction((textToNumber(number.innerText) / (servings + increment)) * servings)
     })
@@ -25,7 +25,7 @@ const buttonPlus = document.getElementById('plus')
 buttonPlus.addEventListener('click', () => {
   if (servings + increment <= 10) {
     servings += increment
-    h2Servings.innerText = `Servings: ${servings}`
+    h2Servings.innerText = `Servings: ${numberToMixedFraction(servings)}`
     numbers.forEach(number => {
       number.innerText = numberToMixedFraction((textToNumber(number.innerText) / (servings - increment)) * servings)
     })
@@ -44,10 +44,11 @@ function textToNumber (text) {
     }
   })
 
-  return sum
+  return Math.round(sum * 1000) / 1000
 }
 
 function numberToMixedFraction (number) {
+  number = Math.round(number * 1000) / 1000
   const numbers = String(number).trim().split('.')
   if (numbers.length > 1) {
     let numerator = Number(numbers[1])
