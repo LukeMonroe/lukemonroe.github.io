@@ -23,7 +23,7 @@ buttonMinus.addEventListener('click', () => {
 
 const buttonPlus = document.getElementById('plus')
 buttonPlus.addEventListener('click', () => {
-  if (servings + increment <= 10) {
+  if (servings + increment <= 5) {
     servings += increment
     h2Servings.innerText = `Servings: ${numberToMixedFraction(servings)}`
     numbers.forEach(number => {
