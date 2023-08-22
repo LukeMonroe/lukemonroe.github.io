@@ -16,7 +16,7 @@ if (hex !== null) {
   localStorage.setItem('hex', colorPicked.formattedHex)
 }
 
-document.documentElement.style.setProperty('--thumb', colorPicked.formattedHSL)
+document.documentElement.style.setProperty('--thumb-color', colorPicked.formattedHSL)
 
 const hueRow = createDivColorRow()
 const hueSliderSeparation = createInputRangeSlider(1, 90, 1, 'Separation', 24, hueRow, buildHueRowSeparation)
