@@ -5,19 +5,35 @@ recipesThemes.setTheme()
 
 let servings = 1
 const increment = 0.5
-const h2Servings = document.getElementById('servings')
-h2Servings.innerText = `Servings: ${servings}`
+const precision = 10000
+const fractions = new Map([
+  ['0', 0],
+  ['1/8', 1 / 8],
+  ['1/6', 1 / 6],
+  ['1/4', 1 / 4],
+  ['1/3', 1 / 3],
+  ['3/8', 3 / 8],
+  ['1/2', 1 / 2],
+  ['5/8', 5 / 8],
+  ['2/3', 2 / 3],
+  ['3/4', 3 / 4],
+  ['5/6', 5 / 6],
+  ['7/8', 7 / 8],
+  ['1', 1]
+])
 
-const numbers = document.getElementsByName('number')
+const h2Servings = document.getElementById('servings')
+const spanNumberPairs = []
+document.getElementsByName('number').forEach(spanNumber => {
+  spanNumberPairs.push([spanNumber, textToNumber(spanNumber.innerText)])
+})
+updateServings()
 
 const buttonMinus = document.getElementById('minus')
 buttonMinus.addEventListener('click', () => {
-  if (servings - increment > 0) {
+  if (servings - increment >= 0.5) {
     servings -= increment
-    h2Servings.innerText = `Servings: ${numberToMixedFraction(servings)}`
-    numbers.forEach(number => {
-      number.innerText = numberToMixedFraction((textToNumber(number.innerText) / (servings + increment)) * servings)
-    })
+    updateServings()
   }
 })
 
@@ -25,12 +41,16 @@ const buttonPlus = document.getElementById('plus')
 buttonPlus.addEventListener('click', () => {
   if (servings + increment <= 5) {
     servings += increment
-    h2Servings.innerText = `Servings: ${numberToMixedFraction(servings)}`
-    numbers.forEach(number => {
-      number.innerText = numberToMixedFraction((textToNumber(number.innerText) / (servings - increment)) * servings)
-    })
+    updateServings()
   }
 })
+
+function updateServings () {
+  h2Servings.innerText = `Servings: ${numberToMixedFraction(servings)}`
+  spanNumberPairs.forEach(spanNumberPair => {
+    spanNumberPair[0].innerText = numberToMixedFraction(spanNumberPair[1] * servings)
+  })
+}
 
 function textToNumber (text) {
   let sum = 0
@@ -44,28 +64,41 @@ function textToNumber (text) {
     }
   })
 
-  return Math.round(sum * 1000) / 1000
+  return round(sum)
 }
 
 function numberToMixedFraction (number) {
-  number = Math.round(number * 1000) / 1000
-  const numbers = String(number).trim().split('.')
+  const numbers = String(round(number)).trim().split('.')
+  const integer = Number(numbers[0])
+  let mixedFraction = String(integer)
+
   if (numbers.length > 1) {
-    let numerator = Number(numbers[1])
-    let denominator = Math.pow(10, numbers[1].length)
-    for (let gcd = Math.max(numerator, denominator); gcd > 1; gcd--) {
-      if ((numerator % gcd === 0) && (denominator % gcd === 0)) {
-        numerator /= gcd
-        denominator /= gcd
+    const decimal = Number(numbers[1]) / Math.pow(10, numbers[1].length)
+    let fraction = null
+    let closest = null
+
+    for (const [key, value] of fractions) {
+      const roundedValue = round(value)
+      const closeness = Math.abs(decimal - roundedValue)
+      if (closest === null || closeness <= closest) {
+        fraction = key
+        closest = closeness
+        if (closest === 0) {
+          break
+        }
       }
     }
 
-    if (numbers[0] === '0') {
-      return `${numerator}/${denominator}`
-    } else {
-      return `${numbers[0]} ${numerator}/${denominator}`
+    if (fraction === '1') {
+      mixedFraction = String(integer + 1)
+    } else if (fraction !== '0') {
+      mixedFraction = integer === 0 ? fraction : `${integer} ${fraction}`
     }
   }
 
-  return numbers[0]
+  return mixedFraction
+}
+
+function round (number) {
+  return Math.round(number * precision) / precision
 }
