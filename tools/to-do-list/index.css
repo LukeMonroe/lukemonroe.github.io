@@ -1,0 +1,92 @@
+:root {
+    --background-color: ghostwhite;
+    --color: black;
+    --thumb-color: darkgrey;
+    font-family: monospace;
+}
+
+body {
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--background-color);
+    color: var(--color);
+    margin: 0px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0px;
+}
+
+hr {
+    border: 1px solid var(--color);
+    width: 95%;
+    margin: 0px auto;
+}
+
+div.outer-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+    margin: 75px auto;
+}
+
+div.inner-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    width: 80%;
+    max-width: 1000px;
+}
+
+div.inner-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 80%;
+    max-width: 1000px;
+}
+
+header {
+    text-align: center;
+    padding: 50px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px 50px;
+}
+
+div.input-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 80%;
+    border: 1px solid purple;
+}
+
+div.input-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    border: 1px solid green;
+}
+
+textarea {
+    background-color: var(--background-color);
+    color: var(--color);
+    border: 1px solid var(--color);
+    outline: none;
+    resize: vertical;
+    height: 50px;
+    max-height: 300px;
+    width: 80%;
+    max-width: 600px;
+    padding: 5px;
+}
