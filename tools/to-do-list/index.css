@@ -16,6 +16,11 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0px;
 }
 
+div.to-do h4 {
+    color: var(--background-color);
+    word-wrap: break-word;
+}
+
 hr {
     border: 1px solid var(--color);
     width: 95%;
@@ -27,7 +32,7 @@ div.outer-column {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 60px;
+    gap: 40px;
     margin: 75px auto;
 }
 
@@ -36,7 +41,7 @@ div.inner-column {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 40px;
+    gap: 20px;
     width: 80%;
     max-width: 1000px;
 }
@@ -46,7 +51,7 @@ div.inner-row {
     justify-content: center;
     align-items: center;
     gap: 20px;
-    width: 80%;
+    width: 100%;
     max-width: 1000px;
 }
 
@@ -60,33 +65,77 @@ footer {
     padding: 25px 50px;
 }
 
-div.input-column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    width: 80%;
-    border: 1px solid purple;
-}
-
-div.input-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    width: 100%;
-    border: 1px solid green;
-}
-
-textarea {
+input[type=text].to-do {
     background-color: var(--background-color);
     color: var(--color);
+    font-family: monospace;
     border: 1px solid var(--color);
+    border-radius: 0px;
     outline: none;
-    resize: vertical;
-    height: 50px;
-    max-height: 300px;
-    width: 80%;
+    width: 60%;
     max-width: 600px;
-    padding: 5px;
+    padding: 10px;
+}
+
+div.to-do {
+    background-color: var(--random-color);
+    width: 60%;
+    padding: 10px;
+}
+
+button {
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--random-color);
+    border: none;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+}
+
+button.minus::before, button.plus::before {
+    position: absolute;
+    background-color: var(--background-color);
+    content: '';
+    height: 6px;
+    width: 24px;
+    transform: translate(-50%, -50%);
+}
+
+button.plus::after {
+    position: absolute;
+    background-color: var(--background-color);
+    content: '';
+    height: 24px;
+    width: 6px;
+    transform: translate(-50%, -50%);
+}
+
+button:hover {
+    animation: roundOutter 2s 1;
+}
+
+button:hover::before {
+    animation: roundInner 2s 1;
+}
+
+button:hover::after {
+    animation: roundInner 2s 1;
+}
+
+@keyframes roundOutter {
+  10% {
+    border-radius: 50%;
+  }
+  100% {
+    border-radius: 0%;
+  }
+}
+
+@keyframes roundInner {
+  10% {
+    border-radius: 3px;
+  }
+  100% {
+    border-radius: 0px;
+  }
 }

@@ -3,29 +3,21 @@ import { ToDoListThemes } from './to-do-list-themes.js'
 const themes = new ToDoListThemes()
 themes.setTheme()
 
-const text = localStorage.getItem('text')
+const toDos = loadToDos()
+const toDosColumn = createDivInnerColumn()
+buildToDosColumn()
 
-// ------
-const textAreaRow = createDivInputRow()
-const textArea = createTextArea()
-textArea.value = text
-textArea.addEventListener('focusout', () => {
-  localStorage.setItem('text', textArea.value)
-  boxColumn.appendChild(createH4(textArea.value))
-})
+const inputToDo = createInputToDo()
+const inputToDoRow = createDivInnerRow()
+inputToDoRow.appendChild(inputToDo)
+inputToDoRow.appendChild(createButtonPlus())
 
-textAreaRow.appendChild(createH4('01:'))
-textAreaRow.appendChild(textArea)
-
-const boxColumn = createDivInputColumn()
-boxColumn.appendChild(textAreaRow)
-// ------
-
-const colorRow = createDivInnerRow()
-colorRow.appendChild(boxColumn)
+const inputColumn = createDivInnerColumn()
+inputColumn.appendChild(inputToDoRow)
 
 const outerColumn = document.getElementById('outer-column')
-outerColumn.appendChild(boxColumn)
+outerColumn.appendChild(inputColumn)
+outerColumn.appendChild(toDosColumn)
 
 function createDivInnerColumn () {
   const column = createDiv()
@@ -41,36 +33,59 @@ function createDivInnerRow () {
   return row
 }
 
-function createDivInputColumn () {
-  const divBoxColumn = createDiv()
-  divBoxColumn.className = 'input-column'
+function createInputToDo () {
+  const inputTextBox = document.createElement('input')
+  inputTextBox.className = 'to-do'
+  inputTextBox.type = 'text'
 
-  return divBoxColumn
+  return inputTextBox
 }
 
-function createDivInputRow () {
-  const divBoxRow = createDiv()
-  divBoxRow.className = 'input-row'
+function createButtonMinus (index) {
+  const buttonMinus = document.createElement('button')
+  buttonMinus.className = 'minus'
+  buttonMinus.addEventListener('click', () => {
+    localStorage.clear()
+    toDos.splice(index, 1)
+    buildToDosColumn()
+  })
 
-  return divBoxRow
+  return buttonMinus
 }
 
-function createTextArea () {
-  return document.createElement('textarea')
+function createButtonPlus () {
+  const buttonPlus = document.createElement('button')
+  buttonPlus.className = 'plus'
+  buttonPlus.addEventListener('click', () => {
+    const toDo = inputToDo.value
+    inputToDo.value = null
+    if (toDo !== null && toDo.trim().length > 0) {
+      toDo.trim().split(',').forEach(td => {
+        if (td.trim().length > 0) {
+          toDos.push(td.trim())
+        }
+      })
+      buildToDosColumn()
+    }
+  })
+
+  return buttonPlus
 }
 
-function createH2 (innerText) {
-  const h2 = document.createElement('h2')
-  h2.innerText = innerText
+function createDivToDoRow (index, toDo) {
+  const divItemRow = createDivInnerRow()
+  divItemRow.appendChild(createButtonMinus(index))
+  divItemRow.appendChild(createDivToDo(toDo))
 
-  return h2
+  return divItemRow
 }
 
-function createH3 (innerText) {
-  const h3 = document.createElement('h3')
-  h3.innerText = innerText
+function createDivToDo (toDo) {
+  const divItem = document.createElement('div')
+  divItem.className = 'to-do'
+  divItem.appendChild(createH4(`${toDo.slice(0, 1).toUpperCase()}${toDo.slice(1)}`))
 
-  return h3
+  return divItem
 }
 
 function createH4 (innerText) {
@@ -82,4 +97,24 @@ function createH4 (innerText) {
 
 function createDiv () {
   return document.createElement('div')
+}
+
+function loadToDos () {
+  const toDos = []
+  let index = 0
+  while (localStorage.getItem(`toDo${index}`) !== null) {
+    toDos.push(localStorage.getItem(`toDo${index++}`))
+  }
+
+  return toDos
+}
+
+function buildToDosColumn () {
+  toDosColumn.replaceChildren()
+  for (let index = 0; index < toDos.length; index++) {
+    localStorage.setItem(`toDo${index}`, toDos[index])
+    toDosColumn.appendChild(createDivToDoRow(index, toDos[index]))
+  }
+
+  return toDosColumn
 }
