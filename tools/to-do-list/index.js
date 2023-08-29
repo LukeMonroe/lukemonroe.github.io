@@ -3,49 +3,51 @@ import { ToDoListThemes } from './to-do-list-themes.js'
 const themes = new ToDoListThemes()
 themes.setTheme()
 
+const inputToDo = createInputToDo()
 const toDos = loadToDos()
 const toDosColumn = createDivInnerColumn()
 buildToDosColumn()
 
-const inputToDo = createInputToDo()
 const inputToDoRow = createDivInnerRow()
 inputToDoRow.appendChild(inputToDo)
 inputToDoRow.appendChild(createButtonPlus())
 
-const inputColumn = createDivInnerColumn()
-inputColumn.appendChild(inputToDoRow)
+const inputToDoColumn = createDivInnerColumn()
+inputToDoColumn.appendChild(inputToDoRow)
 
 const outerColumn = document.getElementById('outer-column')
-outerColumn.appendChild(inputColumn)
+outerColumn.appendChild(inputToDoColumn)
 outerColumn.appendChild(toDosColumn)
 
 function createDivInnerColumn () {
-  const column = createDiv()
-  column.className = 'inner-column'
-
-  return column
+  return createDiv('inner-column')
 }
 
 function createDivInnerRow () {
-  const row = createDiv()
-  row.className = 'inner-row'
-
-  return row
+  return createDiv('inner-row')
 }
 
 function createInputToDo () {
-  const inputTextBox = document.createElement('input')
-  inputTextBox.className = 'to-do'
-  inputTextBox.type = 'text'
+  const inputToDo = document.createElement('input')
+  inputToDo.className = 'to-do'
+  inputToDo.type = 'text'
+  inputToDo.addEventListener('keydown', event => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      addToDo()
+    }
+  })
 
-  return inputTextBox
+  return inputToDo
 }
 
 function createButtonMinus (index) {
   const buttonMinus = document.createElement('button')
   buttonMinus.className = 'minus'
   buttonMinus.addEventListener('click', () => {
-    localStorage.clear()
+    for (let index = 0; index < toDos.length; index++) {
+      localStorage.removeItem(`toDo${index}`)
+    }
     toDos.splice(index, 1)
     buildToDosColumn()
   })
@@ -56,36 +58,24 @@ function createButtonMinus (index) {
 function createButtonPlus () {
   const buttonPlus = document.createElement('button')
   buttonPlus.className = 'plus'
-  buttonPlus.addEventListener('click', () => {
-    const toDo = inputToDo.value
-    inputToDo.value = null
-    if (toDo !== null && toDo.trim().length > 0) {
-      toDo.trim().split(',').forEach(td => {
-        if (td.trim().length > 0) {
-          toDos.push(td.trim())
-        }
-      })
-      buildToDosColumn()
-    }
-  })
+  buttonPlus.addEventListener('click', addToDo)
 
   return buttonPlus
 }
 
 function createDivToDoRow (index, toDo) {
-  const divItemRow = createDivInnerRow()
-  divItemRow.appendChild(createButtonMinus(index))
-  divItemRow.appendChild(createDivToDo(toDo))
+  const divToDoRow = createDivInnerRow()
+  divToDoRow.appendChild(createButtonMinus(index))
+  divToDoRow.appendChild(createDivToDo(toDo))
 
-  return divItemRow
+  return divToDoRow
 }
 
 function createDivToDo (toDo) {
-  const divItem = document.createElement('div')
-  divItem.className = 'to-do'
-  divItem.appendChild(createH4(`${toDo.slice(0, 1).toUpperCase()}${toDo.slice(1)}`))
+  const divToDo = createDiv('to-do')
+  divToDo.appendChild(createH4(`${toDo.slice(0, 1).toUpperCase()}${toDo.slice(1)}`))
 
-  return divItem
+  return divToDo
 }
 
 function createH4 (innerText) {
@@ -95,18 +85,41 @@ function createH4 (innerText) {
   return h4
 }
 
-function createDiv () {
-  return document.createElement('div')
+function createDiv (className) {
+  const div = document.createElement('div')
+  if (className !== null) {
+    div.className = className
+  }
+
+  return div
 }
 
 function loadToDos () {
   const toDos = []
-  let index = 0
-  while (localStorage.getItem(`toDo${index}`) !== null) {
-    toDos.push(localStorage.getItem(`toDo${index++}`))
+  while (localStorage.getItem(`toDo${toDos.length}`) !== null) {
+    toDos.push(localStorage.getItem(`toDo${toDos.length}`))
   }
 
   return toDos
+}
+
+function addToDo () {
+  if (inputToDo.value !== null) {
+    const toDo = inputToDo.value.trim()
+    if (toDo.length > 0) {
+      toDo.split(',').forEach(innerToDo => addInnerToDo(innerToDo))
+      buildToDosColumn()
+    }
+  }
+
+  inputToDo.value = null
+}
+
+function addInnerToDo (innerToDo) {
+  innerToDo = innerToDo.trim()
+  if (innerToDo.length > 0) {
+    toDos.push(innerToDo)
+  }
 }
 
 function buildToDosColumn () {
