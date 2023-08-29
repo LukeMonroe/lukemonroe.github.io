@@ -67,7 +67,7 @@ class Colors {
     const formattedHex = hex
     const formattedRGB = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`
     const formattedHSL = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`
-    const formattedText = grayscale > 150 ? 'hsl(0, 0%, 0%)' : 'hsl(0, 0%, 100%)'
+    const formattedText = grayscale > 150 ? '000000' : 'FFFFFF'
 
     return { hex, rgb, hsl, grayscale, formattedHex, formattedRGB, formattedHSL, formattedText }
   }
@@ -194,24 +194,6 @@ class Colors {
     l = l >= 0 ? l : 0
 
     return Colors.buildHSL(color.hsl.h, color.hsl.s, l)
-  }
-
-  static darkenHSL (hsl, value) {
-    let darkHSL = hsl.trim().replaceAll(' ', '')
-    darkHSL = darkHSL.match(/hsl\(([\d]{1,3}),([\d]{1,3})%,([\d]{1,3})%\)/i)
-
-    if (darkHSL === null || darkHSL.length !== 4) {
-      return hsl
-    }
-
-    const h = Number(darkHSL[1])
-    const s = Number(darkHSL[2])
-    let l = Number(darkHSL[3])
-
-    l -= value
-    l = l > 0 ? l : 0
-
-    return `hsl(${h}, ${s}%, ${l}%)`
   }
 
   static hues (color, degrees, value) {
