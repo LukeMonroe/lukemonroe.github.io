@@ -107,19 +107,17 @@ function addToDo () {
   if (inputToDo.value !== null) {
     const toDo = inputToDo.value.trim()
     if (toDo.length > 0) {
-      toDo.split(',').forEach(innerToDo => addInnerToDo(innerToDo))
+      toDo.split(',').forEach(innerToDo => {
+        innerToDo = innerToDo.trim()
+        if (innerToDo.length > 0) {
+          toDos.push(innerToDo)
+        }
+      })
       buildToDosColumn()
     }
   }
 
   inputToDo.value = null
-}
-
-function addInnerToDo (innerToDo) {
-  innerToDo = innerToDo.trim()
-  if (innerToDo.length > 0) {
-    toDos.push(innerToDo)
-  }
 }
 
 function buildToDosColumn () {
