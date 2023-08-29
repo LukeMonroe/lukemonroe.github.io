@@ -67,7 +67,7 @@ class Colors {
     const formattedHex = hex
     const formattedRGB = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`
     const formattedHSL = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`
-    const formattedText = grayscale > 150 ? '000000' : 'FFFFFF'
+    const formattedText = grayscale > 150 ? '#000000' : '#FFFFFF'
 
     return { hex, rgb, hsl, grayscale, formattedHex, formattedRGB, formattedHSL, formattedText }
   }
