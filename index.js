@@ -1,5 +1,7 @@
 import { Themes } from './themes.js'
 
+document.addEventListener('dblclick', event => { event.preventDefault() })
+
 const themes = new Themes()
 themes.setTheme()
 

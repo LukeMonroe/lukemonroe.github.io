@@ -75,6 +75,7 @@ input[type=text].to-do {
     width: 60%;
     max-width: 600px;
     padding: 10px;
+    font-size: 18px;
 }
 
 div.to-do {

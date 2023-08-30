@@ -34,7 +34,8 @@ const hexBox = createInputTextBox()
 hexBox.maxLength = '7'
 hexBox.style.width = '87px'
 hexBox.value = colorPicked.formattedHex
-hexBox.addEventListener('focusout', () => {
+hexBox.addEventListener('focusout', event => {
+  event.preventDefault()
   const color = Colors.createHex(hexBox.value)
   if (color !== null) {
     localStorage.setItem('hex', color.formattedHex)
@@ -42,6 +43,9 @@ hexBox.addEventListener('focusout', () => {
   } else {
     hexBox.value = colorPicked.formattedHex
   }
+})
+hexBox.addEventListener('focusin', event => {
+  event.preventDefault()
 })
 
 hexBoxRow.appendChild(createH4('hex:'))
