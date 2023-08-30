@@ -38,7 +38,7 @@ hexBox.style.width = '107px'
 hexBox.value = colorPicked.formattedHex
 hexBox.addEventListener('focusout', () => {
   const color = Colors.createHex(hexBox.value)
-  if (color !== null && color.notEqual(colorPicked)) {
+  if (color !== null && Colors.notEqual(color, colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {
@@ -62,7 +62,7 @@ bBox.value = colorPicked.rgb.b
 
 rBox.addEventListener('focusout', () => {
   const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-  if (color !== null && color.notEqual(colorPicked)) {
+  if (color !== null && Colors.notEqual(color, colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {
@@ -71,7 +71,7 @@ rBox.addEventListener('focusout', () => {
 })
 gBox.addEventListener('focusout', () => {
   const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-  if (color !== null && color.notEqual(colorPicked)) {
+  if (color !== null && Colors.notEqual(color, colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {
@@ -80,7 +80,7 @@ gBox.addEventListener('focusout', () => {
 })
 bBox.addEventListener('focusout', () => {
   const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-  if (color !== null && color.notEqual(colorPicked)) {
+  if (color !== null && Colors.notEqual(color, colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {
@@ -106,7 +106,7 @@ lBox.value = colorPicked.hsl.l
 
 hBox.addEventListener('focusout', () => {
   const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-  if (color !== null && color.notEqual(colorPicked)) {
+  if (color !== null && Colors.notEqual(color, colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {
@@ -115,7 +115,7 @@ hBox.addEventListener('focusout', () => {
 })
 sBox.addEventListener('focusout', () => {
   const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-  if (color !== null && color.notEqual(colorPicked)) {
+  if (color !== null && Colors.notEqual(color, colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {
@@ -124,7 +124,7 @@ sBox.addEventListener('focusout', () => {
 })
 lBox.addEventListener('focusout', () => {
   const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-  if (color !== null && color.notEqual(colorPicked)) {
+  if (color !== null && Colors.notEqual(color, colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {

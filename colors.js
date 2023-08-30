@@ -1,10 +1,12 @@
 class Colors {
   static equal (color01, color02) {
-    return color01.hsl.h === color02.hsl.h && color01.hsl.s === color02.hsl.s && color01.hsl.l === color02.hsl.l
+    return color01.formattedHex === color02.formattedHex &&
+    color01.formattedRGB === color02.formattedRGB &&
+    color01.formattedHSL === color02.formattedHSL
   }
 
   static notEqual (color01, color02) {
-    return color01.hsl.h !== color02.hsl.h || color01.hsl.s !== color02.hsl.s || color01.hsl.l !== color02.hsl.l
+    return !Colors.equal(color01, color02)
   }
 
   static copy (color) {
@@ -89,9 +91,9 @@ class Colors {
   }
 
   static rgbToHex (rgb) {
-    const r = rgb.r
-    const g = rgb.g
-    const b = rgb.b
+    const r = Number(rgb.r)
+    const g = Number(rgb.g)
+    const b = Number(rgb.b)
 
     let h = r.toString(16).toUpperCase()
     let e = g.toString(16).toUpperCase()
@@ -105,9 +107,9 @@ class Colors {
   }
 
   static hslToRGB (hsl) {
-    const h = hsl.h
-    const s = hsl.s / 100
-    const l = hsl.l / 100
+    const h = Number(hsl.h)
+    const s = Number(hsl.s / 100)
+    const l = Number(hsl.l / 100)
 
     const c = (1 - Math.abs((2 * l) - 1)) * s
     const x = c * (1 - Math.abs(((h / 60) % 2) - 1))
