@@ -1,5 +1,7 @@
 import { RecipesThemes } from './recipes-themes.js'
 
+document.addEventListener('dblclick', event => { event.preventDefault() })
+
 const recipesThemes = new RecipesThemes()
 recipesThemes.setTheme()
 

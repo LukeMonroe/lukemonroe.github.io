@@ -1,5 +1,7 @@
 import { ToDoListThemes } from './to-do-list-themes.js'
 
+document.addEventListener('dblclick', event => { event.preventDefault() })
+
 const themes = new ToDoListThemes()
 themes.setTheme()
 

@@ -4,6 +4,8 @@ import { Score } from './score.js'
 import { Keys } from './keys.js'
 import { RocksThemes } from './rocks-themes.js'
 
+document.addEventListener('dblclick', event => { event.preventDefault() })
+
 const CLICK = 'click'
 const CANVAS = 'canvas'
 const BUTTON = 'button'

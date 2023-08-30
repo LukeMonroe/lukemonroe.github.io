@@ -119,12 +119,13 @@ input[type=text].box {
     background-color: var(--background-color);
     color: var(--color);
     font-family: monospace;
+    font-size: 18px;
     text-align: center;
     border: 1px solid var(--color);
     border-radius: 0px;
     outline: none;
-    width: 40px;
-    padding: 4px 0px;
+    width: 50px;
+    padding: 5px 0px;
 }
 
 input[type=range].slider {

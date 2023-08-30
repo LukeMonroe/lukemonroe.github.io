@@ -1,11 +1,13 @@
 import { ColorPickerThemes } from './color-picker-themes.js'
 import { Colors } from '../../colors.js'
 
-let hueSeparation = 24
-let hueDegrees = 360
+document.addEventListener('dblclick', event => { event.preventDefault() })
 
 const themes = new ColorPickerThemes()
 themes.setTheme()
+
+let hueSeparation = 24
+let hueDegrees = 360
 
 const hex = localStorage.getItem('hex')
 let colorPicked = null
@@ -32,20 +34,16 @@ const lightnessSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, lightn
 const hexBoxRow = createDivInputRow()
 const hexBox = createInputTextBox()
 hexBox.maxLength = '7'
-hexBox.style.width = '87px'
+hexBox.style.width = '107px'
 hexBox.value = colorPicked.formattedHex
-hexBox.addEventListener('focusout', event => {
-  event.preventDefault()
+hexBox.addEventListener('focusout', () => {
   const color = Colors.createHex(hexBox.value)
-  if (color !== null) {
+  if (color !== null && color.notEqual(colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {
     hexBox.value = colorPicked.formattedHex
   }
-})
-hexBox.addEventListener('focusin', event => {
-  event.preventDefault()
 })
 
 hexBoxRow.appendChild(createH4('hex:'))
@@ -64,7 +62,7 @@ bBox.value = colorPicked.rgb.b
 
 rBox.addEventListener('focusout', () => {
   const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-  if (color !== null) {
+  if (color !== null && color.notEqual(colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {
@@ -73,7 +71,7 @@ rBox.addEventListener('focusout', () => {
 })
 gBox.addEventListener('focusout', () => {
   const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-  if (color !== null) {
+  if (color !== null && color.notEqual(colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {
@@ -82,7 +80,7 @@ gBox.addEventListener('focusout', () => {
 })
 bBox.addEventListener('focusout', () => {
   const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-  if (color !== null) {
+  if (color !== null && color.notEqual(colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {
@@ -108,7 +106,7 @@ lBox.value = colorPicked.hsl.l
 
 hBox.addEventListener('focusout', () => {
   const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-  if (color !== null) {
+  if (color !== null && color.notEqual(colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {
@@ -117,7 +115,7 @@ hBox.addEventListener('focusout', () => {
 })
 sBox.addEventListener('focusout', () => {
   const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-  if (color !== null) {
+  if (color !== null && color.notEqual(colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {
@@ -126,7 +124,7 @@ sBox.addEventListener('focusout', () => {
 })
 lBox.addEventListener('focusout', () => {
   const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-  if (color !== null) {
+  if (color !== null && color.notEqual(colorPicked)) {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
   } else {

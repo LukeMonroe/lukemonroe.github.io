@@ -69,13 +69,13 @@ input[type=text].to-do {
     background-color: var(--background-color);
     color: var(--color);
     font-family: monospace;
+    font-size: 18px;
     border: 1px solid var(--color);
     border-radius: 0px;
     outline: none;
     width: 60%;
     max-width: 600px;
     padding: 10px;
-    font-size: 18px;
 }
 
 div.to-do {
