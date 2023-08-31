@@ -23,39 +23,28 @@ const context = canvas.getContext('2d')
 
 const playButton = document.createElement(BUTTON)
 playButton.innerText = 'Play'
-playButton.className = 'play'
 playButton.addEventListener(CLICK, start)
 
 const resumeButton = document.createElement(BUTTON)
 resumeButton.innerText = 'Resume'
-resumeButton.className = 'resume'
-resumeButton.style.visibility = HIDDEN
+resumeButton.style.display = 'none'
 resumeButton.addEventListener(CLICK, resume)
 
 const againButton = document.createElement(BUTTON)
 againButton.innerText = 'Again'
-againButton.className = 'again'
+againButton.style.display = 'none'
 againButton.addEventListener(CLICK, restart)
 
-const quitButton = document.createElement(BUTTON)
-quitButton.innerText = 'Quit'
-quitButton.className = 'quit'
-quitButton.addEventListener(CLICK, function () { close() })
+let scale = 1
 
-const startButtons = document.createElement(DIV)
-startButtons.className = 'buttons'
-startButtons.appendChild(playButton)
-
-const endButtons = document.createElement(DIV)
-endButtons.className = 'buttons'
-endButtons.style.visibility = HIDDEN
-endButtons.appendChild(againButton)
-endButtons.appendChild(quitButton)
+const buttonColumn = document.createElement(DIV)
+buttonColumn.className = 'buttons-column'
+buttonColumn.appendChild(playButton)
+buttonColumn.appendChild(resumeButton)
+buttonColumn.appendChild(againButton)
 
 document.body.appendChild(canvas)
-document.body.appendChild(startButtons)
-document.body.appendChild(endButtons)
-document.body.appendChild(resumeButton)
+document.body.appendChild(buttonColumn)
 
 const themes = new RocksThemes()
 themes.setTheme()
@@ -68,7 +57,6 @@ let bullets = []
 let rocks = []
 let gameInterval = null
 let lifeInterval = null
-let scale = 1
 let paused = false
 let touchLeft = false
 let touchRight = false
@@ -140,18 +128,19 @@ function resizeCanvas () {
     pause()
   }
 
-  if (document.body.clientWidth < CANVAS_MIN_WIDTH || window.innerHeight < CANVAS_MIN_HEIGHT) {
+  // TODO: The canvas should always be a fixed amount smaller than the window size.
+  if (document.body.clientWidth < CANVAS_MIN_WIDTH + 20 || window.innerHeight < CANVAS_MIN_HEIGHT + 20) {
     canvas.width = CANVAS_MIN_WIDTH
     canvas.height = CANVAS_MIN_HEIGHT
-  } else if (document.body.clientWidth > CANVAS_MAX_WIDTH && window.innerHeight > CANVAS_MAX_HEIGHT) {
+  } else if (document.body.clientWidth > CANVAS_MAX_WIDTH + 20 && window.innerHeight > CANVAS_MAX_HEIGHT + 20) {
     canvas.width = CANVAS_MAX_WIDTH
     canvas.height = CANVAS_MAX_HEIGHT
   } else {
-    canvas.width = document.body.clientWidth
+    canvas.width = document.body.clientWidth - 20
     canvas.height = canvas.width / ASPECT_RATIO
 
     if (canvas.height > window.innerHeight) {
-      canvas.height = window.innerHeight
+      canvas.height = window.innerHeight - 20
       canvas.width = canvas.height * ASPECT_RATIO
     }
   }
@@ -168,15 +157,21 @@ function resizeCanvas () {
   }
 
   scale = canvas.width / CANVAS_MAX_WIDTH
-  const canvasRect = canvas.getBoundingClientRect()
-  resumeButton.style.top = canvasRect.y + (canvasRect.height / 2) + 'px'
-  resumeButton.style.left = canvasRect.x + (canvasRect.width / 2) + 'px'
-  resumeButton.style.transform = 'translate(-50%, -50%)'
+  canvas.style.top = `${Math.round((window.innerHeight - canvas.height) / 2)}px`
+  canvas.style.left = `${Math.round((document.body.clientWidth - canvas.width) / 2)}px`
+
+  // const canvasRect = canvas.getBoundingClientRect()
+  // buttonColumn.style.scale = `${scale}`
+  // buttonColumn.style.top = canvasRect.y + (canvasRect.height / 2) + 'px'
+  // buttonColumn.style.left = canvasRect.x + (canvasRect.width / 2) + 'px'
+  // buttonColumn.style.transform = 'translate(-50%, -50%)'
 }
 
 function start () {
-  // document.body.requestFullscreen()
-  startButtons.style.visibility = HIDDEN
+  playButton.style.display = 'none'
+  resumeButton.style.display = 'block'
+  againButton.style.display = 'block'
+  buttonColumn.style.visibility = HIDDEN
   scale = canvas.width / CANVAS_MAX_WIDTH
   player = Player.create(canvas, scale, themes)
 
@@ -190,24 +185,27 @@ function start () {
 }
 
 function pause () {
-  resumeButton.style.visibility = VISIBLE
+  buttonColumn.style.visibility = VISIBLE
   paused = true
 }
 
 function resume () {
-  resumeButton.style.visibility = HIDDEN
+  buttonColumn.style.visibility = HIDDEN
   paused = false
 }
 
 function stop () {
   clearGameInterval()
-  endButtons.style.visibility = VISIBLE
+  resumeButton.style.display = 'none'
+  buttonColumn.style.visibility = VISIBLE
 }
 
 function restart () {
+  document.body.requestFullscreen()
   clearGameInterval()
   clearLifeInterval()
-  endButtons.style.visibility = HIDDEN
+  resumeButton.style.display = 'block'
+  buttonColumn.style.visibility = HIDDEN
   scale = canvas.width / CANVAS_MAX_WIDTH
   player.reset(canvas, scale, themes)
   score.reset()

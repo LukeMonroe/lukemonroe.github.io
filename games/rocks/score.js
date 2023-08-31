@@ -10,17 +10,16 @@ class Score {
   #level = 0
   #lives = 3
   #scale = 1
-  #themes = null
-  #theme = null
-  #color = null
 
   constructor (themes) {
-    this.#themes = themes
-    this.#theme = themes.getTheme()
-    this.#color = this.#themes.color
+    if (themes.light(themes.getTheme())) {
+      this.color = themes.color.formattedHex
+    } else {
+      this.color = themes.backgroundColor.formattedHex
+    }
   }
 
-  #scaled (number) {
+  scaled (number) {
     return number * this.#scale
   }
 
@@ -30,13 +29,13 @@ class Score {
 
   draw (context) {
     context.save()
-    context.font = `${this.#scaled(FONT_SIZE)}px monospace`
-    context.fillStyle = this.#color
+    context.font = `${this.scaled(FONT_SIZE)}px monospace`
+    context.fillStyle = this.color
 
-    const scaledX = this.#scaled(X)
-    context.fillText(`Score: ${this.#score}`, scaledX, this.#scaled(SCORE_Y))
-    context.fillText(`Level: ${this.#level}`, scaledX, this.#scaled(LEVEL_Y))
-    context.fillText(`Lives: ${this.#lives}`, scaledX, this.#scaled(LIVES_Y))
+    const scaledX = this.scaled(X)
+    context.fillText(`Score: ${this.#score}`, scaledX, this.scaled(SCORE_Y))
+    context.fillText(`Level: ${this.#level}`, scaledX, this.scaled(LEVEL_Y))
+    context.fillText(`Lives: ${this.#lives}`, scaledX, this.scaled(LIVES_Y))
 
     context.restore()
   }

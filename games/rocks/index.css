@@ -1,6 +1,7 @@
 :root {
     --background-color: ghostwhite;
     --color: black;
+    --random-color: darkgrey;
     font-family: monospace;
 }
 
@@ -10,59 +11,50 @@
 
 body {
     background-color: var(--background-color);
+    color: var(--color);
+    margin: 0px;
 }
 
 canvas {
-    position: relative;
-    display: block;
-    background-color: var(--background-color);
-    border: 1px solid var(--color);
-    left: 50%;
-    transform: translate(-50%);
+    position: absolute;
+    outline: 1px solid var(--color);
 }
 
 button {
-    position: relative;
-    display: block;
-    cursor: pointer;
-    background-color:darkgrey;
-    color: var(--color);
-    border: none;
-    font-size: 18px;
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--random-color);
+    color: var(--background-color);
     font-family: monospace;
-    text-align: center;
-    padding: 15px;
-    width: 250px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    width: 200px;
+    padding: 20px;
 }
 
-button.play {
-    background-color: firebrick;
+button:hover {
+    animation: jiggle 0.20s 1;
 }
 
-button.pause {
-    background-color: firebrick;
-}
-
-button.resume {
-    position: absolute;
-    background-color: firebrick;
-}
-
-button.again {
-    background-color: tomato;
-}
-
-button.quit {
-    background-color: palevioletred;
-}
-
-div.buttons {
+div.buttons-column {
     position: absolute;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    top: 350px;
+    width: fit-content;
+    gap: 20px;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%);
+    transform: translate(-50%, -50%);
+}
+
+@keyframes jiggle {
+  25% {
+    transform: translateX(2px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
 }

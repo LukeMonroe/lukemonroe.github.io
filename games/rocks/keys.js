@@ -29,18 +29,18 @@ class Keys {
   ])
 
   constructor () {
-    window.addEventListener(KEYDOWN, event => this.#keydown(event))
-    window.addEventListener(KEYUP, event => this.#keyup(event))
+    document.addEventListener(KEYDOWN, event => this.keydown(event))
+    document.addEventListener(KEYUP, event => this.keyup(event))
   }
 
-  #keydown (event) {
+  keydown (event) {
     event.preventDefault()
     if (this.#keys.has(event.key)) {
       this.#keys.set(event.key, true)
     }
   }
 
-  #keyup (event) {
+  keyup (event) {
     if (this.#keys.has(event.key)) {
       this.#keys.set(event.key, false)
     }
