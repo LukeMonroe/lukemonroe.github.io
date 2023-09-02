@@ -80,14 +80,14 @@ class Shape {
       }
 
       if (this.name === PLAYER) {
-        if (x > 0 && x < canvas.width) {
+        if (x > 0 && x < canvasStyleWidth(canvas)) { // ---
           this.x = x
         }
-        if (y > 0 && y < canvas.height) {
+        if (y > 0 && y < canvasStyleHeight(canvas)) { // ---
           this.y = y
         }
       } else {
-        if (x > this.scaled(-BOUNDS_OFFSET) && x < canvas.width + this.scaled(BOUNDS_OFFSET)) {
+        if (x > this.scaled(-BOUNDS_OFFSET) && x < canvasStyleWidth(canvas) + this.scaled(BOUNDS_OFFSET)) { // ---
           this.x = x
         } else {
           if (this.name === BULLET) {
@@ -96,7 +96,7 @@ class Shape {
             this.angle *= -1
           }
         }
-        if (y > this.scaled(-BOUNDS_OFFSET) && y < canvas.height + this.scaled(BOUNDS_OFFSET)) {
+        if (y > this.scaled(-BOUNDS_OFFSET) && y < canvasStyleHeight(canvas) + this.scaled(BOUNDS_OFFSET)) { // ---
           this.y = y
         } else {
           if (this.name === BULLET) {
@@ -230,10 +230,10 @@ class Polygon extends Shape {
     const radius = Shape.rangeRandom(71, 100)
 
     let offset = Shape.limitRandom(Shape.scaled(BOUNDS_OFFSET, scale))
-    const x = Shape.random() >= 0.5 ? canvas.width + offset : -offset
+    const x = Shape.random() >= 0.5 ? canvasStyleWidth(canvas) + offset : -offset // ---
 
     offset = Shape.limitRandom(Shape.scaled(BOUNDS_OFFSET, scale))
-    const y = Shape.random() >= 0.5 ? canvas.height + offset : -offset
+    const y = Shape.random() >= 0.5 ? canvasStyleHeight(canvas) + offset : -offset // ---
 
     const rock = new Polygon(x, y, radius, sides)
     rock.angle = Shape.limitRandom(Math.PI * 2)
@@ -275,7 +275,7 @@ class Player extends Polygon {
   #lifeColor = null
 
   constructor (canvas, scale, themes) {
-    super(canvas.width / 2, canvas.height / 2, 30, 5)
+    super(canvasStyleWidth(canvas) / 2, canvasStyleHeight(canvas) / 2, 30, 5) // ---
     this.scale = scale
     this.name = PLAYER
 
@@ -362,6 +362,14 @@ class Player extends Polygon {
   static create (canvas, scale, themes) {
     return new Player(canvas, scale, themes)
   }
+}
+
+function canvasStyleWidth (canvas) { // ---
+  return Number(canvas.style.width.split('px')[0])
+}
+
+function canvasStyleHeight (canvas) { // ---
+  return Number(canvas.style.height.split('px')[0])
 }
 
 export { CIRCLE, POLYGON, Point, Shape, Circle, Polygon, Player }

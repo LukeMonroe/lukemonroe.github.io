@@ -121,8 +121,10 @@ function handleTouch (event, type) {
 }
 
 function resizeCanvas () {
-  const oldWidth = canvas.width
-  const oldHeight = canvas.height
+  const oldStyleWidth = Number(canvas.style.width.split('px')[0]) // ---
+  const oldStyleHeight = Number(canvas.style.height.split('px')[0]) // ---
+  let newStyleWidth = null // ---
+  let newStyleHeight = null // ---
 
   if (gameInterval !== null) {
     pause()
@@ -130,24 +132,24 @@ function resizeCanvas () {
 
   // TODO: The canvas should always be a fixed amount smaller than the window size.
   if (document.body.clientWidth < CANVAS_MIN_WIDTH + 20 || window.innerHeight < CANVAS_MIN_HEIGHT + 20) {
-    canvas.width = CANVAS_MIN_WIDTH
-    canvas.height = CANVAS_MIN_HEIGHT
+    newStyleWidth = CANVAS_MIN_WIDTH // ---
+    newStyleHeight = CANVAS_MIN_HEIGHT // ---
   } else if (document.body.clientWidth > CANVAS_MAX_WIDTH + 20 && window.innerHeight > CANVAS_MAX_HEIGHT + 20) {
-    canvas.width = CANVAS_MAX_WIDTH
-    canvas.height = CANVAS_MAX_HEIGHT
+    newStyleWidth = CANVAS_MAX_WIDTH // ---
+    newStyleHeight = CANVAS_MAX_HEIGHT // ---
   } else {
-    canvas.width = document.body.clientWidth - 20
-    canvas.height = canvas.width / ASPECT_RATIO
+    newStyleWidth = document.body.clientWidth - 20 // ---
+    newStyleHeight = newStyleWidth / ASPECT_RATIO // ---
 
-    if (canvas.height > window.innerHeight) {
-      canvas.height = window.innerHeight - 20
-      canvas.width = canvas.height * ASPECT_RATIO
+    if (newStyleHeight > window.innerHeight) { // ---
+      newStyleHeight = window.innerHeight - 20 // ---
+      newStyleWidth = newStyleHeight * ASPECT_RATIO // ---
     }
   }
 
   if (paused) {
-    const widthDelta = canvas.width / oldWidth
-    const heightDelta = canvas.height / oldHeight
+    const widthDelta = newStyleWidth / oldStyleWidth // ---
+    const heightDelta = newStyleHeight / oldStyleHeight // ---
 
     player.x *= widthDelta
     player.y *= heightDelta
@@ -156,9 +158,16 @@ function resizeCanvas () {
     touchControls.forEach(touchControl => { touchControl.x *= widthDelta; touchControl.y *= heightDelta })
   }
 
-  scale = canvas.width / CANVAS_MAX_WIDTH
-  canvas.style.top = `${Math.round((window.innerHeight - canvas.height) / 2)}px`
-  canvas.style.left = `${Math.round((document.body.clientWidth - canvas.width) / 2)}px`
+  scale = newStyleWidth / CANVAS_MAX_WIDTH // ---
+  canvas.style.top = `${Math.round((window.innerHeight - newStyleHeight) / 2)}px` // ---
+  canvas.style.left = `${Math.round((document.body.clientWidth - newStyleWidth) / 2)}px` // ---
+  canvas.style.width = `${newStyleWidth}px` // ---
+  canvas.style.height = `${newStyleHeight}px` // ---
+
+  const s = window.devicePixelRatio // ---
+  canvas.height = newStyleHeight * s // ---
+  canvas.width = newStyleWidth * s // ---
+  context.scale(s, s) // ---
 
   // const canvasRect = canvas.getBoundingClientRect()
   // buttonColumn.style.scale = `${scale}`
@@ -201,7 +210,7 @@ function stop () {
 }
 
 function restart () {
-  document.body.requestFullscreen()
+  // document.body.requestFullscreen() // ---
   clearGameInterval()
   clearLifeInterval()
   resumeButton.style.display = 'block'
@@ -254,7 +263,7 @@ function manage () {
 }
 
 function clear () {
-  context.clearRect(0, 0, canvas.width, canvas.height)
+  context.clearRect(0, 0, Number(canvas.style.width.split('px')[0]), Number(canvas.style.height.split('px')[0])) // ---
 }
 
 function collisions () {
