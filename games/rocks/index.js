@@ -183,11 +183,11 @@ function start () {
   buttonColumn.style.visibility = HIDDEN
   player = Player.create(canvas, scale, themes)
 
-  touchControls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(300, scale), 100))
-  touchControls.push(new Circle(canvas.width - Shape.scaled(300, scale), canvas.height - Shape.scaled(200, scale), 100))
-  touchControls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(200, scale), 100))
-  touchControls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 100))
-  touchControls.push(new Circle(Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 90))
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(300, scale), 100))
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(200, scale), 100))
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(200, scale), 100))
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
+  touchControls.push(new Circle(Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(100, scale), 90))
   touchControls.forEach(touchControl => { touchControl.color = 'rgba(150, 150, 150, 0.3)' })
   setGameInterval()
 }
@@ -218,11 +218,11 @@ function restart () {
   score.reset()
   keys.reset()
   touchControls = []
-  touchControls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(300, scale), 100))
-  touchControls.push(new Circle(canvas.width - Shape.scaled(300, scale), canvas.height - Shape.scaled(200, scale), 100))
-  touchControls.push(new Circle(canvas.width - Shape.scaled(100, scale), canvas.height - Shape.scaled(200, scale), 100))
-  touchControls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 100))
-  touchControls.push(new Circle(Shape.scaled(200, scale), canvas.height - Shape.scaled(100, scale), 90))
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(300, scale), 100))
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(200, scale), 100))
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(200, scale), 100))
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
+  touchControls.push(new Circle(Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(100, scale), 90))
   touchControls.forEach(touchControl => { touchControl.color = 'rgba(150, 150, 150, 0.3)' })
   bullets = []
   rocks = []
@@ -324,4 +324,12 @@ function draw () {
   player.draw(context)
   touchControls.forEach(touchControl => touchControl.draw(context))
   score.draw(context)
+}
+
+function canvasStyleWidth () { // ---
+  return Number(canvas.style.width.split('px')[0])
+}
+
+function canvasStyleHeight () { // ---
+  return Number(canvas.style.height.split('px')[0])
 }
