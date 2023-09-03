@@ -68,8 +68,8 @@ resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
 canvas.addEventListener('touchstart', event => handleTouch(event, 'a'))
 canvas.addEventListener('touchmove', event => handleTouch(event, 'b'))
-canvas.addEventListener('touchend', event => handleTouch(event), 'c')
-canvas.addEventListener('touchcancel', event => handleTouch(event), 'd')
+canvas.addEventListener('touchend', event => handleTouch(event, 'c'))
+canvas.addEventListener('touchcancel', event => handleTouch(event, 'd'))
 
 function handleTouch (event, type) {
   if (touchControls.length > 0) {
@@ -165,8 +165,8 @@ function resizeCanvas () {
   canvas.style.height = `${newStyleHeight}px` // ---
 
   const s = window.devicePixelRatio // ---
-  canvas.height = newStyleHeight * s // ---
-  canvas.width = newStyleWidth * s // ---
+  canvas.height = Math.floor(newStyleHeight * s) // ---
+  canvas.width = Math.floor(newStyleWidth * s) // ---
   context.scale(s, s) // ---
 
   // const canvasRect = canvas.getBoundingClientRect()
@@ -181,7 +181,6 @@ function start () {
   resumeButton.style.display = 'block'
   againButton.style.display = 'block'
   buttonColumn.style.visibility = HIDDEN
-  scale = canvas.width / CANVAS_MAX_WIDTH
   player = Player.create(canvas, scale, themes)
 
   touchControls.push(new Circle(canvas.width - Shape.scaled(200, scale), canvas.height - Shape.scaled(300, scale), 100))
@@ -215,7 +214,6 @@ function restart () {
   clearLifeInterval()
   resumeButton.style.display = 'block'
   buttonColumn.style.visibility = HIDDEN
-  scale = canvas.width / CANVAS_MAX_WIDTH
   player.reset(canvas, scale, themes)
   score.reset()
   keys.reset()
