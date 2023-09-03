@@ -183,9 +183,10 @@ function start () {
   buttonColumn.style.visibility = HIDDEN
   player = Player.create(canvas, scale, themes)
 
+  // TODO: Make this a dictionary.
   touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(300, scale), 100))
-  touchControls.push(new Circle(Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
   touchControls.push(new Circle(Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
+  touchControls.push(new Circle(Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
   touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
   touchControls.forEach(touchControl => { touchControl.color = 'rgba(150, 150, 150, 0.3)' })
   setGameInterval()
