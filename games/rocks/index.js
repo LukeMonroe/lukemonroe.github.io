@@ -35,8 +35,6 @@ againButton.innerText = 'Again'
 againButton.style.display = 'none'
 againButton.addEventListener(CLICK, restart)
 
-let scale = 1
-
 const buttonColumn = document.createElement(DIV)
 buttonColumn.className = 'buttons-column'
 buttonColumn.appendChild(playButton)
@@ -49,10 +47,11 @@ document.body.appendChild(buttonColumn)
 const themes = new RocksThemes()
 themes.setTheme()
 
+let scale = 1
 let player = null
 const score = new Score(themes)
 const keys = new Keys()
-let touchControls = []
+const touchControls = []
 let bullets = []
 let rocks = []
 let gameInterval = null
@@ -202,11 +201,9 @@ function resizeCanvas () {
   canvas.width = Math.floor(newStyleWidth * s) // ---
   context.scale(s, s) // ---
 
-  // const canvasRect = canvas.getBoundingClientRect()
-  // buttonColumn.style.scale = `${scale}`
-  // buttonColumn.style.top = canvasRect.y + (canvasRect.height / 2) + 'px'
-  // buttonColumn.style.left = canvasRect.x + (canvasRect.width / 2) + 'px'
-  // buttonColumn.style.transform = 'translate(-50%, -50%)'
+  buttonColumn.style.top = `${Math.round(window.innerHeight / 2)}px`
+  buttonColumn.style.left = `${Math.round(document.body.clientWidth / 2)}px`
+  buttonColumn.style.transform = `translate(-50%, -50%) scale(${scale})`
 }
 
 function start () {
@@ -242,7 +239,7 @@ function stop () {
 }
 
 function restart () {
-  // document.body.requestFullscreen() // ---
+  document.body.requestFullscreen()
   clearGameInterval()
   clearLifeInterval()
   resumeButton.style.display = 'block'
@@ -250,12 +247,6 @@ function restart () {
   player.reset(canvas, scale, themes)
   score.reset()
   keys.reset()
-  touchControls = []
-  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(300, scale), 100))
-  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(200, scale), 100))
-  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(200, scale), 100))
-  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
-  touchControls.forEach(touchControl => { touchControl.color = 'rgba(150, 150, 150, 0.3)' })
   bullets = []
   rocks = []
   paused = false
