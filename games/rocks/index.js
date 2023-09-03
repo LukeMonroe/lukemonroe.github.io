@@ -100,13 +100,13 @@ function handleTouch (event, type) {
           } else if (i === 2) {
             touchRight = true
             touchLeft = false
-          } else if (i === 3) {
+          } else {
             touchDown = true
             touchUp = false
-          } else {
-            if (type === 'a') {
-              touchBullet = true
-            }
+          }
+        } else {
+          if (type === 'a') {
+            touchBullet = true
           }
         }
       }
@@ -183,10 +183,10 @@ function start () {
   buttonColumn.style.visibility = HIDDEN
   player = Player.create(canvas, scale, themes)
 
-  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(300, scale), 100))
-  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(200, scale), 100))
-  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(200, scale), 100))
-  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(450, scale), 150))
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(450, scale), canvasStyleHeight() - Shape.scaled(300, scale), 150))
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(150, scale), canvasStyleHeight() - Shape.scaled(300, scale), 150))
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(150, scale), 150))
   touchControls.forEach(touchControl => { touchControl.color = 'rgba(150, 150, 150, 0.3)' })
   setGameInterval()
 }
