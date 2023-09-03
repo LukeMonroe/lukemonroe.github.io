@@ -66,7 +66,7 @@ let touchDown = false
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
 canvas.addEventListener('touchstart', event => handleTouch(event))
-canvas.addEventListener('touchmove', event => handleTouch(event))
+canvas.addEventListener('touchmove', event => handleTouchMove(event))
 canvas.addEventListener('touchend', event => handleTouch(event))
 canvas.addEventListener('touchcancel', event => handleTouch(event))
 
@@ -76,7 +76,49 @@ function handleTouch (event) {
     touchRight = false
     touchUp = false
     touchDown = false
-    let touchBullet = false
+
+    let count = 0
+    const touches = event.touches
+    const canvasRect = canvas.getBoundingClientRect()
+    for (let touch = 0; touch < touches.length; touch++) {
+      const x = touches[touch].clientX - canvasRect.left
+      const y = touches[touch].clientY - canvasRect.top
+
+      for (let i = 0; i < touchControls.length; i++) {
+        const dist = Point.getDistance(x - touchControls[i].x, y - touchControls[i].y)
+        if (dist < Shape.scaled(touchControls[i].radius, scale)) {
+          if (i === 0) {
+            touchUp = true
+            touchDown = false
+          } else if (i === 1) {
+            touchLeft = true
+            touchRight = false
+          } else if (i === 2) {
+            touchRight = true
+            touchLeft = false
+          } else {
+            touchDown = true
+            touchUp = false
+          }
+          count++
+        }
+      }
+    }
+
+    touchControls[0].color = touchUp ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
+    touchControls[1].color = touchLeft ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
+    touchControls[2].color = touchRight ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
+    touchControls[3].color = touchDown ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
+    if (count < touches.length) { bullets.push(Polygon.createBullet(player)) }
+  }
+}
+
+function handleTouchMove (event) {
+  if (touchControls.length > 0) {
+    touchLeft = false
+    touchRight = false
+    touchUp = false
+    touchDown = false
 
     const touches = event.touches
     const canvasRect = canvas.getBoundingClientRect()
@@ -100,8 +142,6 @@ function handleTouch (event) {
             touchDown = true
             touchUp = false
           }
-        } else {
-          touchBullet = true
         }
       }
     }
@@ -110,7 +150,6 @@ function handleTouch (event) {
     touchControls[1].color = touchLeft ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
     touchControls[2].color = touchRight ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
     touchControls[3].color = touchDown ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
-    if (touchBullet) { bullets.push(Polygon.createBullet(player)) }
   }
 }
 
