@@ -62,7 +62,6 @@ let touchLeft = false
 let touchRight = false
 let touchUp = false
 let touchDown = false
-let touchBullet = false
 
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
@@ -77,10 +76,10 @@ function handleTouch (event, type) {
     touchRight = false
     touchUp = false
     touchDown = false
-    touchBullet = false
-    if (type === 'c' || type === 'd') {
-      return
-    }
+    let touchBullet = false
+    // if (type === 'c' || type === 'd') {
+    // return
+    // }
 
     const touches = event.changedTouches
     const canvasRect = canvas.getBoundingClientRect()
@@ -184,10 +183,9 @@ function start () {
   buttonColumn.style.visibility = HIDDEN
   player = Player.create(canvas, scale, themes)
 
+  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(300, scale), 100))
   touchControls.push(new Circle(Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
   touchControls.push(new Circle(Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
-
-  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(300, scale), 100))
   touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
   touchControls.forEach(touchControl => { touchControl.color = 'rgba(150, 150, 150, 0.3)' })
   setGameInterval()
