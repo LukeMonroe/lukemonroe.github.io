@@ -65,29 +65,25 @@ let touchDown = false
 
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
-canvas.addEventListener('touchstart', event => handleTouch(event, 'a'))
-canvas.addEventListener('touchmove', event => handleTouch(event, 'b'))
-canvas.addEventListener('touchend', event => handleTouch(event, 'c'))
-canvas.addEventListener('touchcancel', event => handleTouch(event, 'd'))
+canvas.addEventListener('touchstart', event => handleTouch(event))
+canvas.addEventListener('touchmove', event => handleTouch(event))
+canvas.addEventListener('touchend', event => handleTouch(event))
+canvas.addEventListener('touchcancel', event => handleTouch(event))
 
-function handleTouch (event, type) {
+function handleTouch (event) {
   if (touchControls.length > 0) {
     touchLeft = false
     touchRight = false
     touchUp = false
     touchDown = false
     let touchBullet = false
-    // if (type === 'c' || type === 'd') {
-    // return
-    // }
 
-    const touches = event.changedTouches
+    const touches = event.touches
     const canvasRect = canvas.getBoundingClientRect()
     for (let touch = 0; touch < touches.length; touch++) {
       const x = touches[touch].clientX - canvasRect.left
       const y = touches[touch].clientY - canvasRect.top
 
-      let shoot = true
       for (let i = 0; i < touchControls.length; i++) {
         const dist = Point.getDistance(x - touchControls[i].x, y - touchControls[i].y)
         if (dist < Shape.scaled(touchControls[i].radius, scale)) {
@@ -104,11 +100,9 @@ function handleTouch (event, type) {
             touchDown = true
             touchUp = false
           }
-          shoot = false
+        } else {
+          touchBullet = true
         }
-      }
-      if (shoot && type === 'a') {
-        touchBullet = true
       }
     }
 
