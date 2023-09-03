@@ -103,7 +103,7 @@ function handleTouch (event, type) {
           } else if (i === 3) {
             touchDown = true
             touchUp = false
-          } else if (i === 4) {
+          } else {
             if (type === 'a') {
               touchBullet = true
             }
@@ -113,9 +113,9 @@ function handleTouch (event, type) {
     }
 
     touchControls[0].color = touchUp ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
-    touchControls[1].color = touchUp ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
-    touchControls[2].color = touchUp ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
-    touchControls[3].color = touchUp ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
+    touchControls[1].color = touchLeft ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
+    touchControls[2].color = touchRight ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
+    touchControls[3].color = touchDown ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
     if (touchBullet) { bullets.push(Polygon.createBullet(player)) }
   }
 }
@@ -187,7 +187,6 @@ function start () {
   touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(200, scale), 100))
   touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(200, scale), 100))
   touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
-  touchControls.push(new Circle(Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(100, scale), 90))
   touchControls.forEach(touchControl => { touchControl.color = 'rgba(150, 150, 150, 0.3)' })
   setGameInterval()
 }
@@ -222,7 +221,6 @@ function restart () {
   touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(200, scale), 100))
   touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(200, scale), 100))
   touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
-  touchControls.push(new Circle(Shape.scaled(200, scale), canvasStyleHeight() - Shape.scaled(100, scale), 90))
   touchControls.forEach(touchControl => { touchControl.color = 'rgba(150, 150, 150, 0.3)' })
   bullets = []
   rocks = []
