@@ -1,48 +1,31 @@
-const FONT_SIZE = 20
+const FONT_SIZE = 18
 const X = 30
-const SCORE_Y = 40
-const LEVEL_Y = 70
-const LIVES_Y = 100
-const LIFE_INCREMENT = 200
+const Y = 40
+const NEW_LIFE = 200
 
 class Score {
+  #color = null
   #score = 0
   #level = 0
   #lives = 3
-  #scale = 1
 
-  constructor (themes) {
-    if (themes.light(themes.getTheme())) {
-      this.color = themes.color.formattedHex
-    } else {
-      this.color = themes.backgroundColor.formattedHex
-    }
+  constructor (color) {
+    this.#color = color
   }
 
-  scaled (number) {
-    return number * this.#scale
-  }
-
-  update (scale) {
-    this.#scale = scale
-  }
-
-  draw (context) {
+  draw (context, scale) {
     context.save()
-    context.font = `${this.scaled(FONT_SIZE)}px monospace`
-    context.fillStyle = this.color
-
-    const scaledX = this.scaled(X)
-    context.fillText(`Score: ${this.#score}`, scaledX, this.scaled(SCORE_Y))
-    context.fillText(`Level: ${this.#level}`, scaledX, this.scaled(LEVEL_Y))
-    context.fillText(`Lives: ${this.#lives}`, scaledX, this.scaled(LIVES_Y))
-
+    context.font = `${FONT_SIZE * scale}px monospace`
+    context.fillStyle = this.#color.formattedHex
+    context.fillText(`Score: ${this.#score}`, X * scale, Y * scale)
+    context.fillText(`Level: ${this.#level}`, X * scale, (Y + 30) * scale)
+    context.fillText(`Lives: ${this.#lives}`, X * scale, (Y + 60) * scale)
     context.restore()
   }
 
   incrementScore () {
     this.#score++
-    if (this.#score > 0 && this.#score % LIFE_INCREMENT === 0) {
+    if (this.#score > 0 && this.#score % NEW_LIFE === 0) {
       this.incrementLives()
     }
   }
@@ -52,26 +35,21 @@ class Score {
   }
 
   incrementLevel () {
-    this.#level++
-  }
-
-  hasLives () {
-    return this.#lives > 0
+    return ++this.#level
   }
 
   incrementLives () {
-    this.#lives++
+    return ++this.#lives
   }
 
   decrementLives () {
-    this.#lives--
+    return --this.#lives
   }
 
   reset () {
     this.#score = 0
     this.#level = 0
     this.#lives = 3
-    this.#scale = 1
   }
 }
 

@@ -29,21 +29,17 @@ class Keys {
   ])
 
   constructor () {
-    document.addEventListener(KEYDOWN, event => this.keydown(event))
-    document.addEventListener(KEYUP, event => this.keyup(event))
-  }
-
-  keydown (event) {
-    event.preventDefault()
-    if (this.#keys.has(event.key)) {
-      this.#keys.set(event.key, true)
-    }
-  }
-
-  keyup (event) {
-    if (this.#keys.has(event.key)) {
-      this.#keys.set(event.key, false)
-    }
+    document.addEventListener(KEYDOWN, event => {
+      if (this.#keys.has(event.key)) {
+        event.preventDefault()
+        this.#keys.set(event.key, true)
+      }
+    })
+    document.addEventListener(KEYUP, event => {
+      if (this.#keys.has(event.key)) {
+        this.#keys.set(event.key, false)
+      }
+    })
   }
 
   arrowDown () { return this.#keys.get(ARROW_DOWN) }
