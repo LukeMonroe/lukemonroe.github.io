@@ -10,7 +10,7 @@ class Colors {
   }
 
   static copy (color) {
-    return Colors.buildHSL(color.hsl.h, color.hsl.s, color.hsl.l)
+    return Colors.buildRGB(color.rgb.r, color.rgb.g, color.rgb.b)
   }
 
   static createHex (hex) {

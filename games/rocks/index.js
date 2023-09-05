@@ -54,8 +54,10 @@ const keys = new Keys()
 const touchControls = []
 let bullets = []
 let rocks = []
-let gameInterval = null
+let animationFrame = null
 let lifeInterval = null
+let previousTimeStamp = 0
+let elapsedTimeStamp = 0
 let paused = false
 let touchLeft = false
 let touchRight = false
@@ -64,12 +66,20 @@ let touchDown = false
 
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
-canvas.addEventListener('touchstart', event => handleTouch(event))
+canvas.addEventListener('touchstart', event => handleTouchStart(event))
 canvas.addEventListener('touchmove', event => handleTouchMove(event))
-canvas.addEventListener('touchend', event => handleTouch(event))
-canvas.addEventListener('touchcancel', event => handleTouch(event))
+canvas.addEventListener('touchend', event => handleTouchMove(event))
+canvas.addEventListener('touchcancel', event => handleTouchMove(event))
 
-function handleTouch (event) {
+function handleTouchStart (event) {
+  handleTouch(event, true)
+}
+
+function handleTouchMove (event) {
+  handleTouch(event, false)
+}
+
+function handleTouch (event, touchStart) {
   if (touchControls.length > 0) {
     touchLeft = false
     touchRight = false
@@ -108,47 +118,7 @@ function handleTouch (event) {
     touchControls[1].color = touchLeft ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
     touchControls[2].color = touchRight ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
     touchControls[3].color = touchDown ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
-    if (count < touches.length) { bullets.push(Polygon.createBullet(player)) }
-  }
-}
-
-function handleTouchMove (event) {
-  if (touchControls.length > 0) {
-    touchLeft = false
-    touchRight = false
-    touchUp = false
-    touchDown = false
-
-    const touches = event.touches
-    const canvasRect = canvas.getBoundingClientRect()
-    for (let touch = 0; touch < touches.length; touch++) {
-      const x = touches[touch].clientX - canvasRect.left
-      const y = touches[touch].clientY - canvasRect.top
-
-      for (let i = 0; i < touchControls.length; i++) {
-        const dist = Point.getDistance(x - touchControls[i].x, y - touchControls[i].y)
-        if (dist < Shape.scaled(touchControls[i].radius, scale)) {
-          if (i === 0) {
-            touchUp = true
-            touchDown = false
-          } else if (i === 1) {
-            touchLeft = true
-            touchRight = false
-          } else if (i === 2) {
-            touchRight = true
-            touchLeft = false
-          } else {
-            touchDown = true
-            touchUp = false
-          }
-        }
-      }
-    }
-
-    touchControls[0].color = touchUp ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
-    touchControls[1].color = touchLeft ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
-    touchControls[2].color = touchRight ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
-    touchControls[3].color = touchDown ? 'rgba(150, 150, 150, 0.5)' : 'rgba(150, 150, 150, 0.3)'
+    if (touchStart && count < touches.length) { bullets.push(Polygon.createBullet(player)) }
   }
 }
 
@@ -158,7 +128,7 @@ function resizeCanvas () {
   let newStyleWidth = null // ---
   let newStyleHeight = null // ---
 
-  if (gameInterval !== null) {
+  if (animationFrame !== null) {
     pause()
   }
 
@@ -219,10 +189,11 @@ function start () {
   touchControls.push(new Circle(Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
   touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
   touchControls.forEach(touchControl => { touchControl.color = 'rgba(150, 150, 150, 0.3)' })
-  setGameInterval()
+  requestAnimationFrame()
 }
 
 function pause () {
+  cancelAnimationFrame()
   buttonColumn.style.visibility = VISIBLE
   paused = true
 }
@@ -230,17 +201,18 @@ function pause () {
 function resume () {
   buttonColumn.style.visibility = HIDDEN
   paused = false
+  requestAnimationFrame()
 }
 
 function stop () {
-  clearGameInterval()
+  cancelAnimationFrame()
   resumeButton.style.display = 'none'
   buttonColumn.style.visibility = VISIBLE
 }
 
 function restart () {
   document.body.requestFullscreen()
-  clearGameInterval()
+  cancelAnimationFrame()
   clearLifeInterval()
   resumeButton.style.display = 'block'
   buttonColumn.style.visibility = HIDDEN
@@ -250,16 +222,19 @@ function restart () {
   bullets = []
   rocks = []
   paused = false
-  setGameInterval()
+  requestAnimationFrame()
 }
 
-function setGameInterval () {
-  gameInterval = setInterval(manage, 10)
+// TODO: Everything based on paused or nothing.
+function requestAnimationFrame () {
+  if (!paused) {
+    animationFrame = window.requestAnimationFrame(manage)
+  }
 }
 
-function clearGameInterval () {
-  clearInterval(gameInterval)
-  gameInterval = null
+function cancelAnimationFrame () {
+  window.cancelAnimationFrame(animationFrame)
+  animationFrame = null
 }
 
 function setLifeInterval () {
@@ -276,11 +251,14 @@ function setLifeIntervalTimeout () {
   setTimeout(function () { clearLifeInterval(); player.defaultColor() }, 3000)
 }
 
-function manage () {
+function manage (timeStamp) {
+  elapsedTimeStamp = Math.round((timeStamp - previousTimeStamp) * 100) / 100
+  previousTimeStamp = timeStamp
   clear()
   collisions()
   update()
   draw()
+  requestAnimationFrame()
 }
 
 function clear () {
@@ -322,7 +300,7 @@ function update () {
   if (keys.arrowLeft() || keys.lowerA() || touchLeft) { player.rotateLeft() }
   if (keys.arrowRight() || keys.lowerD() || touchRight) { player.rotateRight() }
   if (keys.arrowDown() || keys.lowerS() || touchDown) { player.backward() }
-  if (keys.arrowUp() || keys.lowerW() || touchUp) { player.forward() }
+  if (keys.arrowUp() || keys.lowerW() || touchUp) { player.forward(elapsedTimeStamp) }
   if (keys.space()) { bullets.push(Polygon.createBullet(player)) }
   if (keys.lowerP()) { pause() }
   if (keys.lowerR()) { resume() }

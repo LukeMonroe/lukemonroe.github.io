@@ -1,16 +1,23 @@
+import { Colors } from '../../colors.js'
+
 const CIRCLE = 'circle'
 const POLYGON = 'polygon'
 const PLAYER = 'player'
 const BULLET = 'bullet'
 const ROCK = 'rock'
 const SHARD = 'shard'
-const SEA_GREEN = 'seagreen'
-const DARK_GREY = 'darkgrey'
-const SKY_BLUE = 'skyblue'
-const FIRE_BRICK = 'firebrick'
-const TOMATO = 'tomato'
-const PALE_VIOLET_RED = 'palevioletred'
 const BOUNDS_OFFSET = 150
+
+// TODO: Update the colors method to be numbers not strings.
+const color = Colors.createHSL(String(Math.round(Math.random() * 359)), '60', '65')
+const hues = Colors.hues(color, 200, 40)
+
+const PLAYER_COLOR = Colors.lightness(hues[0], -35).formattedHex
+const PLAYER_FRONT_COLOR = hues[0].formattedHex
+const BULLET_COLOR = hues[1].formattedHex
+const SMALL_SHARD_COLOR = hues[2].formattedHex
+const LARGE_SHARD_COLOR = hues[3].formattedHex
+const ROCK_COLOR = hues[4].formattedHex
 
 class Point {
   constructor (x, y) {
@@ -45,7 +52,7 @@ class Shape {
     this.defaultSpeed = 0
     this.speed = 0
     this.show = true
-    this.color = DARK_GREY
+    this.color = PLAYER_COLOR
   }
 
   scaled (number) {
@@ -208,7 +215,7 @@ class Polygon extends Shape {
     bullet.rotation = player.rotation
     bullet.scale = player.scale
     bullet.defaultSpeed = 8
-    bullet.color = SKY_BLUE
+    bullet.color = BULLET_COLOR
     bullet.name = BULLET
 
     return bullet
@@ -240,7 +247,7 @@ class Polygon extends Shape {
     rock.rotation = Shape.limitRandom(Math.PI * 2)
     rock.rotation *= Shape.random() >= 0.5 ? 1 : -1
     rock.defaultSpeed = 1
-    rock.color = FIRE_BRICK
+    rock.color = LARGE_SHARD_COLOR
     rock.name = ROCK
 
     return rock
@@ -259,7 +266,7 @@ class Polygon extends Shape {
         shard.rotation *= Shape.random() >= 0.5 ? 1 : -1
         shard.defaultSpeed = shard.radius > 40 ? 1.5 : 2
         shard.scale = rock.scale
-        shard.color = shard.radius > 40 ? TOMATO : PALE_VIOLET_RED
+        shard.color = shard.radius > 40 ? ROCK_COLOR : SMALL_SHARD_COLOR
         shard.name = SHARD
         shards.push(shard)
       }
@@ -290,7 +297,7 @@ class Player extends Polygon {
     // Draw the front of the player.
     if (this.show) {
       context.save()
-      context.strokeStyle = SEA_GREEN
+      context.strokeStyle = PLAYER_FRONT_COLOR
       context.lineWidth = this.scaled(4)
       context.beginPath()
 
@@ -305,35 +312,30 @@ class Player extends Polygon {
   }
 
   defaultColor () {
-    this.color = DARK_GREY
+    this.color = PLAYER_COLOR
   }
 
   alternateColor () {
-    this.color = this.color === DARK_GREY ? this.#lifeColor : DARK_GREY
+    this.color = this.color === PLAYER_COLOR ? this.#lifeColor : PLAYER_COLOR
   }
 
   rotateLeft () {
-    // this.angle -= 0.07
-    // this.rotation -= 0.07
-    this.angle -= 0.04
-    this.rotation -= 0.04
+    this.angle -= 0.07
+    this.rotation -= 0.07
   }
 
   rotateRight () {
-    // this.angle += 0.07
-    // this.rotation += 0.07
-    this.angle += 0.04
-    this.rotation += 0.04
+    this.angle += 0.07
+    this.rotation += 0.07
   }
 
-  forward () {
-    // this.speed = 4
-    this.speed = 3
+  forward (elapsedTimeStamp) {
+    this.speed = 0.25 * elapsedTimeStamp
+    // console.log(this.speed)
   }
 
   backward () {
-    // this.speed = -4
-    this.speed = -3
+    this.speed = -4
   }
 
   reset (canvas, scale, themes) {
