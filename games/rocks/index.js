@@ -1,10 +1,19 @@
 import { Collision } from './collision.js'
-import { Point, Shape, Circle, Polygon, Player } from './shape.js'
+import { Point, Circle, Polygon, Player } from './shape.js'
 import { Score } from './score.js'
 import { Keys } from './keys.js'
 import { RocksThemes } from './rocks-themes.js'
 
 document.addEventListener('dblclick', event => { event.preventDefault() })
+
+const themes = new RocksThemes()
+themes.setTheme()
+// let backgroundColor = themes.color
+let color = themes.backgroundColor
+if (themes.light(themes.getTheme())) {
+  // backgroundColor = themes.backgroundColor
+  color = themes.color
+}
 
 const CLICK = 'click'
 const CANVAS = 'canvas'
@@ -35,26 +44,32 @@ againButton.innerText = 'Again'
 againButton.style.display = 'none'
 againButton.addEventListener(CLICK, restart)
 
+const fullscreenButton = document.createElement(BUTTON)
+fullscreenButton.innerText = 'Fullscreen'
+fullscreenButton.addEventListener(CLICK, fullscreen)
+
+const h1Title = document.createElement('h1')
+h1Title.innerText = 'Rocks'
+
 const buttonColumn = document.createElement(DIV)
 buttonColumn.className = 'buttons-column'
+buttonColumn.appendChild(h1Title)
 buttonColumn.appendChild(playButton)
 buttonColumn.appendChild(resumeButton)
 buttonColumn.appendChild(againButton)
+buttonColumn.appendChild(fullscreenButton)
 
 document.body.appendChild(canvas)
 document.body.appendChild(buttonColumn)
 
-const themes = new RocksThemes()
-themes.setTheme()
-
 let scale = 1
 let player = null
-const score = new Score(themes)
+const score = new Score(color)
 const keys = new Keys()
 const touchControls = []
 let bullets = []
 let rocks = []
-let animationFrame = null
+let requestId = null
 let lifeInterval = null
 let previousTimeStamp = 0
 let elapsedTimeStamp = 0
@@ -63,6 +78,15 @@ let touchLeft = false
 let touchRight = false
 let touchUp = false
 let touchDown = false
+
+const raf =
+  window.requestAnimationFrame ||
+  window.mozRequestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.msRequestAnimationFrame
+
+const caf =
+  window.cancelAnimationFrame || window.mozCancelAnimationFrame
 
 resizeCanvas()
 window.addEventListener('resize', resizeCanvas)
@@ -95,7 +119,7 @@ function handleTouch (event, touchStart) {
 
       for (let i = 0; i < touchControls.length; i++) {
         const dist = Point.getDistance(x - touchControls[i].x, y - touchControls[i].y)
-        if (dist < Shape.scaled(touchControls[i].radius, scale)) {
+        if (dist < touchControls[i].radius * scale) {
           if (i === 0) {
             touchUp = true
             touchDown = false
@@ -123,14 +147,12 @@ function handleTouch (event, touchStart) {
 }
 
 function resizeCanvas () {
+  if (player !== null && !paused) { pause() }
+
   const oldStyleWidth = Number(canvas.style.width.split('px')[0]) // ---
   const oldStyleHeight = Number(canvas.style.height.split('px')[0]) // ---
   let newStyleWidth = null // ---
   let newStyleHeight = null // ---
-
-  if (animationFrame !== null) {
-    pause()
-  }
 
   // TODO: The canvas should always be a fixed amount smaller than the window size.
   if (document.body.clientWidth < CANVAS_MIN_WIDTH + 20 || window.innerHeight < CANVAS_MIN_HEIGHT + 20) {
@@ -149,7 +171,7 @@ function resizeCanvas () {
     }
   }
 
-  if (paused) {
+  if (player !== null) {
     const widthDelta = newStyleWidth / oldStyleWidth // ---
     const heightDelta = newStyleHeight / oldStyleHeight // ---
 
@@ -181,60 +203,65 @@ function start () {
   resumeButton.style.display = 'block'
   againButton.style.display = 'block'
   buttonColumn.style.visibility = HIDDEN
-  player = Player.create(canvas, scale, themes)
+  player = Player.create(canvas)
 
   // TODO: Make this a dictionary.
-  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(300, scale), 100))
-  touchControls.push(new Circle(Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
-  touchControls.push(new Circle(Shape.scaled(300, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
-  touchControls.push(new Circle(canvasStyleWidth() - Shape.scaled(100, scale), canvasStyleHeight() - Shape.scaled(100, scale), 100))
+  touchControls.push(new Circle(canvasStyleWidth() - (100 * scale), canvasStyleHeight() - (280 * scale), 80))
+  touchControls.push(new Circle(100 * scale, canvasStyleHeight() - (100 * scale), 80))
+  touchControls.push(new Circle(280 * scale, canvasStyleHeight() - (100 * scale), 80))
+  touchControls.push(new Circle(canvasStyleWidth() - (100 * scale), canvasStyleHeight() - (100 * scale), 80))
   touchControls.forEach(touchControl => { touchControl.color = 'rgba(150, 150, 150, 0.3)' })
-  requestAnimationFrame()
+  requestAnimationFrame(manage)
 }
 
 function pause () {
-  cancelAnimationFrame()
-  buttonColumn.style.visibility = VISIBLE
   paused = true
+  cancelAnimationFrame()
+  requestAnimationFrame(managePause)
+  buttonColumn.style.visibility = VISIBLE
 }
 
 function resume () {
-  buttonColumn.style.visibility = HIDDEN
   paused = false
-  requestAnimationFrame()
+  buttonColumn.style.visibility = HIDDEN
+  cancelAnimationFrame()
+  requestAnimationFrame(manage)
 }
 
 function stop () {
-  cancelAnimationFrame()
+  pause()
   resumeButton.style.display = 'none'
-  buttonColumn.style.visibility = VISIBLE
 }
 
 function restart () {
-  document.body.requestFullscreen()
-  cancelAnimationFrame()
   clearLifeInterval()
   resumeButton.style.display = 'block'
   buttonColumn.style.visibility = HIDDEN
-  player.reset(canvas, scale, themes)
+  player.reset(canvas)
   score.reset()
   keys.reset()
   bullets = []
   rocks = []
-  paused = false
-  requestAnimationFrame()
+  resume()
 }
 
-// TODO: Everything based on paused or nothing.
-function requestAnimationFrame () {
-  if (!paused) {
-    animationFrame = window.requestAnimationFrame(manage)
+function fullscreen () {
+  if (!document.fullscreenElement) {
+    document.body.requestFullscreen().catch((error) => {
+      alert(`Error attempting to enable fullscreen mode: ${error.message} (${error.name})`)
+    })
+  } else {
+    document.exitFullscreen()
   }
 }
 
+function requestAnimationFrame (callable) {
+  requestId = raf(callable)
+}
+
 function cancelAnimationFrame () {
-  window.cancelAnimationFrame(animationFrame)
-  animationFrame = null
+  caf(requestId)
+  requestId = null
 }
 
 function setLifeInterval () {
@@ -254,11 +281,19 @@ function setLifeIntervalTimeout () {
 function manage (timeStamp) {
   elapsedTimeStamp = Math.round((timeStamp - previousTimeStamp) * 100) / 100
   previousTimeStamp = timeStamp
-  clear()
   collisions()
   update()
+  clear()
   draw()
-  requestAnimationFrame()
+  if (!paused) { requestAnimationFrame(manage) }
+}
+
+function managePause (timeStamp) {
+  elapsedTimeStamp = Math.round((timeStamp - previousTimeStamp) * 100) / 100
+  previousTimeStamp = timeStamp
+  clear()
+  draw()
+  if (paused) { requestAnimationFrame(managePause) }
 }
 
 function clear () {
@@ -269,7 +304,7 @@ function collisions () {
   let shards = []
   for (const bullet of bullets) {
     for (const rock of rocks) {
-      if (rock.show && Collision.checkShapes(bullet, rock)) {
+      if (rock.show && Collision.checkShapes(bullet, rock, scale)) {
         shards = shards.concat(Polygon.createShards(rock))
         score.incrementScore()
         bullet.show = false
@@ -282,9 +317,8 @@ function collisions () {
 
   if (lifeInterval === null) {
     for (const rock of rocks) {
-      if (Collision.checkShapes(player, rock)) {
-        score.decrementLives()
-        if (score.hasLives()) {
+      if (Collision.checkShapes(player, rock, scale)) {
+        if (score.decrementLives() > 0) {
           setLifeInterval()
         } else {
           stop()
@@ -305,26 +339,24 @@ function update () {
   if (keys.lowerP()) { pause() }
   if (keys.lowerR()) { resume() }
 
-  bullets.forEach(bullet => bullet.update(canvas, scale, paused))
+  bullets.forEach(bullet => bullet.update(canvas, scale))
   bullets = bullets.filter(bullet => bullet.show)
-  rocks.forEach(rock => rock.update(canvas, scale, paused))
+  rocks.forEach(rock => rock.update(canvas, scale))
   rocks = rocks.filter(rock => rock.show)
-  player.update(canvas, scale, paused)
-  touchControls.forEach(touchControl => touchControl.update(canvas, scale, paused))
-  score.update(scale)
+  player.update(canvas, scale)
+  touchControls.forEach(touchControl => touchControl.update(canvas, scale))
 
   if (!rocks.length) {
-    score.incrementLevel()
-    rocks = Polygon.createRocks(canvas, scale, score.level())
+    rocks = Polygon.createRocks(canvas, scale, score.incrementLevel())
   }
 }
 
 function draw () {
-  bullets.forEach(bullet => bullet.draw(context))
-  rocks.forEach(rock => rock.draw(context))
-  player.draw(context)
-  touchControls.forEach(touchControl => touchControl.draw(context))
-  score.draw(context)
+  bullets.forEach(bullet => bullet.draw(context, scale))
+  rocks.forEach(rock => rock.draw(context, scale))
+  player.draw(context, scale)
+  touchControls.forEach(touchControl => touchControl.draw(context, scale))
+  score.draw(context, scale)
 }
 
 function canvasStyleWidth () { // ---

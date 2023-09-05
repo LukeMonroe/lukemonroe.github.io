@@ -1,21 +1,22 @@
 import { CIRCLE, POLYGON, Point } from './shape.js'
 
 class Collision {
-  static checkShapes (shape01, shape02) {
+  // TODO: Go through and fully account for the scale change.
+  static checkShapes (shape01, shape02, scale) {
     if (shape01.type === POLYGON && shape02.type === POLYGON) {
-      return Collision.checkPolygons(shape01, shape02, true)
+      return Collision.checkPolygons(shape01, shape02, scale, true)
     } else if (shape01.type === POLYGON && shape02.type === CIRCLE) {
-      return Collision.checkPolygonCircle(shape01, shape02)
+      return Collision.checkPolygonCircle(shape01, shape02, scale)
     } else if (shape01.type === CIRCLE && shape02.type === POLYGON) {
-      return Collision.checkPolygonCircle(shape02, shape01)
+      return Collision.checkPolygonCircle(shape02, shape01, scale)
     } else {
       return Collision.checkCircles(shape01, shape02)
     }
   }
 
-  static checkPolygons (polygon01, polygon02, invert) {
-    const rotatedVertices01 = polygon01.getRotatedVertices()
-    const rotatedVertices02 = polygon02.getRotatedVertices()
+  static checkPolygons (polygon01, polygon02, scale, invert) {
+    const rotatedVertices01 = polygon01.getRotatedVertices(scale)
+    const rotatedVertices02 = polygon02.getRotatedVertices(scale)
     const vectorOffset = new Point(polygon01.x - polygon02.x, polygon01.y - polygon02.y)
 
     for (let index = 0; index < rotatedVertices01.length; index++) {
@@ -31,12 +32,12 @@ class Collision {
       }
     }
 
-    return invert ? Collision.checkPolygons(polygon02, polygon01, false) : true
+    return invert ? Collision.checkPolygons(polygon02, polygon01, scale, false) : true
   }
 
   // TODO: Does not detect a collision until the circle is about halfway into the polygon.
-  static checkPolygonCircle (polygon, circle) {
-    const rotatedVertices = polygon.getRotatedVertices()
+  static checkPolygonCircle (polygon, circle, scale) {
+    const rotatedVertices = polygon.getRotatedVertices(scale)
     const vectorOffset = new Point(polygon.x - circle.x, polygon.y - circle.y)
     let shortestDistance = null
 

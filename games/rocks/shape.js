@@ -13,6 +13,7 @@ const color = Colors.createHSL(String(Math.round(Math.random() * 359)), '60', '6
 const hues = Colors.hues(color, 200, 40)
 
 const PLAYER_COLOR = Colors.lightness(hues[0], -35).formattedHex
+const PLAYER_LIFE_COLOR = Colors.lightness(hues[0], -15).formattedHex
 const PLAYER_FRONT_COLOR = hues[0].formattedHex
 const BULLET_COLOR = hues[1].formattedHex
 const SMALL_SHARD_COLOR = hues[2].formattedHex
@@ -48,29 +49,18 @@ class Shape {
     this.name = null
     this.angle = 0
     this.rotation = 0
-    this.scale = 1
     this.defaultSpeed = 0
     this.speed = 0
     this.show = true
     this.color = PLAYER_COLOR
   }
 
-  scaled (number) {
-    return Shape.scaled(number, this.scale)
-  }
-
-  static scaled (number, scale) {
-    return number * scale
-  }
-
-  update (canvas, scale, paused) {
-    this.scale = scale
-
-    if (!paused && this.show) {
+  update (canvas, scale) {
+    if (this.show) {
       if (this.name === PLAYER) {
-        this.speed = this.scaled(this.speed)
+        this.speed *= scale
       } else {
-        this.speed = this.scaled(this.defaultSpeed)
+        this.speed = this.defaultSpeed * scale
       }
 
       const x = this.x + this.speed * Math.sin(this.angle)
@@ -94,7 +84,7 @@ class Shape {
           this.y = y
         }
       } else {
-        if (x > this.scaled(-BOUNDS_OFFSET) && x < canvasStyleWidth(canvas) + this.scaled(BOUNDS_OFFSET)) { // ---
+        if (x > -BOUNDS_OFFSET * scale && x < canvasStyleWidth(canvas) + (BOUNDS_OFFSET * scale)) { // ---
           this.x = x
         } else {
           if (this.name === BULLET) {
@@ -103,7 +93,7 @@ class Shape {
             this.angle *= -1
           }
         }
-        if (y > this.scaled(-BOUNDS_OFFSET) && y < canvasStyleHeight(canvas) + this.scaled(BOUNDS_OFFSET)) { // ---
+        if (y > -BOUNDS_OFFSET * scale && y < canvasStyleHeight(canvas) + (BOUNDS_OFFSET * scale)) { // ---
           this.y = y
         } else {
           if (this.name === BULLET) {
@@ -136,17 +126,17 @@ class Circle extends Shape {
     super(x, y, radius, CIRCLE)
   }
 
-  update (canvas, scale, paused) {
-    super.update(canvas, scale, paused)
+  update (canvas, scale) {
+    super.update(canvas, scale)
   }
 
-  draw (context) {
+  draw (context, scale) {
     if (this.show) {
       context.save()
       context.fillStyle = this.color
       context.beginPath()
 
-      context.arc(this.x, this.y, this.scaled(this.radius), 0, Math.PI * 2)
+      context.arc(this.x, this.y, this.radius * scale, 0, Math.PI * 2)
 
       context.closePath()
       context.fill()
@@ -169,7 +159,7 @@ class Polygon extends Shape {
     }
   }
 
-  getRotatedVertices () {
+  getRotatedVertices (scale) {
     const rotatedVertices = []
     for (const vertex of this.vertices) {
       const rotatedVertex = vertex.copy()
@@ -180,26 +170,26 @@ class Polygon extends Shape {
         rotatedVertex.y = Math.sin(angle) * distance
       }
 
-      rotatedVertex.x = this.scaled(rotatedVertex.x)
-      rotatedVertex.y = this.scaled(rotatedVertex.y)
+      rotatedVertex.x *= scale
+      rotatedVertex.y *= scale
       rotatedVertices.push(rotatedVertex)
     }
 
     return rotatedVertices
   }
 
-  update (canvas, scale, paused) {
-    super.update(canvas, scale, paused)
+  update (canvas, scale) {
+    super.update(canvas, scale)
   }
 
-  draw (context) {
+  draw (context, scale) {
     if (this.show) {
       context.save()
       context.fillStyle = this.color
       context.beginPath()
 
       // Start drawing from the last vertex.
-      const vertices = this.getRotatedVertices()
+      const vertices = this.getRotatedVertices(scale)
       context.moveTo(this.x + vertices[vertices.length - 1].x, this.y + vertices[vertices.length - 1].y)
       vertices.forEach(vertex => context.lineTo(this.x + vertex.x, this.y + vertex.y))
 
@@ -213,7 +203,6 @@ class Polygon extends Shape {
     const bullet = new Polygon(player.x, player.y, 10, 3)
     bullet.angle = player.angle
     bullet.rotation = player.rotation
-    bullet.scale = player.scale
     bullet.defaultSpeed = 8
     bullet.color = BULLET_COLOR
     bullet.name = BULLET
@@ -236,10 +225,10 @@ class Polygon extends Shape {
     const sides = Shape.rangeRandom(3, 8)
     const radius = Shape.rangeRandom(71, 100)
 
-    let offset = Shape.limitRandom(Shape.scaled(BOUNDS_OFFSET, scale))
+    let offset = Shape.limitRandom(BOUNDS_OFFSET * scale)
     const x = Shape.random() >= 0.5 ? canvasStyleWidth(canvas) + offset : -offset // ---
 
-    offset = Shape.limitRandom(Shape.scaled(BOUNDS_OFFSET, scale))
+    offset = Shape.limitRandom(BOUNDS_OFFSET * scale)
     const y = Shape.random() >= 0.5 ? canvasStyleHeight(canvas) + offset : -offset // ---
 
     const rock = new Polygon(x, y, radius, sides)
@@ -265,7 +254,6 @@ class Polygon extends Shape {
         shard.rotation = Shape.limitRandom(Math.PI * 2)
         shard.rotation *= Shape.random() >= 0.5 ? 1 : -1
         shard.defaultSpeed = shard.radius > 40 ? 1.5 : 2
-        shard.scale = rock.scale
         shard.color = shard.radius > 40 ? ROCK_COLOR : SMALL_SHARD_COLOR
         shard.name = SHARD
         shards.push(shard)
@@ -277,31 +265,22 @@ class Polygon extends Shape {
 }
 
 class Player extends Polygon {
-  #themes = null
-  #theme = null
-  #lifeColor = null
-
-  constructor (canvas, scale, themes) {
+  constructor (canvas) {
     super(canvasStyleWidth(canvas) / 2, canvasStyleHeight(canvas) / 2, 30, 5) // ---
-    this.scale = scale
     this.name = PLAYER
-
-    this.#themes = themes
-    this.#theme = themes.getTheme()
-    this.#lifeColor = this.#themes.color
   }
 
-  draw (context) {
-    super.draw(context)
+  draw (context, scale) {
+    super.draw(context, scale)
 
     // Draw the front of the player.
     if (this.show) {
       context.save()
       context.strokeStyle = PLAYER_FRONT_COLOR
-      context.lineWidth = this.scaled(4)
+      context.lineWidth = 4 * scale
       context.beginPath()
 
-      const vertices = this.getRotatedVertices()
+      const vertices = this.getRotatedVertices(scale)
       context.moveTo(this.x + vertices[2].x, this.y + vertices[2].y)
       context.lineTo(this.x + vertices[3].x, this.y + vertices[3].y)
       context.lineTo(this.x + vertices[4].x, this.y + vertices[4].y)
@@ -316,7 +295,7 @@ class Player extends Polygon {
   }
 
   alternateColor () {
-    this.color = this.color === PLAYER_COLOR ? this.#lifeColor : PLAYER_COLOR
+    this.color = this.color === PLAYER_COLOR ? PLAYER_LIFE_COLOR : PLAYER_COLOR
   }
 
   rotateLeft () {
@@ -331,15 +310,14 @@ class Player extends Polygon {
 
   forward (elapsedTimeStamp) {
     this.speed = 0.25 * elapsedTimeStamp
-    // console.log(this.speed)
   }
 
   backward () {
     this.speed = -4
   }
 
-  reset (canvas, scale, themes) {
-    const player = new Player(canvas, scale, themes)
+  reset (canvas) {
+    const player = new Player(canvas)
     this.x = player.x
     this.y = player.y
     this.radius = player.radius
@@ -350,19 +328,14 @@ class Player extends Polygon {
     this.name = player.name
     this.angle = player.angle
     this.rotation = player.rotation
-    this.scale = player.scale
     this.defaultSpeed = player.defaultSpeed
     this.speed = player.speed
     this.show = player.show
     this.color = player.color
-
-    this.#themes = player.#themes
-    this.#theme = player.#theme
-    this.#lifeColor = player.#lifeColor
   }
 
-  static create (canvas, scale, themes) {
-    return new Player(canvas, scale, themes)
+  static create (canvas) {
+    return new Player(canvas)
   }
 }
 
