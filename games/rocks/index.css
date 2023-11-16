@@ -12,6 +12,7 @@
 body {
     background-color: var(--background-color);
     color: var(--color);
+    touch-action: none;
     margin: 0px;
 }
 
