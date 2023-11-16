@@ -21,8 +21,9 @@ hr {
 }
 
 img {
-    width: 100%;
-    border-radius: 50%;
+    width: 300px;
+    border-radius: 40px;
+    aspect-ratio: 3 / 4;
 }
 
 div.row {
@@ -36,6 +37,7 @@ div.row {
 div.column {
     display: flex;
     flex-direction: column;
+    align-items: center;
     text-align: center;
     flex: 25%;
     gap: 20px;
@@ -59,14 +61,14 @@ footer {
     }
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1300px) {
     div.column {
         flex: 50%;
         max-width: 40%;
     }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
     div.column {
         flex: 100%;
         max-width: 80%;
