@@ -5,8 +5,10 @@ document.addEventListener('dblclick', event => { event.preventDefault() })
 const themes = new CreateAQuestionThemes()
 themes.setTheme()
 
+var clicks = 0
+var addedEventListener = false
+
 const inputQuestion = createInputQuestion()
-const questionColumn = createDivInnerColumn()
 
 const inputQuestionRow = createDivInnerRow()
 inputQuestionRow.appendChild(inputQuestion)
@@ -16,164 +18,173 @@ const inputQuestionColumn = createDivInnerColumn()
 inputQuestionColumn.appendChild(createH2("Enter the yes or no question you wish to ask."))
 inputQuestionColumn.appendChild(inputQuestionRow)
 
+const questionColumn = createDivInnerColumn()
+
 const outerColumn = document.getElementById('outer-column')
 outerColumn.appendChild(inputQuestionColumn)
 outerColumn.appendChild(questionColumn)
 
 function createDivInnerColumn() {
-  return createDiv('inner-column')
+    return createDiv('inner-column')
 }
 
 function createDivInnerRow() {
-  return createDiv('inner-row')
+    return createDiv('inner-row')
 }
 
 function createInputQuestion() {
-  const inputQuestion = document.createElement('input')
-  inputQuestion.className = 'question'
-  inputQuestion.type = 'text'
-  inputQuestion.addEventListener('keydown', event => {
-    if (event.key === 'Enter') {
-      event.preventDefault()
-      addQuestion()
-    }
-  })
+    const inputQuestion = document.createElement('input')
+    inputQuestion.className = 'question'
+    inputQuestion.type = 'text'
+    inputQuestion.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            event.preventDefault()
+            addQuestion()
+        }
+    })
 
-  return inputQuestion
+    return inputQuestion
 }
 
 function createButtonYes() {
-  const button = document.createElement('button')
-  button.appendChild(createH4('Yes'))
-  button.addEventListener('click', () => {
-    questionColumn.replaceChildren()
-    questionColumn.appendChild(createDivQuestionColumn("You're Awesome!"))
-  })
+    const button = document.createElement('button')
+    button.appendChild(createH4('Yes'))
+    button.addEventListener('click', () => {
+        questionColumn.replaceChildren()
+        questionColumn.appendChild(createDivQuestionColumn("You're Awesome!"))
+    })
 
-  return button
+    return button
 }
 
 function createButtonNo() {
-  const button = document.createElement('button')
-  button.appendChild(createH4('No'))
-  button.appendChild(x)
-  button.appendChild(y)
-  button.addEventListener('touchstart', () => {
-    handleNo(button)
-  })
-  button.addEventListener('mouseover', () => {
-    handleNo(button)
-  })
+    const button = document.createElement('button')
+    button.style.transition = '1s'
+    button.style.scale = '1'
+    button.appendChild(createH4('No'))
+    button.addEventListener('touchstart', () => { handleNo(button) })
+    button.addEventListener('mouseenter', () => { handleNo(button) })
 
-  return button
+    return button
 }
 
-var clicks = 0
-var addedEventListener = false
-var x = createH4('X')
-var y = createH4('Y')
 function handleNo(button) {
-  if (clicks >= 20) {
-    if (!addedEventListener) {
-      button.addEventListener('click', () => {
-        questionColumn.replaceChildren()
-        questionColumn.appendChild(createDivQuestionColumn("Your perseverance is noted."))
-      })
-      button.style.position = 'relative'
-      button.style.top = '0px'
-      button.style.left = '0px'
-      button.style.rotate = '0deg'
-      button.style.transition = 'None'
-      addedEventListener = true
+    if (clicks >= 20) {
+        if (!addedEventListener) {
+            button.addEventListener('click', () => {
+                questionColumn.replaceChildren()
+                questionColumn.appendChild(createDivQuestionColumn("Your perseverance is noted."))
+            })
+            button.style.position = 'relative'
+            button.style.transition = 'None'
+            button.style.scale = '1'
+            button.style.top = '0px'
+            button.style.left = '0px'
+            button.style.rotate = '0deg'
+            addedEventListener = true
+        }
+    } else {
+        button.style.position = 'absolute'
+        let yPosition = Number(button.style.top.slice(0, -2))
+        let xPosition = Number(button.style.left.slice(0, -2))
+        let xLimit = rangeRandom(100, 1000) * (random() >= 0.5 ? 1 : -1)
+        while (xPosition + xLimit < 0 || xPosition + xLimit > document.body.clientWidth) {
+            xLimit = rangeRandom(100, 1000) * (random() >= 0.5 ? 1 : -1)
+        }
+        let yLimit = rangeRandom(100, 1000) * (random() >= 0.5 ? 1 : -1)
+        while (yPosition + yLimit < 0 || yPosition + yLimit > window.innerHeight) {
+            yLimit = rangeRandom(100, 1000) * (random() >= 0.5 ? 1 : -1)
+        }
+        button.style.top = `${yPosition + yLimit}px`
+        button.style.left = `${xPosition + xLimit}px`
+
+        let rotate = Number(button.style.rotate.slice(0, -3))
+        let rotateLimit = limitRandom(180) * (random() >= 0.5 ? 1 : -1)
+        button.style.rotate = `${rotate + rotateLimit}deg`
+
+        let scale = Number(button.style.scale) - 0.04
+        scale = scale > 0.2 ? scale : 0.2
+        button.style.scale = `${scale}`
+        clicks++
     }
-  } else {
-    button.style.position = 'absolute'
-    button.style.top = `${rangeRandom(Number(50), Number(window.innerHeight - 50))}px`
-    y.innerText = button.style.top
-    button.style.left = `${rangeRandom(Number(50), Number(document.body.clientWidth - 50))}px`
-    x.innerText = button.style.left
-    button.style.rotate = `${rangeRandom(Number(0), Number(360))}deg`
-    button.style.transition = '1s'
-    clicks++
-  }
 }
 
 function createButtonEnter() {
-  const buttonEnter = document.createElement('button')
-  buttonEnter.appendChild(createH4('Enter'))
-  buttonEnter.addEventListener('click', addQuestion)
+    const buttonEnter = document.createElement('button')
+    buttonEnter.appendChild(createH4('Enter'))
+    buttonEnter.addEventListener('click', addQuestion)
 
-  return buttonEnter
+    return buttonEnter
 }
 
 function createDivQuestionColumn(question) {
-  const divButtonRow = createDivInnerRow()
-  divButtonRow.appendChild(createButtonYes())
-  divButtonRow.appendChild(createButtonNo())
+    const divButtonRow = createDivInnerRow()
+    divButtonRow.appendChild(createButtonYes())
+    divButtonRow.appendChild(createButtonNo())
 
-  const divQuestionColumn = createDivInnerColumn()
-  divQuestionColumn.appendChild(createDivQuestion(question))
-  divQuestionColumn.appendChild(divButtonRow)
+    const divQuestionColumn = createDivInnerColumn()
+    divQuestionColumn.appendChild(createDivQuestion(question))
+    divQuestionColumn.appendChild(divButtonRow)
 
-  return divQuestionColumn
+    return divQuestionColumn
 }
 
 function createDivQuestion(question) {
-  const divQuestion = createDiv('question')
-  divQuestion.appendChild(createH2(question))
+    const divQuestion = createDiv('question')
+    divQuestion.appendChild(createH2(question))
 
-  return divQuestion
+    return divQuestion
 }
 
 function createH2(innerText) {
-  const h2 = document.createElement('h2')
-  h2.innerText = innerText
+    const h2 = document.createElement('h2')
+    h2.innerText = innerText
 
-  return h2
+    return h2
 }
 
 function createH4(innerText) {
-  const h4 = document.createElement('h4')
-  h4.innerText = innerText
+    const h4 = document.createElement('h4')
+    h4.innerText = innerText
 
-  return h4
+    return h4
 }
 
 function createDiv(className) {
-  const div = document.createElement('div')
-  if (className !== null) {
-    div.className = className
-  }
+    const div = document.createElement('div')
+    if (className !== null) {
+        div.className = className
+    }
 
-  return div
+    return div
 }
 
 function addQuestion() {
-  if (inputQuestion.value !== null) {
-    let question = inputQuestion.value.trim()
-    if (question.length > 0) {
-      question = `${question.slice(0, 1).toUpperCase()}${question.slice(1)}`
-      if (question.slice(-1) != "?") {
-        question = `${question}?`
-      }
-      questionColumn.replaceChildren()
-      questionColumn.appendChild(createDivQuestionColumn(question))
+    if (inputQuestion.value !== null) {
+        let question = inputQuestion.value.trim()
+        if (question.length > 0) {
+            question = `${question.slice(0, 1).toUpperCase()}${question.slice(1)}`
+            if (question.slice(-1) != "?") {
+                question = `${question}?`
+            }
+            questionColumn.replaceChildren()
+            questionColumn.appendChild(createDivQuestionColumn(question))
 
-      inputQuestion.value = null
-      inputQuestionColumn.style.display = "None"
+            inputQuestion.value = null
+            inputQuestionColumn.style.display = "None"
+        }
     }
-  }
 }
 
 function rangeRandom(floor, ceil) {
-  const number = Math.ceil(limitRandom(ceil))
-  return number < floor ? floor : number
+    const number = Math.ceil(limitRandom(ceil))
+    return number < floor ? floor : number
 }
 
 function limitRandom(limit) {
-  return random() * limit
+    return random() * limit
 }
 
 function random() {
-  return Math.random()
+    return Math.random()
 }
