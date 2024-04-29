@@ -8,6 +8,9 @@ themes.setTheme()
 var clicks = 0
 var addedEventListener = false
 
+var url = new URL(window.location.href)
+var urlQuestion = url.searchParams.get("question")
+
 const inputQuestion = createInputQuestion()
 
 const inputQuestionRow = createDivInnerRow()
@@ -21,8 +24,13 @@ inputQuestionColumn.appendChild(inputQuestionRow)
 const questionColumn = createDivInnerColumn()
 
 const outerColumn = document.getElementById('outer-column')
-outerColumn.appendChild(inputQuestionColumn)
-outerColumn.appendChild(questionColumn)
+
+if (urlQuestion === null) {
+    outerColumn.appendChild(inputQuestionColumn)
+} else {
+    addQuestion()
+    outerColumn.appendChild(questionColumn)
+}
 
 function createDivInnerColumn() {
     return createDiv('inner-column')
@@ -160,19 +168,23 @@ function createDiv(className) {
 }
 
 function addQuestion() {
-    if (inputQuestion.value !== null) {
-        let question = inputQuestion.value.trim()
-        if (question.length > 0) {
-            question = `${question.slice(0, 1).toUpperCase()}${question.slice(1)}`
-            if (question.slice(-1) != "?") {
-                question = `${question}?`
-            }
-            questionColumn.replaceChildren()
-            questionColumn.appendChild(createDivQuestionColumn(question))
+    if (urlQuestion === null) {
+        if (inputQuestion.value !== null) {
+            let question = inputQuestion.value.trim()
+            if (question.length > 0) {
+                question = `${question.slice(0, 1).toUpperCase()}${question.slice(1)}`
+                if (question.slice(-1) != "?") {
+                    question = `${question}?`
+                }
 
-            inputQuestion.value = null
-            inputQuestionColumn.style.display = "None"
+                let url = new URL(window.location.href)
+                url.searchParams.set("question", question)
+                window.location.href = url.href
+            }
         }
+    } else {
+        questionColumn.replaceChildren()
+        questionColumn.appendChild(createDivQuestionColumn(urlQuestion))
     }
 }
 
