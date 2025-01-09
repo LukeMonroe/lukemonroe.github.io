@@ -3,12 +3,16 @@ import { Colors } from './colors.js'
 const THEME = 'theme'
 const LIGHT = 'light'
 const DARK = 'dark'
+const BLUE = 'blue'
+const PURPLE = 'purple'
 const NEXT = 'next'
 
 class Themes {
   themes = new Map([
     [LIGHT, new Map([[NEXT, DARK]])],
-    [DARK, new Map([[NEXT, LIGHT]])]
+    [DARK, new Map([[NEXT, BLUE]])],
+    [BLUE, new Map([[NEXT, PURPLE]])],
+    [PURPLE, new Map([[NEXT, LIGHT]])],
   ])
 
   backgroundColor = Colors.createHex('#F8F8FF')
@@ -55,6 +59,14 @@ class Themes {
 
   dark (theme) {
     return theme === DARK
+  }
+
+  blue (theme) {
+    return theme === BLUE
+  }
+
+  purple (theme) {
+    return theme === PURPLE
   }
 
   formatTheme (theme) {
