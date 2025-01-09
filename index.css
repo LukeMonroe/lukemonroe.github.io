@@ -1,12 +1,12 @@
 :root {
     --background-color: ghostwhite;
     --color: black;
-    --link-color: darkgrey;
-    --visited-color: dimgrey;
+    --thumb-color: darkgrey;
     font-family: monospace;
 }
 
 body {
+    -webkit-tap-highlight-color: transparent;
     background-color: var(--background-color);
     color: var(--color);
     margin: 0px;
@@ -22,25 +22,161 @@ hr {
     margin: 0px auto;
 }
 
-a {
-    -webkit-tap-highlight-color: transparent;
-    color: var(--color);
-    text-decoration: none;
-    text-align: center;
+div.outer-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+    margin: 75px auto;
+}
+
+div.inner-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
     width: 80%;
-    padding: 10px;
+    max-width: 1000px;
 }
 
-a:link {
-    background-color: var(--link-color);
+div.inner-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 80%;
+    max-width: 1000px;
 }
 
-a:visited {
-    background-color: var(--visited-color);
+div.color-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
-a:hover {
-    animation: jiggle 0.20s 1;
+div.color {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: auto;
+    gap: 5px;
+    cursor: pointer;
+    height: 100px;
+}
+
+div.color-text {
+  display: none;
+  padding: 0px 10px
+}
+
+div.color-text:hover {
+    text-decoration: underline;
+}
+
+div.marker {
+    height: 10px;
+    width: 10px;
+}
+
+header {
+    text-align: center;
+    padding: 50px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px 50px;
+}
+
+div.slider {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    min-width: 300px;
+    max-width: 600px;
+}
+
+div.input-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+div.input-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+input[type=text].box {
+    background-color: var(--background-color);
+    color: var(--color);
+    font-family: monospace;
+    font-size: 18px;
+    text-align: center;
+    border: 1px solid var(--color);
+    border-radius: 0px;
+    outline: none;
+    width: 50px;
+    padding: 5px 0px;
+}
+
+input[type=range].slider {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--color);
+    outline: none;
+    opacity: 0.8;
+    cursor: pointer;
+    height: 10px;
+    width: 80%;
+    margin: 0px;
+}
+
+input[type=range].slider:hover {
+  opacity: 1;
+}
+
+input[type=range].slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--thumb-color);
+    border-radius: 0px;
+    border: 1px solid var(--color);
+    height: 20px;
+    width: 10px;
+}
+
+input[type=range].slider::-moz-range-thumb {
+    background-color: var(--thumb-color);
+    border-radius: 0px;
+    border: 1px solid var(--color);
+    height: 20px;
+    width: 10px;
+}
+
+div.copied {
+    display: flex;
+    position: fixed;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color);
+    color: var(--background-color);
+    opacity: 0;
+    height: 50px;
+    width: 300px;
+    bottom: 5%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    transition: 0.8s;
 }
 
 button.theme {
@@ -58,41 +194,14 @@ button.theme:hover {
     animation: jiggle 0.20s 1;
 }
 
-div.outer-column {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-    gap: 75px;
-    max-width: 800px;
-    margin: 75px auto;
-}
-
-div.inner-column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    gap: 25px;
-}
-
-header {
-    text-align: center;
-    padding: 50px;
-}
-
-footer {
-    text-align: center;
-    padding: 25px 50px;
-}
-
 @keyframes jiggle {
-  25% {
-    transform: translateX(2px);
+    25% {
+      transform: translateX(2px);
+    }
+    75% {
+      transform: translateX(-2px);
+    }
+    100% {
+      transform: translateX(0px);
+    }
   }
-  75% {
-    transform: translateX(-2px);
-  }
-  100% {
-    transform: translateX(0px);
-  }
-}
