@@ -26,18 +26,18 @@ class Themes {
   #linkColor = Colors.createHex('#D9BFD9')
   #visitedColor = Colors.lightness(this.#linkColor, -20)
 
-  getTheme () {
+  getTheme() {
     const theme = localStorage.getItem(THEME)
     return this.themes.has(theme) ? theme : LIGHT
   }
 
-  setTheme () {
+  setTheme() {
     const theme = this.getTheme()
     localStorage.setItem(THEME, theme)
     this.changeTheme(theme)
   }
 
-  nextTheme () {
+  nextTheme() {
     const theme = this.themes.get(this.getTheme()).get(NEXT)
     localStorage.setItem(THEME, theme)
     this.changeTheme(theme)
@@ -45,7 +45,7 @@ class Themes {
     return theme
   }
 
-  changeTheme (theme) {
+  changeTheme(theme) {
     if (this.light(theme)) {
       document.documentElement.style.setProperty('--background-color', this.backgroundColor.formattedHex)
       document.documentElement.style.setProperty('--color', this.color.formattedHex)
@@ -59,39 +59,39 @@ class Themes {
     }
   }
 
-  light (theme) {
+  light(theme) {
     return theme === LIGHT
   }
 
-  dark (theme) {
+  dark(theme) {
     return theme === DARK
   }
 
-  obsidian (theme) {
+  obsidian(theme) {
     return theme === OBSIDIAN
   }
 
-  midnight (theme) {
+  midnight(theme) {
     return theme === MIDNIGHT
   }
 
-  ocean (theme) {
+  ocean(theme) {
     return theme === OCEAN
   }
 
-  forest (theme) {
+  forest(theme) {
     return theme === FOREST
   }
 
-  solar (theme) {
+  solar(theme) {
     return theme === SOLAR
   }
 
-  formatTheme (theme) {
+  formatTheme(theme) {
     return `${theme.substr(0, 1).toUpperCase()}${theme.substr(1)}`
   }
 
-  createButtonTheme () {
+  createButtonTheme() {
     const buttonTheme = document.createElement('button')
     buttonTheme.className = 'theme'
     buttonTheme.innerText = this.formatTheme(this.getTheme())

@@ -10,6 +10,31 @@ const themeColumn = createDivInnerColumn()
 themeColumn.appendChild(createH2('Theme'))
 themeColumn.appendChild(themes.createButtonTheme())
 
+function createButtonEyedropper() {
+  const buttonEyedropper = document.createElement('button')
+  buttonEyedropper.className = 'theme'
+  buttonEyedropper.innerText = 'Eyedropper'
+  buttonEyedropper.addEventListener('click', () => {
+    const eyeDropper = new EyeDropper()
+
+    eyeDropper
+      .open()
+      .then((colorSelectionResult) => {
+        const color = Colors.createHex(colorSelectionResult.sRGBHex)
+        if (color !== null && Colors.notEqual(color, colorPicked)) {
+          localStorage.setItem('hex', color.formattedHex)
+          window.location.href = './index.html'
+        } else {
+          hexBox.value = colorPicked.formattedHex
+        }
+      })
+      .catch(error => {
+      })
+  })
+
+  return buttonEyedropper
+}
+
 let hueSeparation = 24
 let hueDegrees = 360
 
@@ -141,15 +166,16 @@ hslBoxRow.appendChild(hBox)
 hslBoxRow.appendChild(sBox)
 hslBoxRow.appendChild(lBox)
 
-const boxRow = createDivInputRow()
-boxRow.appendChild(hexBoxRow)
-boxRow.appendChild(rgbBoxRow)
-boxRow.appendChild(hslBoxRow)
+const eyedropperRow = createDivInputRow()
+eyedropperRow.appendChild(createButtonEyedropper())
 
 const boxColumn = createDivInputColumn()
 boxColumn.appendChild(hexBoxRow)
 boxColumn.appendChild(rgbBoxRow)
 boxColumn.appendChild(hslBoxRow)
+if (window.EyeDropper) {
+  boxColumn.appendChild(eyedropperRow)
+}
 // ------
 
 const colorRow = createDivInnerRow()
@@ -199,28 +225,28 @@ outerColumn.appendChild(historyColumn)
 outerColumn.appendChild(divCopied)
 outerColumn.appendChild(themeColumn)
 
-function createDivInnerColumn () {
+function createDivInnerColumn() {
   const column = createDiv()
   column.className = 'inner-column'
 
   return column
 }
 
-function createDivInnerRow () {
+function createDivInnerRow() {
   const row = createDiv()
   row.className = 'inner-row'
 
   return row
 }
 
-function createDivColorRow () {
+function createDivColorRow() {
   const row = createDiv()
   row.className = 'color-row'
 
   return row
 }
 
-function createDivColorPicked (color) {
+function createDivColorPicked(color) {
   const divColor = createDivColorWithDivMarker(color)
   divColor.style.height = '250px'
   divColor.style.maxWidth = '50%'
@@ -228,7 +254,7 @@ function createDivColorPicked (color) {
   return divColor
 }
 
-function createDivColorWithDivMarker (color) {
+function createDivColorWithDivMarker(color) {
   const divMarker = createDivMarker(color)
   const divColor = createDivColor(color)
   divColor.appendChild(divMarker)
@@ -242,7 +268,7 @@ function createDivColorWithDivMarker (color) {
   return divColor
 }
 
-function createDivMarker (color) {
+function createDivMarker(color) {
   const divMarker = createDiv()
   divMarker.className = 'marker'
   divMarker.style.backgroundColor = color.formattedText
@@ -251,7 +277,7 @@ function createDivMarker (color) {
   return divMarker
 }
 
-function createDivCopied () {
+function createDivCopied() {
   const divCopied = createDiv()
   divCopied.className = 'copied'
   divCopied.appendChild(createH4('Color copied to clipboard'))
@@ -259,7 +285,7 @@ function createDivCopied () {
   return divCopied
 }
 
-function createDivColorText (innerText) {
+function createDivColorText(innerText) {
   const divColorText = createDiv()
   divColorText.className = 'color-text'
   divColorText.innerText = innerText
@@ -272,7 +298,7 @@ function createDivColorText (innerText) {
   return divColorText
 }
 
-function createDivColor (color) {
+function createDivColor(color) {
   const hex = createDivColorText(color.formattedHex)
   const rgb = createDivColorText(color.formattedRGB)
   const hsl = createDivColorText(color.formattedHSL)
@@ -308,21 +334,21 @@ function createDivColor (color) {
   return divColor
 }
 
-function createDivInputColumn () {
+function createDivInputColumn() {
   const divBoxColumn = createDiv()
   divBoxColumn.className = 'input-column'
 
   return divBoxColumn
 }
 
-function createDivInputRow () {
+function createDivInputRow() {
   const divBoxRow = createDiv()
   divBoxRow.className = 'input-row'
 
   return divBoxRow
 }
 
-function createInputTextBox () {
+function createInputTextBox() {
   const inputTextBox = document.createElement('input')
   inputTextBox.className = 'box'
   inputTextBox.type = 'text'
@@ -330,7 +356,7 @@ function createInputTextBox () {
   return inputTextBox
 }
 
-function createInputRangeSlider (min, max, step, text, value, row, updateFunction) {
+function createInputRangeSlider(min, max, step, text, value, row, updateFunction) {
   const h4Slider = createH4(`${text}: ${value}`)
 
   const inputRangeSlider = document.createElement('input')
@@ -355,74 +381,74 @@ function createInputRangeSlider (min, max, step, text, value, row, updateFunctio
   return divSlider
 }
 
-function createH2 (innerText) {
+function createH2(innerText) {
   const h2 = document.createElement('h2')
   h2.innerText = innerText
 
   return h2
 }
 
-function createH3 (innerText) {
+function createH3(innerText) {
   const h3 = document.createElement('h3')
   h3.innerText = innerText
 
   return h3
 }
 
-function createH4 (innerText) {
+function createH4(innerText) {
   const h4 = document.createElement('h4')
   h4.innerText = innerText
 
   return h4
 }
 
-function createDiv () {
+function createDiv() {
   return document.createElement('div')
 }
 
-function buildHueRowSeparation (row, value) {
+function buildHueRowSeparation(row, value) {
   hueSeparation = value
   buildColorRow(row, Colors.hues(colorPicked, hueDegrees, hueSeparation))
 }
 
-function buildHueRowDegree (row, value) {
+function buildHueRowDegree(row, value) {
   hueDegrees = value
   buildColorRow(row, Colors.hues(colorPicked, hueDegrees, hueSeparation))
 }
 
-function buildSaturationRow (row, value) {
+function buildSaturationRow(row, value) {
   buildColorRow(row, Colors.saturations(colorPicked, value))
 }
 
-function buildLightnessRow (row, value) {
+function buildLightnessRow(row, value) {
   buildColorRow(row, Colors.lightnesses(colorPicked, value))
 }
 
-function complementaryRow () {
+function complementaryRow() {
   return buildColorRow(createDivColorRow(), Colors.complementary(colorPicked))
 }
 
-function splitComplementaryRow () {
+function splitComplementaryRow() {
   return buildColorRow(createDivColorRow(), Colors.splitComplementary(colorPicked))
 }
 
-function analogousRow () {
+function analogousRow() {
   return buildColorRow(createDivColorRow(), Colors.analogous(colorPicked))
 }
 
-function triadicRow () {
+function triadicRow() {
   return buildColorRow(createDivColorRow(), Colors.triadic(colorPicked))
 }
 
-function tetradicRow () {
+function tetradicRow() {
   return buildColorRow(createDivColorRow(), Colors.tetradic(colorPicked))
 }
 
-function squareRow () {
+function squareRow() {
   return buildColorRow(createDivColorRow(), Colors.square(colorPicked))
 }
 
-function historyRow () {
+function historyRow() {
   let colors = []
   let index = 0
   while (localStorage.getItem(`historyHex${index}`) !== null) {
@@ -441,7 +467,7 @@ function historyRow () {
   return buildColorRow(createDivColorRow(), colors)
 }
 
-function buildColorRow (row, colors) {
+function buildColorRow(row, colors) {
   row.replaceChildren()
   colors.forEach(color => {
     row.appendChild(Colors.equal(color, colorPicked) ? createDivColorWithDivMarker(color) : createDivColor(color))

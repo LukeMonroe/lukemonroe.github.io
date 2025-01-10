@@ -1,26 +1,26 @@
 class Colors {
-  static equal (color01, color02) {
+  static equal(color01, color02) {
     return color01.formattedHex === color02.formattedHex &&
-    color01.formattedRGB === color02.formattedRGB &&
-    color01.formattedHSL === color02.formattedHSL
+      color01.formattedRGB === color02.formattedRGB &&
+      color01.formattedHSL === color02.formattedHSL
   }
 
-  static notEqual (color01, color02) {
+  static notEqual(color01, color02) {
     return !Colors.equal(color01, color02)
   }
 
-  static copy (color) {
+  static copy(color) {
     return Colors.buildRGB(color.rgb.r, color.rgb.g, color.rgb.b)
   }
 
-  static createHex (hex) {
+  static createHex(hex) {
     hex = hex.trim().replace('#', '').toUpperCase()
     hex = hex.match(/^[A-F\d]{6}$/)
 
     return hex !== null ? Colors.buildHex(`#${hex[0]}`) : null
   }
 
-  static createRGB (r, g, b) {
+  static createRGB(r, g, b) {
     r = Number(r.trim())
     g = Number(g.trim())
     b = Number(b.trim())
@@ -30,7 +30,7 @@ class Colors {
     return rgb ? Colors.buildRGB(r, g, b) : null
   }
 
-  static createHSL (h, s, l) {
+  static createHSL(h, s, l) {
     h = Number(h.trim())
     s = Number(s.trim())
     l = Number(l.trim())
@@ -40,14 +40,14 @@ class Colors {
     return hsl ? Colors.buildHSL(h, s, l) : null
   }
 
-  static buildHex (hex) {
+  static buildHex(hex) {
     const rgb = Colors.hexToRGB(hex)
     const hsl = Colors.rgbToHSL(rgb)
 
     return Colors.build(hex, rgb, hsl)
   }
 
-  static buildRGB (r, g, b) {
+  static buildRGB(r, g, b) {
     const rgb = { r, g, b }
     const hsl = Colors.rgbToHSL(rgb)
     const hex = Colors.rgbToHex(rgb)
@@ -55,7 +55,7 @@ class Colors {
     return Colors.build(hex, rgb, hsl)
   }
 
-  static buildHSL (h, s, l) {
+  static buildHSL(h, s, l) {
     const hsl = { h, s, l }
     const rgb = Colors.hslToRGB(hsl)
     const hex = Colors.rgbToHex(rgb)
@@ -63,7 +63,7 @@ class Colors {
     return Colors.build(hex, rgb, hsl)
   }
 
-  static build (hex, rgb, hsl) {
+  static build(hex, rgb, hsl) {
     const grayscale = Math.round((0.2126 * rgb.r) + (0.7152 * rgb.g) + (0.0722 * rgb.b))
 
     const formattedHex = hex
@@ -74,7 +74,7 @@ class Colors {
     return { hex, rgb, hsl, grayscale, formattedHex, formattedRGB, formattedHSL, formattedText }
   }
 
-  static random () {
+  static random() {
     const h = Math.round(Math.random() * 359)
     const s = Math.round(Math.random() * 100)
     const l = Math.round(Math.random() * 100)
@@ -82,7 +82,7 @@ class Colors {
     return Colors.buildHSL(h, s, l)
   }
 
-  static hexToRGB (hex) {
+  static hexToRGB(hex) {
     const r = parseInt(hex.slice(1, 3), 16)
     const g = parseInt(hex.slice(3, 5), 16)
     const b = parseInt(hex.slice(5), 16)
@@ -90,7 +90,7 @@ class Colors {
     return { r, g, b }
   }
 
-  static rgbToHex (rgb) {
+  static rgbToHex(rgb) {
     const r = Number(rgb.r)
     const g = Number(rgb.g)
     const b = Number(rgb.b)
@@ -106,7 +106,7 @@ class Colors {
     return `#${h}${e}${x}`
   }
 
-  static hslToRGB (hsl) {
+  static hslToRGB(hsl) {
     const h = Number(hsl.h)
     const s = Number(hsl.s / 100)
     const l = Number(hsl.l / 100)
@@ -140,7 +140,7 @@ class Colors {
     return { r, g, b }
   }
 
-  static rgbToHSL (rgb) {
+  static rgbToHSL(rgb) {
     const r = Number(rgb.r) / 255
     const g = Number(rgb.g) / 255
     const b = Number(rgb.b) / 255
@@ -174,7 +174,7 @@ class Colors {
     return { h, s, l }
   }
 
-  static hue (color, value) {
+  static hue(color, value) {
     let h = Number(color.hsl.h) + Number(value)
     h %= 360
     h = h < 0 ? 360 + h : h
@@ -182,7 +182,7 @@ class Colors {
     return Colors.buildHSL(h, color.hsl.s, color.hsl.l)
   }
 
-  static saturation (color, value) {
+  static saturation(color, value) {
     let s = Number(color.hsl.s) + Number(value)
     s = s <= 100 ? s : 100
     s = s >= 0 ? s : 0
@@ -190,7 +190,7 @@ class Colors {
     return Colors.buildHSL(color.hsl.h, s, color.hsl.l)
   }
 
-  static lightness (color, value) {
+  static lightness(color, value) {
     let l = Number(color.hsl.l) + Number(value)
     l = l <= 100 ? l : 100
     l = l >= 0 ? l : 0
@@ -198,7 +198,7 @@ class Colors {
     return Colors.buildHSL(color.hsl.h, color.hsl.s, l)
   }
 
-  static hues (color, degrees, value) {
+  static hues(color, degrees, value) {
     const colors = [Colors.copy(color)]
 
     const huesToCreate = Math.round(degrees / value)
@@ -214,7 +214,7 @@ class Colors {
     return colors
   }
 
-  static saturations (color, value) {
+  static saturations(color, value) {
     const colors = [Colors.copy(color)]
 
     while (colors[colors.length - 1].hsl.s < 100) {
@@ -229,7 +229,7 @@ class Colors {
     return colors
   }
 
-  static lightnesses (color, value) {
+  static lightnesses(color, value) {
     const colors = [Colors.copy(color)]
 
     while (colors[colors.length - 1].hsl.l < 100) {
@@ -244,27 +244,27 @@ class Colors {
     return colors
   }
 
-  static complementary (color) {
+  static complementary(color) {
     return [Colors.copy(color), Colors.hue(color, 180)]
   }
 
-  static splitComplementary (color) {
+  static splitComplementary(color) {
     return [Colors.copy(color), Colors.hue(color, 150), Colors.hue(color, 210)]
   }
 
-  static analogous (color) {
+  static analogous(color) {
     return [Colors.copy(color), Colors.hue(color, 30), Colors.hue(color, 330)]
   }
 
-  static triadic (color) {
+  static triadic(color) {
     return [Colors.copy(color), Colors.hue(color, 120), Colors.hue(color, 240)]
   }
 
-  static tetradic (color) {
+  static tetradic(color) {
     return [Colors.hue(color, 30), Colors.hue(color, 150), Colors.hue(color, 300), Colors.hue(color, 330)]
   }
 
-  static square (color) {
+  static square(color) {
     return [Colors.copy(color), Colors.hue(color, 90), Colors.hue(color, 180), Colors.hue(color, 270)]
   }
 }

@@ -2,7 +2,7 @@ import { Themes } from './themes.js'
 import { Colors } from './colors.js'
 
 class ColorPickerThemes extends Themes {
-  changeTheme (theme) {
+  changeTheme(theme) {
     if (this.light(theme)) {
       document.documentElement.style.setProperty('--background-color', this.backgroundColor.formattedHex)
       document.documentElement.style.setProperty('--color', this.color.formattedHex)
