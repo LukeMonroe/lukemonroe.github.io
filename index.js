@@ -74,6 +74,17 @@ hexBox.addEventListener('focusout', () => {
     hexBox.value = colorPicked.formattedHex
   }
 })
+hexBox.addEventListener('keypress', (event) => {
+  if (event.key === 'Enter') {
+    const color = Colors.createHex(hexBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      window.location.href = './index.html'
+    } else {
+      hexBox.value = colorPicked.formattedHex
+    }
+  }
+})
 
 hexBoxRow.appendChild(createH4('hex:'))
 hexBoxRow.appendChild(hexBox)
@@ -98,6 +109,17 @@ rBox.addEventListener('focusout', () => {
     rBox.value = colorPicked.rgb.r
   }
 })
+rBox.addEventListener('keypress', (event) => {
+  if (event.key === 'Enter') {
+    const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      window.location.href = './index.html'
+    } else {
+      rBox.value = colorPicked.rgb.r
+    }
+  }
+})
 gBox.addEventListener('focusout', () => {
   const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
   if (color !== null && Colors.notEqual(color, colorPicked)) {
@@ -107,6 +129,17 @@ gBox.addEventListener('focusout', () => {
     gBox.value = colorPicked.rgb.g
   }
 })
+gBox.addEventListener('keypress', (event) => {
+  if (event.key === 'Enter') {
+    const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      window.location.href = './index.html'
+    } else {
+      gBox.value = colorPicked.rgb.g
+    }
+  }
+})
 bBox.addEventListener('focusout', () => {
   const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
   if (color !== null && Colors.notEqual(color, colorPicked)) {
@@ -114,6 +147,17 @@ bBox.addEventListener('focusout', () => {
     window.location.href = './index.html'
   } else {
     bBox.value = colorPicked.rgb.b
+  }
+})
+bBox.addEventListener('keypress', (event) => {
+  if (event.key === 'Enter') {
+    const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      window.location.href = './index.html'
+    } else {
+      bBox.value = colorPicked.rgb.b
+    }
   }
 })
 
@@ -142,6 +186,17 @@ hBox.addEventListener('focusout', () => {
     hBox.value = colorPicked.hsl.h
   }
 })
+hBox.addEventListener('keypress', (event) => {
+  if (event.key === 'Enter') {
+    const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      window.location.href = './index.html'
+    } else {
+      hBox.value = colorPicked.hsl.h
+    }
+  }
+})
 sBox.addEventListener('focusout', () => {
   const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
   if (color !== null && Colors.notEqual(color, colorPicked)) {
@@ -151,6 +206,17 @@ sBox.addEventListener('focusout', () => {
     sBox.value = colorPicked.hsl.s
   }
 })
+sBox.addEventListener('keypress', (event) => {
+  if (event.key === 'Enter') {
+    const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      window.location.href = './index.html'
+    } else {
+      sBox.value = colorPicked.hsl.s
+    }
+  }
+})
 lBox.addEventListener('focusout', () => {
   const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
   if (color !== null && Colors.notEqual(color, colorPicked)) {
@@ -158,6 +224,17 @@ lBox.addEventListener('focusout', () => {
     window.location.href = './index.html'
   } else {
     lBox.value = colorPicked.hsl.l
+  }
+})
+lBox.addEventListener('keypress', (event) => {
+  if (event.key === 'Enter') {
+    const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      window.location.href = './index.html'
+    } else {
+      lBox.value = colorPicked.hsl.l
+    }
   }
 })
 
