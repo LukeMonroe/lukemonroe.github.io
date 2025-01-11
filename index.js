@@ -250,8 +250,40 @@ function createDivColorPicked(color) {
   const divColor = createDivColorWithDivMarker(color)
   divColor.style.height = '250px'
   divColor.style.maxWidth = '50%'
+  divColor.addEventListener('click', () => {
+    console.log(document.fullscreenElement)
+    if (document.fullscreenElement === null) {
+      openFullscreen(divColor)
+    } else {
+      closeFullscreen()
+    }
+  })
 
   return divColor
+}
+
+function openFullscreen(element) {
+  if (element.requestFullscreen) {
+    element.requestFullscreen()
+  } else if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen()
+  } else if (element.msRequestFullscreen) {
+    element.msRequestFullscreen()
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen()
+  }
+}
+
+function closeFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen()
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen()
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen()
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen()
+  }
 }
 
 function createDivColorWithDivMarker(color) {
