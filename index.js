@@ -46,8 +46,8 @@ if (hex !== null) {
 document.documentElement.style.setProperty('--thumb-color', colorPicked.formattedHSL)
 
 const hueRow = createDivColorRow()
-const hueSliderSeparation = createInputRangeSlider(1, 90, 1, 'Separation', 24, hueRow, buildHueRowSeparation)
-const hueSliderDegree = createInputRangeSlider(1, 360, 1, 'Degrees', 360, hueRow, buildHueRowDegree)
+const hueSliderSeparation = createInputRangeSlider(1, 90, 1, 'Separation', 12, hueRow, buildHueRowSeparation)
+const hueSliderDegree = createInputRangeSlider(1, 360, 1, 'Degrees', 180, hueRow, buildHueRowDegree)
 
 const saturationRow = createDivColorRow()
 const saturationSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, buildSaturationRow)
