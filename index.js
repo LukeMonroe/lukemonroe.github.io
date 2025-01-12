@@ -6,10 +6,6 @@ document.addEventListener('dblclick', event => { event.preventDefault() })
 const themes = new ColorPickerThemes()
 themes.setTheme()
 
-const themeColumn = createDivInnerColumn()
-themeColumn.appendChild(createH2('Theme'))
-themeColumn.appendChild(themes.createButtonTheme())
-
 function createButtonEyedropper() {
   const buttonEyedropper = document.createElement('button')
   buttonEyedropper.className = 'theme'
@@ -243,16 +239,17 @@ hslBoxRow.appendChild(hBox)
 hslBoxRow.appendChild(sBox)
 hslBoxRow.appendChild(lBox)
 
-const eyedropperRow = createDivInputRow()
-eyedropperRow.appendChild(createButtonEyedropper())
+const buttonRow = createDivInputRow()
+buttonRow.appendChild(themes.createButtonTheme())
+if (window.EyeDropper) {
+  buttonRow.appendChild(createButtonEyedropper())
+}
 
 const boxColumn = createDivInputColumn()
 boxColumn.appendChild(hexBoxRow)
 boxColumn.appendChild(rgbBoxRow)
 boxColumn.appendChild(hslBoxRow)
-if (window.EyeDropper) {
-  boxColumn.appendChild(eyedropperRow)
-}
+boxColumn.appendChild(buttonRow)
 // ------
 
 const colorRow = createDivInnerRow()
@@ -300,7 +297,6 @@ outerColumn.appendChild(variationsColumn)
 outerColumn.appendChild(harmoniesColumn)
 outerColumn.appendChild(historyColumn)
 outerColumn.appendChild(divCopied)
-outerColumn.appendChild(themeColumn)
 
 function createDivInnerColumn() {
   const column = createDiv()
