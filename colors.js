@@ -267,6 +267,16 @@ class Colors {
   static square(color) {
     return [Colors.copy(color), Colors.hue(color, 90), Colors.hue(color, 180), Colors.hue(color, 270)]
   }
+
+  static paletteA(color) {
+    return [
+      Colors.copy(color),
+      Colors.buildHSL(color.hsl.h, (Number(color.hsl.s) + Number(33)) % Number(100), color.hsl.l),
+      Colors.buildHSL(color.hsl.h, (Number(color.hsl.s) + Number(67)) % Number(100), color.hsl.l),
+      Colors.buildHSL(color.hsl.h, color.hsl.s, (Number(color.hsl.l) + Number(15)) % Number(100)),
+      Colors.buildHSL(color.hsl.h, color.hsl.s, (Number(color.hsl.l) + Number(30)) % Number(100)),
+    ]
+  }
 }
 
 export { Colors }

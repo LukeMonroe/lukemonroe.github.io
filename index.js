@@ -284,6 +284,11 @@ harmoniesColumn.appendChild(tetradicRow())
 harmoniesColumn.appendChild(createH3('Square'))
 harmoniesColumn.appendChild(squareRow())
 
+const palettesColumn = createDivInnerColumn()
+palettesColumn.appendChild(createH2('Palettes'))
+palettesColumn.appendChild(createH3('Palette A'))
+palettesColumn.appendChild(paletteARow())
+
 const historyColumn = createDivInnerColumn()
 historyColumn.appendChild(createH2('History'))
 historyColumn.appendChild(createH3('Colors'))
@@ -295,6 +300,7 @@ const outerColumn = document.getElementById('outer-column')
 outerColumn.appendChild(colorRow)
 outerColumn.appendChild(variationsColumn)
 outerColumn.appendChild(harmoniesColumn)
+outerColumn.appendChild(palettesColumn)
 outerColumn.appendChild(historyColumn)
 outerColumn.appendChild(divCopied)
 
@@ -550,6 +556,10 @@ function tetradicRow() {
 
 function squareRow() {
   return buildColorRow(createDivColorRow(), Colors.square(colorPicked))
+}
+
+function paletteARow() {
+  return buildColorRow(createDivColorRow(), Colors.paletteA(colorPicked))
 }
 
 function historyRow() {
