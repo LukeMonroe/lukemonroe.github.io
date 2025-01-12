@@ -324,7 +324,6 @@ function createDivColorPicked(color) {
   divColor.style.height = '250px'
   divColor.style.maxWidth = '50%'
   divColor.addEventListener('click', () => {
-    console.log(document.fullscreenElement)
     if (document.fullscreenElement === null) {
       openFullscreen(divColor)
     } else {
