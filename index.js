@@ -436,6 +436,13 @@ function createDivColor(color) {
     grayscale.style.display = 'none'
     divColor.style.boxShadow = 'none'
   })
+  divColor.addEventListener('click', () => {
+    hex.style.display = 'block'
+    rgb.style.display = 'block'
+    hsl.style.display = 'block'
+    grayscale.style.display = 'block'
+    divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
+  })
   divColor.addEventListener('dblclick', () => {
     localStorage.setItem('hex', color.formattedHex)
     window.location.href = './index.html'
