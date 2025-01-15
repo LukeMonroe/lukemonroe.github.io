@@ -62,6 +62,33 @@ div.color-row {
     width: 100%;
 }
 
+div.color-row-small {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+@media screen and (max-width: 600px) {
+    div.inner-row {
+        flex-direction: column;
+    }
+
+    div.color-row {
+        flex-direction: column;
+        height: 600px;
+    }
+
+    div.color-row-small {
+        flex-direction: column;
+        height: 300px;
+    }
+
+    div.color {
+        width: 100%;
+    }
+}
+
 div.color {
     display: flex;
     flex-direction: column;
@@ -70,7 +97,7 @@ div.color {
     flex: auto;
     gap: 5px;
     cursor: pointer;
-    height: 100px;
+    height: 150px;
 }
 
 div.color-text {

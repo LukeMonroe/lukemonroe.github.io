@@ -325,10 +325,17 @@ function createDivColorRow() {
   return row
 }
 
+function createDivColorRowSmall() {
+  const row = createDiv()
+  row.className = 'color-row-small'
+
+  return row
+}
+
 function createDivColorPicked(color) {
   const divColor = createDivColorWithDivMarker(color)
-  divColor.style.height = '250px'
-  divColor.style.maxWidth = '50%'
+  divColor.style.height = '300px'
+  divColor.style.maxWidth = '600px'
   divColor.addEventListener('click', () => {
     if (document.fullscreenElement === null) {
       openFullscreen(divColor)
@@ -542,31 +549,31 @@ function buildLightnessRow(row, value) {
 }
 
 function complementaryRow() {
-  return buildColorRow(createDivColorRow(), Colors.complementary(colorPicked))
+  return buildColorRow(createDivColorRowSmall(), Colors.complementary(colorPicked))
 }
 
 function splitComplementaryRow() {
-  return buildColorRow(createDivColorRow(), Colors.splitComplementary(colorPicked))
+  return buildColorRow(createDivColorRowSmall(), Colors.splitComplementary(colorPicked))
 }
 
 function analogousRow() {
-  return buildColorRow(createDivColorRow(), Colors.analogous(colorPicked))
+  return buildColorRow(createDivColorRowSmall(), Colors.analogous(colorPicked))
 }
 
 function triadicRow() {
-  return buildColorRow(createDivColorRow(), Colors.triadic(colorPicked))
+  return buildColorRow(createDivColorRowSmall(), Colors.triadic(colorPicked))
 }
 
 function tetradicRow() {
-  return buildColorRow(createDivColorRow(), Colors.tetradic(colorPicked))
+  return buildColorRow(createDivColorRowSmall(), Colors.tetradic(colorPicked))
 }
 
 function squareRow() {
-  return buildColorRow(createDivColorRow(), Colors.square(colorPicked))
+  return buildColorRow(createDivColorRowSmall(), Colors.square(colorPicked))
 }
 
 function paletteARow() {
-  return buildColorRow(createDivColorRow(), Colors.paletteA(colorPicked))
+  return buildColorRow(createDivColorRowSmall(), Colors.paletteA(colorPicked))
 }
 
 function historyRow() {
