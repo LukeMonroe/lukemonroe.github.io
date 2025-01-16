@@ -419,7 +419,7 @@ function createDivColor(color) {
   const hex = createDivColorText(color.formattedHex)
   const rgb = createDivColorText(color.formattedRGB)
   const hsl = createDivColorText(color.formattedHSL)
-  const grayscale = createDivColorText(`Grayscale: ${color.grayscale}`)
+  const grayscale = createDivColorText(`grayscale: ${color.grayscale}`)
 
   const divColor = createDiv()
   divColor.className = 'color'

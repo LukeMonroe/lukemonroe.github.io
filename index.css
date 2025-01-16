@@ -164,12 +164,13 @@ input[type=range].slider {
     -webkit-appearance: none;
     appearance: none;
     background-color: var(--color);
+    border-radius: 0px;
     outline: none;
     opacity: 0.8;
     cursor: pointer;
-    height: 10px;
+    height: 12px;
     width: 80%;
-    margin: 0px;
+    margin: 10px 0px;
 }
 
 input[type=range].slider:hover {
@@ -182,16 +183,16 @@ input[type=range].slider::-webkit-slider-thumb {
     background-color: var(--thumb-color);
     border-radius: 0px;
     border: 1px solid var(--color);
-    height: 20px;
-    width: 10px;
+    height: 40px;
+    width: 20px;
 }
 
 input[type=range].slider::-moz-range-thumb {
     background-color: var(--thumb-color);
     border-radius: 0px;
     border: 1px solid var(--color);
-    height: 20px;
-    width: 10px;
+    height: 40px;
+    width: 20px;
 }
 
 div.copied {
