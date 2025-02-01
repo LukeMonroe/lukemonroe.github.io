@@ -1,10 +1,32 @@
 import { ColorPickerThemes } from './color-picker-themes.js'
 import { Colors } from './colors.js'
 
-document.addEventListener('dblclick', event => { event.preventDefault() })
-
 const themes = new ColorPickerThemes()
 themes.setTheme()
+
+const sideNavigation = createDiv()
+sideNavigation.className = 'side-navigation'
+sideNavigation.appendChild(createA('./index.html', 'Colors'))
+sideNavigation.appendChild(createA('./index.html', 'Gradients'))
+const aTop = createA('javascript:void(0);', 'Top')
+aTop.addEventListener('click', () => {
+  window.scrollTo({top: 0, behavior: 'smooth'})
+})
+sideNavigation.appendChild(aTop)
+sideNavigation.addEventListener('click', () => {
+  sideNavigation.style.width = '0px'
+})
+
+const navigationButton = document.createElement('button')
+navigationButton.className = 'theme'
+navigationButton.innerText = '\u2630'
+navigationButton.style.position = 'fixed'
+navigationButton.style.bottom = "20px"
+navigationButton.style.left = "20px"
+navigationButton.style.fontSize = "24px"
+navigationButton.addEventListener('click', () => {
+  sideNavigation.style.width = '250px'
+})
 
 function createButtonEyedropper() {
   const buttonEyedropper = document.createElement('button')
@@ -304,6 +326,9 @@ outerColumn.appendChild(palettesColumn)
 outerColumn.appendChild(historyColumn)
 outerColumn.appendChild(divCopied)
 
+document.body.appendChild(sideNavigation)
+document.body.appendChild(navigationButton)
+
 function createDivInnerColumn() {
   const column = createDiv()
   column.className = 'inner-column'
@@ -528,6 +553,14 @@ function createH4(innerText) {
 
 function createDiv() {
   return document.createElement('div')
+}
+
+function createA(href, innerText) {
+  const a = document.createElement('a')
+  a.href = href
+  a.innerText = innerText
+
+  return a
 }
 
 function buildHueRowSeparation(row, value) {

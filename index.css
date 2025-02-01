@@ -12,6 +12,31 @@ body {
     margin: 0px;
 }
 
+div.side-navigation {
+    position: fixed;
+    background-color: var(--color);
+    z-index: 1;
+    height: 100%;
+    width: 0px;
+    top: 0px;
+    left: 0px;
+    overflow-x: hidden;
+    transition: 0.4s;
+    padding-top: 50px;
+}
+
+div.side-navigation a {
+    display: block;
+    color: var(--background-color);
+    font-size: 24px;
+    text-decoration: none;
+    padding: 8px 8px 8px 32px;
+}
+
+div.side-navigation a:hover {
+    text-decoration: underline;
+}
+
 h1,
 h2,
 h3,
