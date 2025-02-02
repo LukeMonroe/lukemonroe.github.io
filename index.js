@@ -38,7 +38,6 @@ navigationButton.addEventListener('click', () => {
 })
 
 let toolPicked = null
-let colorPicked = null
 
 const divCopied = createDivCopied()
 
@@ -54,20 +53,20 @@ function createColorPicker() {
   localStorage.setItem('tool', 'colorPicker')
 
   const hex = localStorage.getItem('hex')
-  colorPicked = hex === null ? Colors.random() : Colors.createHex(hex)
+  const colorPicked = hex === null ? Colors.random() : Colors.createHex(hex)
   localStorage.setItem('hex', colorPicked.formattedHex)
   document.documentElement.style.setProperty('--thumb-color', colorPicked.formattedHSL)
 
   const hueRow = createDivColorRow()
-  const hueSliders = createDoubleInputRangeSliders(1, 90, 1, 'Separation', 12, 1, 360, 1, 'Degrees', 180, hueRow, buildHueRow)
+  const hueSliders = createDoubleInputRangeSliders(1, 90, 1, 'Separation', 12, 1, 360, 1, 'Degrees', 180, hueRow, buildHueRow, colorPicked)
 
   const saturationRow = createDivColorRow()
-  const saturationSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, buildSaturationRow)
+  const saturationSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, buildSaturationRow, colorPicked)
 
   const lightnessRow = createDivColorRow()
-  const lightnessSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, buildLightnessRow)
+  const lightnessSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, buildLightnessRow, colorPicked)
 
-  const boxColumn = createBoxColumn()
+  const boxColumn = createBoxColumn(colorPicked)
 
   const colorRow = createDivInnerRow()
   colorRow.appendChild(createDivColorPicked(colorPicked))
@@ -90,27 +89,27 @@ function createColorPicker() {
   const harmoniesColumn = createDivInnerColumn()
   harmoniesColumn.appendChild(createH2('Harmonies'))
   harmoniesColumn.appendChild(createH3('Complementary'))
-  harmoniesColumn.appendChild(complementaryRow())
+  harmoniesColumn.appendChild(complementaryRow(colorPicked))
   harmoniesColumn.appendChild(createH3('Split Complementary'))
-  harmoniesColumn.appendChild(splitComplementaryRow())
+  harmoniesColumn.appendChild(splitComplementaryRow(colorPicked))
   harmoniesColumn.appendChild(createH3('Analogous'))
-  harmoniesColumn.appendChild(analogousRow())
+  harmoniesColumn.appendChild(analogousRow(colorPicked))
   harmoniesColumn.appendChild(createH3('Triadic'))
-  harmoniesColumn.appendChild(triadicRow())
+  harmoniesColumn.appendChild(triadicRow(colorPicked))
   harmoniesColumn.appendChild(createH3('Tetradic'))
-  harmoniesColumn.appendChild(tetradicRow())
+  harmoniesColumn.appendChild(tetradicRow(colorPicked))
   harmoniesColumn.appendChild(createH3('Square'))
-  harmoniesColumn.appendChild(squareRow())
+  harmoniesColumn.appendChild(squareRow(colorPicked))
 
   const palettesColumn = createDivInnerColumn()
   palettesColumn.appendChild(createH2('Palettes'))
   palettesColumn.appendChild(createH3('Palette A'))
-  palettesColumn.appendChild(paletteARow())
+  palettesColumn.appendChild(paletteARow(colorPicked))
 
   const historyColumn = createDivInnerColumn()
   historyColumn.appendChild(createH2('History'))
   historyColumn.appendChild(createH3('Colors'))
-  historyColumn.appendChild(historyRow())
+  historyColumn.appendChild(historyRow(colorPicked))
 
   const outerColumn = document.getElementById('outer-column')
   outerColumn.replaceChildren()
@@ -129,11 +128,11 @@ function createGradientPicker() {
   localStorage.setItem('tool', 'gradientPicker')
 
   const hex = localStorage.getItem('hex')
-  colorPicked = hex === null ? Colors.random() : Colors.createHex(hex)
+  const colorPicked = hex === null ? Colors.random() : Colors.createHex(hex)
   localStorage.setItem('hex', colorPicked.formattedHex)
   document.documentElement.style.setProperty('--thumb-color', colorPicked.formattedHSL)
 
-  const boxColumn = createBoxColumn()
+  const boxColumn = createBoxColumn(colorPicked)
 
   const colorRow = createDivInnerRow()
   colorRow.appendChild(createDivColorPicked(colorPicked))
@@ -141,12 +140,12 @@ function createGradientPicker() {
 
   const gradientsColumn = createDivInnerColumn()
   gradientsColumn.appendChild(createH2('Gradients'))
-  gradientsColumn.appendChild(complementaryRow())
+  gradientsColumn.appendChild(complementaryRow(colorPicked))
 
   const historyColumn = createDivInnerColumn()
   historyColumn.appendChild(createH2('History'))
   historyColumn.appendChild(createH3('Colors'))
-  historyColumn.appendChild(historyRow())
+  historyColumn.appendChild(historyRow(colorPicked))
 
   const outerColumn = document.getElementById('outer-column')
   outerColumn.replaceChildren()
@@ -334,7 +333,7 @@ function createInputTextBox() {
   return inputTextBox
 }
 
-function createInputRangeSlider(min, max, step, text, value, row, updateFunction) {
+function createInputRangeSlider(min, max, step, text, value, row, updateFunction, colorPicked) {
   const h4Slider = createH4(`${text}: ${value}`)
 
   const inputRangeSlider = document.createElement('input')
@@ -346,7 +345,7 @@ function createInputRangeSlider(min, max, step, text, value, row, updateFunction
   inputRangeSlider.value = value
   inputRangeSlider.addEventListener('input', () => {
     h4Slider.innerText = `${text}: ${inputRangeSlider.value}`
-    updateFunction(row, inputRangeSlider.value)
+    updateFunction(row, inputRangeSlider.value, colorPicked)
   })
 
   const divSlider = createDiv()
@@ -354,12 +353,12 @@ function createInputRangeSlider(min, max, step, text, value, row, updateFunction
   divSlider.appendChild(h4Slider)
   divSlider.appendChild(inputRangeSlider)
 
-  updateFunction(row, inputRangeSlider.value)
+  updateFunction(row, inputRangeSlider.value, colorPicked)
 
   return divSlider
 }
 
-function createDoubleInputRangeSliders(min01, max01, step01, text01, value01, min02, max02, step02, text02, value02, row, updateFunction) {
+function createDoubleInputRangeSliders(min01, max01, step01, text01, value01, min02, max02, step02, text02, value02, row, updateFunction, colorPicked) {
   const h4Slider01 = createH4(`${text01}: ${value01}`)
   const h4Slider02 = createH4(`${text02}: ${value02}`)
 
@@ -381,12 +380,12 @@ function createDoubleInputRangeSliders(min01, max01, step01, text01, value01, mi
 
   inputRangeSlider01.addEventListener('input', () => {
     h4Slider01.innerText = `${text01}: ${inputRangeSlider01.value}`
-    updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value)
+    updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value, colorPicked)
   })
 
   inputRangeSlider02.addEventListener('input', () => {
     h4Slider02.innerText = `${text02}: ${inputRangeSlider02.value}`
-    updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value)
+    updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value, colorPicked)
   })
 
   const divSlider01 = createDiv()
@@ -399,12 +398,12 @@ function createDoubleInputRangeSliders(min01, max01, step01, text01, value01, mi
   divSlider02.appendChild(h4Slider02)
   divSlider02.appendChild(inputRangeSlider02)
 
-  updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value)
+  updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value, colorPicked)
 
   return [divSlider01, divSlider02]
 }
 
-function createButtonEyedropper() {
+function createButtonEyedropper(colorPicked) {
   const buttonEyedropper = document.createElement('button')
   buttonEyedropper.className = 'theme'
   buttonEyedropper.innerText = 'Eyedropper'
@@ -429,7 +428,7 @@ function createButtonEyedropper() {
   return buttonEyedropper
 }
 
-function createBoxColumn() {
+function createBoxColumn(colorPicked) {
   const hexBoxRow = createDivInputRow()
   const hexBox = createInputTextBox()
   hexBox.maxLength = '7'
@@ -616,7 +615,7 @@ function createBoxColumn() {
   const buttonRow = createDivInputRow()
   buttonRow.appendChild(themes.createButtonTheme())
   if (window.EyeDropper) {
-    buttonRow.appendChild(createButtonEyedropper())
+    buttonRow.appendChild(createButtonEyedropper(colorPicked))
   }
 
   const boxColumn = createDivInputColumn()
@@ -661,47 +660,47 @@ function createA(href, innerText) {
   return a
 }
 
-function buildHueRow(row, value, degrees) {
-  buildColorRow(row, Colors.hues(colorPicked, degrees, value))
+function buildHueRow(row, value, degrees, colorPicked) {
+  buildColorRow(row, Colors.hues(colorPicked, degrees, value), colorPicked)
 }
 
-function buildSaturationRow(row, value) {
-  buildColorRow(row, Colors.saturations(colorPicked, value))
+function buildSaturationRow(row, value, colorPicked) {
+  buildColorRow(row, Colors.saturations(colorPicked, value), colorPicked)
 }
 
-function buildLightnessRow(row, value) {
-  buildColorRow(row, Colors.lightnesses(colorPicked, value))
+function buildLightnessRow(row, value, colorPicked) {
+  buildColorRow(row, Colors.lightnesses(colorPicked, value), colorPicked)
 }
 
-function complementaryRow() {
-  return buildColorRow(createDivColorRowSmall(), Colors.complementary(colorPicked))
+function complementaryRow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.complementary(colorPicked), colorPicked)
 }
 
-function splitComplementaryRow() {
-  return buildColorRow(createDivColorRowSmall(), Colors.splitComplementary(colorPicked))
+function splitComplementaryRow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.splitComplementary(colorPicked), colorPicked)
 }
 
-function analogousRow() {
-  return buildColorRow(createDivColorRowSmall(), Colors.analogous(colorPicked))
+function analogousRow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.analogous(colorPicked), colorPicked)
 }
 
-function triadicRow() {
-  return buildColorRow(createDivColorRowSmall(), Colors.triadic(colorPicked))
+function triadicRow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.triadic(colorPicked), colorPicked)
 }
 
-function tetradicRow() {
-  return buildColorRow(createDivColorRowSmall(), Colors.tetradic(colorPicked))
+function tetradicRow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.tetradic(colorPicked), colorPicked)
 }
 
-function squareRow() {
-  return buildColorRow(createDivColorRowSmall(), Colors.square(colorPicked))
+function squareRow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.square(colorPicked), colorPicked)
 }
 
-function paletteARow() {
-  return buildColorRow(createDivColorRowSmall(), Colors.paletteA(colorPicked))
+function paletteARow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.paletteA(colorPicked), colorPicked)
 }
 
-function historyRow() {
+function historyRow(colorPicked) {
   let colors = []
   let index = 0
   while (localStorage.getItem(`historyHex${index}`) !== null) {
@@ -717,10 +716,10 @@ function historyRow() {
     localStorage.setItem(`historyHex${index}`, colors[index].formattedHex)
   }
 
-  return buildColorRow(createDivColorRow(), colors)
+  return buildColorRow(createDivColorRow(), colors, colorPicked)
 }
 
-function buildColorRow(row, colors) {
+function buildColorRow(row, colors, colorPicked) {
   row.replaceChildren()
   colors.forEach(color => {
     row.appendChild(Colors.equal(color, colorPicked) ? createDivColorWithDivMarker(color) : createDivColor(color))
