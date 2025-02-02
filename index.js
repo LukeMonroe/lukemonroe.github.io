@@ -3,24 +3,34 @@ import { Colors } from './colors.js'
 
 document.addEventListener('dblclick', (event) => { event.preventDefault() })
 
-const themes = new ColorPickerThemes()
-themes.setTheme()
-
+createTheme()
 createNavigation()
 const tool = localStorage.getItem('tool')
 let toolPicked = tool === null ? createColorPicker : tool === 'colorPicker' ? createColorPicker : createGradientPicker
 toolPicked()
 
+function createTheme() {
+  const themes = new ColorPickerThemes()
+  themes.setTheme()
+
+  const themeButton = themes.createButtonTheme()
+  themeButton.style.position = 'fixed'
+  themeButton.style.bottom = "20px"
+  themeButton.style.right = "20px"
+
+  document.body.appendChild(themeButton)
+}
+
 function createNavigation() {
-  const aColors = createA('javascript:void(0);', 'Colors')
+  const aColors = createA('javascript:void(0);', 'Color Picker')
   aColors.addEventListener('click', () => {
     createColorPicker()
   })
-  const aGradients = createA('javascript:void(0);', 'Gradients')
+  const aGradients = createA('javascript:void(0);', 'Gradient Picker')
   aGradients.addEventListener('click', () => {
     createGradientPicker()
   })
-  const aTop = createA('javascript:void(0);', 'Top')
+  const aTop = createA('javascript:void(0);', 'Top Of Page')
   aTop.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   })
@@ -42,7 +52,7 @@ function createNavigation() {
   navigationButton.style.left = "20px"
   navigationButton.style.fontSize = "24px"
   navigationButton.addEventListener('click', () => {
-    sideNavigation.style.width = '250px'
+    sideNavigation.style.width = '300px'
   })
 
   document.body.appendChild(sideNavigation)
@@ -59,6 +69,9 @@ function createColorPicker() {
   document.documentElement.style.setProperty('--thumb-color', colorPicked.formattedHSL)
 
   const divCopied = createDivCopied()
+
+  const titleRow = createDivInnerRow()
+  titleRow.appendChild(createH1('Color Picker'))
 
   const hueRow = createDivColorRow()
   const hueSliders = createDoubleInputRangeSliders(1, 90, 1, 'Separation', 12, 1, 360, 1, 'Degrees', 180, hueRow, buildHueRow, colorPicked, divCopied)
@@ -116,6 +129,7 @@ function createColorPicker() {
 
   const outerColumn = document.getElementById('outer-column')
   outerColumn.replaceChildren()
+  outerColumn.appendChild(titleRow)
   outerColumn.appendChild(colorRow)
   outerColumn.appendChild(variationsColumn)
   outerColumn.appendChild(harmoniesColumn)
@@ -137,11 +151,19 @@ function createGradientPicker() {
 
   const divCopied = createDivCopied()
 
-  const boxColumn = createBoxColumn(colorPicked)
+  const titleRow = createDivInnerRow()
+  titleRow.appendChild(createH1('Gradient Picker'))
 
-  const colorRow = createDivInnerRow()
-  colorRow.appendChild(createDivColorPicked(colorPicked, divCopied))
-  colorRow.appendChild(boxColumn)
+  const boxColumn01 = createBoxColumn(colorPicked)
+  const boxColumn02 = createBoxColumn(colorPicked)
+
+  const colorRow01 = createDivInnerRow()
+  colorRow01.appendChild(createDivColorPicked(colorPicked, divCopied))
+  colorRow01.appendChild(boxColumn01)
+
+  const colorRow02 = createDivInnerRow()
+  colorRow02.appendChild(createDivColorPicked(colorPicked, divCopied))
+  colorRow02.appendChild(boxColumn02)
 
   const gradientsColumn = createDivInnerColumn()
   gradientsColumn.appendChild(createH2('Gradients'))
@@ -154,7 +176,9 @@ function createGradientPicker() {
 
   const outerColumn = document.getElementById('outer-column')
   outerColumn.replaceChildren()
-  outerColumn.appendChild(colorRow)
+  outerColumn.appendChild(titleRow)
+  outerColumn.appendChild(colorRow01)
+  outerColumn.appendChild(colorRow02)
   outerColumn.appendChild(gradientsColumn)
   outerColumn.appendChild(historyColumn)
   outerColumn.appendChild(divCopied)
@@ -617,19 +641,24 @@ function createBoxColumn(colorPicked) {
   hslBoxRow.appendChild(sBox)
   hslBoxRow.appendChild(lBox)
 
-  const buttonRow = createDivInputRow()
-  buttonRow.appendChild(themes.createButtonTheme())
-  if (window.EyeDropper) {
-    buttonRow.appendChild(createButtonEyedropper(colorPicked))
-  }
-
   const boxColumn = createDivInputColumn()
   boxColumn.appendChild(hexBoxRow)
   boxColumn.appendChild(rgbBoxRow)
   boxColumn.appendChild(hslBoxRow)
-  boxColumn.appendChild(buttonRow)
+  if (window.EyeDropper) {
+    const buttonRow = createDivInputRow()
+    buttonRow.appendChild(createButtonEyedropper(colorPicked))
+    boxColumn.appendChild(buttonRow)
+  }
 
   return boxColumn
+}
+
+function createH1(innerText) {
+  const h1 = document.createElement('h1')
+  h1.innerText = innerText
+
+  return h1
 }
 
 function createH2(innerText) {

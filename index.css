@@ -30,7 +30,8 @@ div.side-navigation a {
     color: var(--background-color);
     font-size: 24px;
     text-decoration: none;
-    padding: 8px 8px 8px 32px;
+    white-space: nowrap;
+    padding: 10px 20px;
 }
 
 div.side-navigation a:hover {
