@@ -37,8 +37,6 @@ navigationButton.addEventListener('click', () => {
   sideNavigation.style.width = '250px'
 })
 
-let hueSeparation = 12
-let hueDegrees = 180
 let toolPicked = null
 let colorPicked = null
 
@@ -61,8 +59,7 @@ function createColorPicker() {
   document.documentElement.style.setProperty('--thumb-color', colorPicked.formattedHSL)
 
   const hueRow = createDivColorRow()
-  const hueSliderSeparation = createInputRangeSlider(1, 90, 1, 'Separation', 12, hueRow, buildHueRowSeparation)
-  const hueSliderDegree = createInputRangeSlider(1, 360, 1, 'Degrees', 180, hueRow, buildHueRowDegree)
+  const hueSliders = createDoubleInputRangeSliders(1, 90, 1, 'Separation', 12, 1, 360, 1, 'Degrees', 180, hueRow, buildHueRow)
 
   const saturationRow = createDivColorRow()
   const saturationSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, buildSaturationRow)
@@ -79,8 +76,9 @@ function createColorPicker() {
   const variationsColumn = createDivInnerColumn()
   variationsColumn.appendChild(createH2('Variations'))
   variationsColumn.appendChild(createH3('Hue'))
-  variationsColumn.appendChild(hueSliderSeparation)
-  variationsColumn.appendChild(hueSliderDegree)
+  hueSliders.forEach(hueSlider => {
+    variationsColumn.appendChild(hueSlider)
+  })
   variationsColumn.appendChild(hueRow)
   variationsColumn.appendChild(createH3('Saturation'))
   variationsColumn.appendChild(saturationSlider)
@@ -361,6 +359,51 @@ function createInputRangeSlider(min, max, step, text, value, row, updateFunction
   return divSlider
 }
 
+function createDoubleInputRangeSliders(min01, max01, step01, text01, value01, min02, max02, step02, text02, value02, row, updateFunction) {
+  const h4Slider01 = createH4(`${text01}: ${value01}`)
+  const h4Slider02 = createH4(`${text02}: ${value02}`)
+
+  const inputRangeSlider01 = document.createElement('input')
+  inputRangeSlider01.className = 'slider'
+  inputRangeSlider01.type = 'range'
+  inputRangeSlider01.min = min01
+  inputRangeSlider01.max = max01
+  inputRangeSlider01.step = step01
+  inputRangeSlider01.value = value01
+
+  const inputRangeSlider02 = document.createElement('input')
+  inputRangeSlider02.className = 'slider'
+  inputRangeSlider02.type = 'range'
+  inputRangeSlider02.min = min02
+  inputRangeSlider02.max = max02
+  inputRangeSlider02.step = step02
+  inputRangeSlider02.value = value02
+
+  inputRangeSlider01.addEventListener('input', () => {
+    h4Slider01.innerText = `${text01}: ${inputRangeSlider01.value}`
+    updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value)
+  })
+
+  inputRangeSlider02.addEventListener('input', () => {
+    h4Slider02.innerText = `${text02}: ${inputRangeSlider02.value}`
+    updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value)
+  })
+
+  const divSlider01 = createDiv()
+  divSlider01.className = 'slider'
+  divSlider01.appendChild(h4Slider01)
+  divSlider01.appendChild(inputRangeSlider01)
+
+  const divSlider02 = createDiv()
+  divSlider02.className = 'slider'
+  divSlider02.appendChild(h4Slider02)
+  divSlider02.appendChild(inputRangeSlider02)
+
+  updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value)
+
+  return [divSlider01, divSlider02]
+}
+
 function createButtonEyedropper() {
   const buttonEyedropper = document.createElement('button')
   buttonEyedropper.className = 'theme'
@@ -618,14 +661,8 @@ function createA(href, innerText) {
   return a
 }
 
-function buildHueRowSeparation(row, value) {
-  hueSeparation = value
-  buildColorRow(row, Colors.hues(colorPicked, hueDegrees, hueSeparation))
-}
-
-function buildHueRowDegree(row, value) {
-  hueDegrees = value
-  buildColorRow(row, Colors.hues(colorPicked, hueDegrees, hueSeparation))
+function buildHueRow(row, value, degrees) {
+  buildColorRow(row, Colors.hues(colorPicked, degrees, value))
 }
 
 function buildSaturationRow(row, value) {
