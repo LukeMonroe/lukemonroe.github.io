@@ -277,6 +277,10 @@ class Colors {
       Colors.buildHSL(color.hsl.h, color.hsl.s, (Number(color.hsl.l) + Number(30)) % Number(100)),
     ]
   }
+
+  static gradient(color01, color02) {
+    return [Colors.copy(color01), Colors.copy(color02)]
+  }
 }
 
 export { Colors }
