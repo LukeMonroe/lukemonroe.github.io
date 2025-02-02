@@ -4,14 +4,23 @@ import { Colors } from './colors.js'
 const themes = new ColorPickerThemes()
 themes.setTheme()
 
-const sideNavigation = createDiv()
-sideNavigation.className = 'side-navigation'
-sideNavigation.appendChild(createA('./index.html', 'Colors'))
-sideNavigation.appendChild(createA('./index.html', 'Gradients'))
+const aColors = createA('javascript:void(0);', 'Colors')
+aColors.addEventListener('click', () => {
+  createColorPicker()
+})
+const aGradients = createA('javascript:void(0);', 'Gradients')
+aGradients.addEventListener('click', () => {
+  createGradientPicker()
+})
 const aTop = createA('javascript:void(0);', 'Top')
 aTop.addEventListener('click', () => {
-  window.scrollTo({top: 0, behavior: 'smooth'})
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 })
+
+const sideNavigation = createDiv()
+sideNavigation.className = 'side-navigation'
+sideNavigation.appendChild(aColors)
+sideNavigation.appendChild(aGradients)
 sideNavigation.appendChild(aTop)
 sideNavigation.addEventListener('click', () => {
   sideNavigation.style.width = '0px'
@@ -28,306 +37,128 @@ navigationButton.addEventListener('click', () => {
   sideNavigation.style.width = '250px'
 })
 
-function createButtonEyedropper() {
-  const buttonEyedropper = document.createElement('button')
-  buttonEyedropper.className = 'theme'
-  buttonEyedropper.innerText = 'Eyedropper'
-  buttonEyedropper.addEventListener('click', () => {
-    const eyeDropper = new EyeDropper()
-
-    eyeDropper
-      .open()
-      .then((colorSelectionResult) => {
-        const color = Colors.createHex(colorSelectionResult.sRGBHex)
-        if (color !== null && Colors.notEqual(color, colorPicked)) {
-          localStorage.setItem('hex', color.formattedHex)
-          window.location.href = './index.html'
-        } else {
-          hexBox.value = colorPicked.formattedHex
-        }
-      })
-      .catch(error => {
-      })
-  })
-
-  return buttonEyedropper
-}
-
-let hueSeparation = 24
-let hueDegrees = 360
-
-const hex = localStorage.getItem('hex')
+let hueSeparation = 12
+let hueDegrees = 180
+let toolPicked = null
 let colorPicked = null
-if (hex !== null) {
-  colorPicked = Colors.createHex(hex)
-} else {
-  colorPicked = Colors.random()
-  localStorage.setItem('hex', colorPicked.formattedHex)
-}
-
-document.documentElement.style.setProperty('--thumb-color', colorPicked.formattedHSL)
-
-const hueRow = createDivColorRow()
-const hueSliderSeparation = createInputRangeSlider(1, 90, 1, 'Separation', 12, hueRow, buildHueRowSeparation)
-const hueSliderDegree = createInputRangeSlider(1, 360, 1, 'Degrees', 180, hueRow, buildHueRowDegree)
-
-const saturationRow = createDivColorRow()
-const saturationSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, buildSaturationRow)
-
-const lightnessRow = createDivColorRow()
-const lightnessSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, buildLightnessRow)
-
-// ------
-const hexBoxRow = createDivInputRow()
-const hexBox = createInputTextBox()
-hexBox.maxLength = '7'
-hexBox.style.width = '107px'
-hexBox.value = colorPicked.formattedHex
-hexBox.addEventListener('focusout', () => {
-  const color = Colors.createHex(hexBox.value)
-  if (color !== null && Colors.notEqual(color, colorPicked)) {
-    localStorage.setItem('hex', color.formattedHex)
-    window.location.href = './index.html'
-  } else {
-    hexBox.value = colorPicked.formattedHex
-  }
-})
-hexBox.addEventListener('keypress', (event) => {
-  if (event.key === 'Enter') {
-    const color = Colors.createHex(hexBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem('hex', color.formattedHex)
-      window.location.href = './index.html'
-    } else {
-      hexBox.value = colorPicked.formattedHex
-    }
-  }
-})
-
-hexBoxRow.appendChild(createH4('hex:'))
-hexBoxRow.appendChild(hexBox)
-
-const rgbBoxRow = createDivInputRow()
-const rBox = createInputTextBox()
-rBox.maxLength = '3'
-rBox.value = colorPicked.rgb.r
-const gBox = createInputTextBox()
-gBox.maxLength = '3'
-gBox.value = colorPicked.rgb.g
-const bBox = createInputTextBox()
-bBox.maxLength = '3'
-bBox.value = colorPicked.rgb.b
-
-rBox.addEventListener('focusout', () => {
-  const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-  if (color !== null && Colors.notEqual(color, colorPicked)) {
-    localStorage.setItem('hex', color.formattedHex)
-    window.location.href = './index.html'
-  } else {
-    rBox.value = colorPicked.rgb.r
-  }
-})
-rBox.addEventListener('keypress', (event) => {
-  if (event.key === 'Enter') {
-    const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem('hex', color.formattedHex)
-      window.location.href = './index.html'
-    } else {
-      rBox.value = colorPicked.rgb.r
-    }
-  }
-})
-gBox.addEventListener('focusout', () => {
-  const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-  if (color !== null && Colors.notEqual(color, colorPicked)) {
-    localStorage.setItem('hex', color.formattedHex)
-    window.location.href = './index.html'
-  } else {
-    gBox.value = colorPicked.rgb.g
-  }
-})
-gBox.addEventListener('keypress', (event) => {
-  if (event.key === 'Enter') {
-    const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem('hex', color.formattedHex)
-      window.location.href = './index.html'
-    } else {
-      gBox.value = colorPicked.rgb.g
-    }
-  }
-})
-bBox.addEventListener('focusout', () => {
-  const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-  if (color !== null && Colors.notEqual(color, colorPicked)) {
-    localStorage.setItem('hex', color.formattedHex)
-    window.location.href = './index.html'
-  } else {
-    bBox.value = colorPicked.rgb.b
-  }
-})
-bBox.addEventListener('keypress', (event) => {
-  if (event.key === 'Enter') {
-    const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem('hex', color.formattedHex)
-      window.location.href = './index.html'
-    } else {
-      bBox.value = colorPicked.rgb.b
-    }
-  }
-})
-
-rgbBoxRow.appendChild(createH4('rgb:'))
-rgbBoxRow.appendChild(rBox)
-rgbBoxRow.appendChild(gBox)
-rgbBoxRow.appendChild(bBox)
-
-const hslBoxRow = createDivInputRow()
-const hBox = createInputTextBox()
-hBox.maxLength = '3'
-hBox.value = colorPicked.hsl.h
-const sBox = createInputTextBox()
-sBox.maxLength = '3'
-sBox.value = colorPicked.hsl.s
-const lBox = createInputTextBox()
-lBox.maxLength = '3'
-lBox.value = colorPicked.hsl.l
-
-hBox.addEventListener('focusout', () => {
-  const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-  if (color !== null && Colors.notEqual(color, colorPicked)) {
-    localStorage.setItem('hex', color.formattedHex)
-    window.location.href = './index.html'
-  } else {
-    hBox.value = colorPicked.hsl.h
-  }
-})
-hBox.addEventListener('keypress', (event) => {
-  if (event.key === 'Enter') {
-    const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem('hex', color.formattedHex)
-      window.location.href = './index.html'
-    } else {
-      hBox.value = colorPicked.hsl.h
-    }
-  }
-})
-sBox.addEventListener('focusout', () => {
-  const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-  if (color !== null && Colors.notEqual(color, colorPicked)) {
-    localStorage.setItem('hex', color.formattedHex)
-    window.location.href = './index.html'
-  } else {
-    sBox.value = colorPicked.hsl.s
-  }
-})
-sBox.addEventListener('keypress', (event) => {
-  if (event.key === 'Enter') {
-    const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem('hex', color.formattedHex)
-      window.location.href = './index.html'
-    } else {
-      sBox.value = colorPicked.hsl.s
-    }
-  }
-})
-lBox.addEventListener('focusout', () => {
-  const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-  if (color !== null && Colors.notEqual(color, colorPicked)) {
-    localStorage.setItem('hex', color.formattedHex)
-    window.location.href = './index.html'
-  } else {
-    lBox.value = colorPicked.hsl.l
-  }
-})
-lBox.addEventListener('keypress', (event) => {
-  if (event.key === 'Enter') {
-    const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem('hex', color.formattedHex)
-      window.location.href = './index.html'
-    } else {
-      lBox.value = colorPicked.hsl.l
-    }
-  }
-})
-
-hslBoxRow.appendChild(createH4('hsl:'))
-hslBoxRow.appendChild(hBox)
-hslBoxRow.appendChild(sBox)
-hslBoxRow.appendChild(lBox)
-
-const buttonRow = createDivInputRow()
-buttonRow.appendChild(themes.createButtonTheme())
-if (window.EyeDropper) {
-  buttonRow.appendChild(createButtonEyedropper())
-}
-
-const boxColumn = createDivInputColumn()
-boxColumn.appendChild(hexBoxRow)
-boxColumn.appendChild(rgbBoxRow)
-boxColumn.appendChild(hslBoxRow)
-boxColumn.appendChild(buttonRow)
-// ------
-
-const colorRow = createDivInnerRow()
-colorRow.appendChild(createDivColorPicked(colorPicked))
-colorRow.appendChild(boxColumn)
-
-const variationsColumn = createDivInnerColumn()
-variationsColumn.appendChild(createH2('Variations'))
-variationsColumn.appendChild(createH3('Hue'))
-variationsColumn.appendChild(hueSliderSeparation)
-variationsColumn.appendChild(hueSliderDegree)
-variationsColumn.appendChild(hueRow)
-variationsColumn.appendChild(createH3('Saturation'))
-variationsColumn.appendChild(saturationSlider)
-variationsColumn.appendChild(saturationRow)
-variationsColumn.appendChild(createH3('Lightness'))
-variationsColumn.appendChild(lightnessSlider)
-variationsColumn.appendChild(lightnessRow)
-
-const harmoniesColumn = createDivInnerColumn()
-harmoniesColumn.appendChild(createH2('Harmonies'))
-harmoniesColumn.appendChild(createH3('Complementary'))
-harmoniesColumn.appendChild(complementaryRow())
-harmoniesColumn.appendChild(createH3('Split Complementary'))
-harmoniesColumn.appendChild(splitComplementaryRow())
-harmoniesColumn.appendChild(createH3('Analogous'))
-harmoniesColumn.appendChild(analogousRow())
-harmoniesColumn.appendChild(createH3('Triadic'))
-harmoniesColumn.appendChild(triadicRow())
-harmoniesColumn.appendChild(createH3('Tetradic'))
-harmoniesColumn.appendChild(tetradicRow())
-harmoniesColumn.appendChild(createH3('Square'))
-harmoniesColumn.appendChild(squareRow())
-
-const palettesColumn = createDivInnerColumn()
-palettesColumn.appendChild(createH2('Palettes'))
-palettesColumn.appendChild(createH3('Palette A'))
-palettesColumn.appendChild(paletteARow())
-
-const historyColumn = createDivInnerColumn()
-historyColumn.appendChild(createH2('History'))
-historyColumn.appendChild(createH3('Colors'))
-historyColumn.appendChild(historyRow())
 
 const divCopied = createDivCopied()
 
-const outerColumn = document.getElementById('outer-column')
-outerColumn.appendChild(colorRow)
-outerColumn.appendChild(variationsColumn)
-outerColumn.appendChild(harmoniesColumn)
-outerColumn.appendChild(palettesColumn)
-outerColumn.appendChild(historyColumn)
-outerColumn.appendChild(divCopied)
-
 document.body.appendChild(sideNavigation)
 document.body.appendChild(navigationButton)
+
+const tool = localStorage.getItem('tool')
+toolPicked = tool === null ? createColorPicker : tool === 'colorPicker' ? createColorPicker : createGradientPicker
+toolPicked()
+
+function createColorPicker() {
+  toolPicked = createColorPicker
+  localStorage.setItem('tool', 'colorPicker')
+
+  const hex = localStorage.getItem('hex')
+  colorPicked = hex === null ? Colors.random() : Colors.createHex(hex)
+  localStorage.setItem('hex', colorPicked.formattedHex)
+  document.documentElement.style.setProperty('--thumb-color', colorPicked.formattedHSL)
+
+  const hueRow = createDivColorRow()
+  const hueSliderSeparation = createInputRangeSlider(1, 90, 1, 'Separation', 12, hueRow, buildHueRowSeparation)
+  const hueSliderDegree = createInputRangeSlider(1, 360, 1, 'Degrees', 180, hueRow, buildHueRowDegree)
+
+  const saturationRow = createDivColorRow()
+  const saturationSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, buildSaturationRow)
+
+  const lightnessRow = createDivColorRow()
+  const lightnessSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, buildLightnessRow)
+
+  const boxColumn = createBoxColumn()
+
+  const colorRow = createDivInnerRow()
+  colorRow.appendChild(createDivColorPicked(colorPicked))
+  colorRow.appendChild(boxColumn)
+
+  const variationsColumn = createDivInnerColumn()
+  variationsColumn.appendChild(createH2('Variations'))
+  variationsColumn.appendChild(createH3('Hue'))
+  variationsColumn.appendChild(hueSliderSeparation)
+  variationsColumn.appendChild(hueSliderDegree)
+  variationsColumn.appendChild(hueRow)
+  variationsColumn.appendChild(createH3('Saturation'))
+  variationsColumn.appendChild(saturationSlider)
+  variationsColumn.appendChild(saturationRow)
+  variationsColumn.appendChild(createH3('Lightness'))
+  variationsColumn.appendChild(lightnessSlider)
+  variationsColumn.appendChild(lightnessRow)
+
+  const harmoniesColumn = createDivInnerColumn()
+  harmoniesColumn.appendChild(createH2('Harmonies'))
+  harmoniesColumn.appendChild(createH3('Complementary'))
+  harmoniesColumn.appendChild(complementaryRow())
+  harmoniesColumn.appendChild(createH3('Split Complementary'))
+  harmoniesColumn.appendChild(splitComplementaryRow())
+  harmoniesColumn.appendChild(createH3('Analogous'))
+  harmoniesColumn.appendChild(analogousRow())
+  harmoniesColumn.appendChild(createH3('Triadic'))
+  harmoniesColumn.appendChild(triadicRow())
+  harmoniesColumn.appendChild(createH3('Tetradic'))
+  harmoniesColumn.appendChild(tetradicRow())
+  harmoniesColumn.appendChild(createH3('Square'))
+  harmoniesColumn.appendChild(squareRow())
+
+  const palettesColumn = createDivInnerColumn()
+  palettesColumn.appendChild(createH2('Palettes'))
+  palettesColumn.appendChild(createH3('Palette A'))
+  palettesColumn.appendChild(paletteARow())
+
+  const historyColumn = createDivInnerColumn()
+  historyColumn.appendChild(createH2('History'))
+  historyColumn.appendChild(createH3('Colors'))
+  historyColumn.appendChild(historyRow())
+
+  const outerColumn = document.getElementById('outer-column')
+  outerColumn.replaceChildren()
+  outerColumn.appendChild(colorRow)
+  outerColumn.appendChild(variationsColumn)
+  outerColumn.appendChild(harmoniesColumn)
+  outerColumn.appendChild(palettesColumn)
+  outerColumn.appendChild(historyColumn)
+  outerColumn.appendChild(divCopied)
+
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function createGradientPicker() {
+  toolPicked = createGradientPicker
+  localStorage.setItem('tool', 'gradientPicker')
+
+  const hex = localStorage.getItem('hex')
+  colorPicked = hex === null ? Colors.random() : Colors.createHex(hex)
+  localStorage.setItem('hex', colorPicked.formattedHex)
+  document.documentElement.style.setProperty('--thumb-color', colorPicked.formattedHSL)
+
+  const boxColumn = createBoxColumn()
+
+  const colorRow = createDivInnerRow()
+  colorRow.appendChild(createDivColorPicked(colorPicked))
+  colorRow.appendChild(boxColumn)
+
+  const gradientsColumn = createDivInnerColumn()
+  gradientsColumn.appendChild(createH2('Gradients'))
+  gradientsColumn.appendChild(complementaryRow())
+
+  const historyColumn = createDivInnerColumn()
+  historyColumn.appendChild(createH2('History'))
+  historyColumn.appendChild(createH3('Colors'))
+  historyColumn.appendChild(historyRow())
+
+  const outerColumn = document.getElementById('outer-column')
+  outerColumn.replaceChildren()
+  outerColumn.appendChild(colorRow)
+  outerColumn.appendChild(gradientsColumn)
+  outerColumn.appendChild(historyColumn)
+  outerColumn.appendChild(divCopied)
+
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 
 function createDivInnerColumn() {
   const column = createDiv()
@@ -477,7 +308,7 @@ function createDivColor(color) {
   })
   divColor.addEventListener('dblclick', () => {
     localStorage.setItem('hex', color.formattedHex)
-    window.location.href = './index.html'
+    toolPicked()
   })
 
   return divColor
@@ -528,6 +359,230 @@ function createInputRangeSlider(min, max, step, text, value, row, updateFunction
   updateFunction(row, inputRangeSlider.value)
 
   return divSlider
+}
+
+function createButtonEyedropper() {
+  const buttonEyedropper = document.createElement('button')
+  buttonEyedropper.className = 'theme'
+  buttonEyedropper.innerText = 'Eyedropper'
+  buttonEyedropper.addEventListener('click', () => {
+    const eyeDropper = new EyeDropper()
+
+    eyeDropper
+      .open()
+      .then((colorSelectionResult) => {
+        const color = Colors.createHex(colorSelectionResult.sRGBHex)
+        if (color !== null && Colors.notEqual(color, colorPicked)) {
+          localStorage.setItem('hex', color.formattedHex)
+          toolPicked()
+        } else {
+          hexBox.value = colorPicked.formattedHex
+        }
+      })
+      .catch(error => {
+      })
+  })
+
+  return buttonEyedropper
+}
+
+function createBoxColumn() {
+  const hexBoxRow = createDivInputRow()
+  const hexBox = createInputTextBox()
+  hexBox.maxLength = '7'
+  hexBox.style.width = '107px'
+  hexBox.value = colorPicked.formattedHex
+  hexBox.addEventListener('focusout', () => {
+    const color = Colors.createHex(hexBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      toolPicked()
+    } else {
+      hexBox.value = colorPicked.formattedHex
+    }
+  })
+  hexBox.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+      const color = Colors.createHex(hexBox.value)
+      if (color !== null && Colors.notEqual(color, colorPicked)) {
+        localStorage.setItem('hex', color.formattedHex)
+        toolPicked()
+      } else {
+        hexBox.value = colorPicked.formattedHex
+      }
+    }
+  })
+
+  hexBoxRow.appendChild(createH4('hex:'))
+  hexBoxRow.appendChild(hexBox)
+
+  const rgbBoxRow = createDivInputRow()
+  const rBox = createInputTextBox()
+  rBox.maxLength = '3'
+  rBox.value = colorPicked.rgb.r
+  const gBox = createInputTextBox()
+  gBox.maxLength = '3'
+  gBox.value = colorPicked.rgb.g
+  const bBox = createInputTextBox()
+  bBox.maxLength = '3'
+  bBox.value = colorPicked.rgb.b
+
+  rBox.addEventListener('focusout', () => {
+    const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      toolPicked()
+    } else {
+      rBox.value = colorPicked.rgb.r
+    }
+  })
+  rBox.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+      const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
+      if (color !== null && Colors.notEqual(color, colorPicked)) {
+        localStorage.setItem('hex', color.formattedHex)
+        toolPicked()
+      } else {
+        rBox.value = colorPicked.rgb.r
+      }
+    }
+  })
+  gBox.addEventListener('focusout', () => {
+    const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      toolPicked()
+    } else {
+      gBox.value = colorPicked.rgb.g
+    }
+  })
+  gBox.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+      const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
+      if (color !== null && Colors.notEqual(color, colorPicked)) {
+        localStorage.setItem('hex', color.formattedHex)
+        toolPicked()
+      } else {
+        gBox.value = colorPicked.rgb.g
+      }
+    }
+  })
+  bBox.addEventListener('focusout', () => {
+    const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      toolPicked()
+    } else {
+      bBox.value = colorPicked.rgb.b
+    }
+  })
+  bBox.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+      const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
+      if (color !== null && Colors.notEqual(color, colorPicked)) {
+        localStorage.setItem('hex', color.formattedHex)
+        toolPicked()
+      } else {
+        bBox.value = colorPicked.rgb.b
+      }
+    }
+  })
+
+  rgbBoxRow.appendChild(createH4('rgb:'))
+  rgbBoxRow.appendChild(rBox)
+  rgbBoxRow.appendChild(gBox)
+  rgbBoxRow.appendChild(bBox)
+
+  const hslBoxRow = createDivInputRow()
+  const hBox = createInputTextBox()
+  hBox.maxLength = '3'
+  hBox.value = colorPicked.hsl.h
+  const sBox = createInputTextBox()
+  sBox.maxLength = '3'
+  sBox.value = colorPicked.hsl.s
+  const lBox = createInputTextBox()
+  lBox.maxLength = '3'
+  lBox.value = colorPicked.hsl.l
+
+  hBox.addEventListener('focusout', () => {
+    const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      toolPicked()
+    } else {
+      hBox.value = colorPicked.hsl.h
+    }
+  })
+  hBox.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+      const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
+      if (color !== null && Colors.notEqual(color, colorPicked)) {
+        localStorage.setItem('hex', color.formattedHex)
+        toolPicked()
+      } else {
+        hBox.value = colorPicked.hsl.h
+      }
+    }
+  })
+  sBox.addEventListener('focusout', () => {
+    const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      toolPicked()
+    } else {
+      sBox.value = colorPicked.hsl.s
+    }
+  })
+  sBox.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+      const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
+      if (color !== null && Colors.notEqual(color, colorPicked)) {
+        localStorage.setItem('hex', color.formattedHex)
+        toolPicked()
+      } else {
+        sBox.value = colorPicked.hsl.s
+      }
+    }
+  })
+  lBox.addEventListener('focusout', () => {
+    const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
+    if (color !== null && Colors.notEqual(color, colorPicked)) {
+      localStorage.setItem('hex', color.formattedHex)
+      toolPicked()
+    } else {
+      lBox.value = colorPicked.hsl.l
+    }
+  })
+  lBox.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+      const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
+      if (color !== null && Colors.notEqual(color, colorPicked)) {
+        localStorage.setItem('hex', color.formattedHex)
+        toolPicked()
+      } else {
+        lBox.value = colorPicked.hsl.l
+      }
+    }
+  })
+
+  hslBoxRow.appendChild(createH4('hsl:'))
+  hslBoxRow.appendChild(hBox)
+  hslBoxRow.appendChild(sBox)
+  hslBoxRow.appendChild(lBox)
+
+  const buttonRow = createDivInputRow()
+  buttonRow.appendChild(themes.createButtonTheme())
+  if (window.EyeDropper) {
+    buttonRow.appendChild(createButtonEyedropper())
+  }
+
+  const boxColumn = createDivInputColumn()
+  boxColumn.appendChild(hexBoxRow)
+  boxColumn.appendChild(rgbBoxRow)
+  boxColumn.appendChild(hslBoxRow)
+  boxColumn.appendChild(buttonRow)
+
+  return boxColumn
 }
 
 function createH2(innerText) {
