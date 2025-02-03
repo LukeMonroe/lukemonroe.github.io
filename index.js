@@ -120,12 +120,10 @@ function createColorPicker() {
 
   const palettesColumn = createDivInnerColumn()
   palettesColumn.appendChild(createH2('Palettes'))
-  palettesColumn.appendChild(createH3('Palette One'))
   palettesColumn.appendChild(paletteARow(colorPicked, divCopied, storageItem))
 
   const historyColumn = createDivInnerColumn()
   historyColumn.appendChild(createH2('History'))
-  historyColumn.appendChild(createH3('Colors'))
   historyColumn.appendChild(historyColorRow(colorPicked, divCopied, storageItem))
 
   const outerColumn = document.getElementById('outer-column')
@@ -193,7 +191,6 @@ function createGradientPicker() {
 
   const historyColumn = createDivInnerColumn()
   historyColumn.appendChild(createH2('History'))
-  historyColumn.appendChild(createH3('Gradients'))
   historyGradientRow(historyColumn, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02)
 
   const examplesColumn = createDivInnerColumn()
@@ -831,7 +828,7 @@ function historyColorRow(colorPicked, divCopied, storageItem) {
     localStorage.setItem(`history${storageItem}${index}`, colors[index].formattedHex)
   }
 
-  return buildColorRow(createDivColorRowSmall(), colors, colorPicked, divCopied, storageItem)
+  return buildColorRow(createDivColorRowSmall(), colors.reverse(), colorPicked, divCopied, storageItem)
 }
 
 function historyGradientRow(col, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02) {
@@ -892,17 +889,22 @@ function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, divCop
   divColor01.style.display = 'none'
   divGradient.style.display = 'flex'
   divColor02.style.display = 'none'
-  row.addEventListener('mouseenter', () => {
+  divGradient.addEventListener('mouseenter', () => {
     divColor01.style.display = 'flex'
     divGradient.style.display = 'none'
     divColor02.style.display = 'flex'
   })
-  row.addEventListener('mouseleave', () => {
+  divColor01.addEventListener('mouseleave', () => {
     divColor01.style.display = 'none'
     divGradient.style.display = 'flex'
     divColor02.style.display = 'none'
   })
-  row.addEventListener('click', () => {
+  divColor02.addEventListener('mouseleave', () => {
+    divColor01.style.display = 'none'
+    divGradient.style.display = 'flex'
+    divColor02.style.display = 'none'
+  })
+  divGradient.addEventListener('click', () => {
     divColor01.style.display = 'flex'
     divGradient.style.display = 'none'
     divColor02.style.display = 'flex'
