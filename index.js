@@ -201,8 +201,9 @@ function createGradientPicker() {
   for (let index = 0; index < 20; index++) {
     const color01 = Colors.random()
     const color02 = Colors.random()
-    examplesColumn.appendChild(gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%'))
-    examplesColumn.appendChild(createButtonGradient(color01, color02, storageItem01, storageItem02))
+    const row = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%')
+    row.appendChild(createButtonGradient(color01, color02, storageItem01, storageItem02))
+    examplesColumn.appendChild(row)
   }
   examplesColumn.appendChild(createButtonExamples(examplesColumn, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%'))
 
@@ -480,8 +481,8 @@ function createDoubleInputRangeSliders(min01, max01, step01, text01, value01, mi
 
 function createButtonGradient(color01, color02, storageItem01, storageItem02) {
   const buttonGradient = document.createElement('button')
-  buttonGradient.className = 'theme'
-  buttonGradient.innerText = 'Load Gradient'
+  buttonGradient.className = 'load'
+  buttonGradient.innerText = 'Load'
   buttonGradient.addEventListener('click', () => {
     localStorage.setItem(storageItem01, color01.formattedHex)
     localStorage.setItem(storageItem02, color02.formattedHex)
@@ -494,13 +495,14 @@ function createButtonGradient(color01, color02, storageItem01, storageItem02) {
 function createButtonExamples(col, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position) {
   const buttonExamples = document.createElement('button')
   buttonExamples.className = 'theme'
-  buttonExamples.innerText = 'More Examples'
+  buttonExamples.innerText = 'Load More'
   buttonExamples.addEventListener('click', () => {
     for (let index = 0; index < 20; index++) {
       const color01 = Colors.random()
       const color02 = Colors.random()
-      col.insertBefore(gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position), col.lastElementChild)
-      col.insertBefore(createButtonGradient(color01, color02, storageItem01, storageItem02), col.lastElementChild)
+      const row = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position)
+      row.appendChild(createButtonGradient(color01, color02, storageItem01, storageItem02))
+      col.insertBefore(row, col.lastElementChild)
     }
   })
 
@@ -867,8 +869,9 @@ function historyGradientRow(col, colorPicked01, colorPicked02, divCopied, storag
   for (let index = length - 1; index >= 0; index--) {
     const color01 = index < colors01.length ? colors01[index] : colors01[colors01.length - 1]
     const color02 = index < colors02.length ? colors02[index] : colors02[colors02.length - 1]
-    col.appendChild(gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%'))
-    col.appendChild(createButtonGradient(color01, color02, storageItem01, storageItem02))
+    const row = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%')
+    row.appendChild(createButtonGradient(color01, color02, storageItem01, storageItem02))
+    col.appendChild(row)
   }
 }
 

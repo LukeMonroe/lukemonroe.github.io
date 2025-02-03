@@ -95,26 +95,6 @@ div.color-row-small {
     width: 100%;
 }
 
-@media screen and (max-width: 600px) {
-    div.inner-row {
-        flex-direction: column;
-    }
-
-    div.color-row {
-        flex-direction: column;
-        height: 600px;
-    }
-
-    div.color-row-small {
-        flex-direction: column;
-        height: 300px;
-    }
-
-    div.color {
-        width: 100%;
-    }
-}
-
 div.color {
     display: flex;
     flex-direction: column;
@@ -238,6 +218,25 @@ div.copied {
     transition: 0.8s;
 }
 
+button.load {
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color);
+    color: var(--background-color);
+    font-family: monospace;
+    border: none;
+    cursor: pointer;
+    height: 150px;
+    padding: 0px 15px;
+}
+
+button.load:hover {
+    animation: jiggle 0.20s 1;
+}
+
 button.theme {
     -webkit-tap-highlight-color: transparent;
     background-color: var(--color);
@@ -263,5 +262,31 @@ button.theme:hover {
 
     100% {
         transform: translateX(0px);
+    }
+}
+
+@media screen and (max-width: 600px) {
+    div.inner-row {
+        flex-direction: column;
+    }
+
+    div.color-row {
+        flex-direction: column;
+        height: 600px;
+    }
+
+    div.color-row-small {
+        flex-direction: column;
+        height: 300px;
+    }
+
+    div.color {
+        width: 100%;
+    }
+
+    button.load {
+        height: 0px;
+        width: 100%;
+        padding: 30px 0px;
     }
 }
