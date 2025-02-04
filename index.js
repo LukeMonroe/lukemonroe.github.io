@@ -3,60 +3,55 @@ import { Colors } from './colors.js'
 
 document.addEventListener('dblclick', event => { event.preventDefault() })
 
-createTheme()
-createNavigation()
+const themes = new ColorPickerThemes()
+themes.setTheme()
+
+const sideNavigation = createSideNavigation()
+document.body.appendChild(sideNavigation)
+
 const tool = localStorage.getItem('tool')
 let toolPicked = tool === null ? createColorPicker : tool === 'colorPicker' ? createColorPicker : createGradientPicker
 toolPicked()
 
-function createTheme() {
-  const themes = new ColorPickerThemes()
-  themes.setTheme()
-
-  const themeButton = themes.createButtonTheme()
-  themeButton.style.position = 'fixed'
-  themeButton.style.bottom = "20px"
-  themeButton.style.right = "20px"
-
-  document.body.appendChild(themeButton)
-}
-
-function createNavigation() {
+function createSideNavigation() {
+  const sideNavigation = createDiv()
+  sideNavigation.className = 'side-navigation'
   const aColors = createA('javascript:void(0);', 'Color Picker')
   aColors.addEventListener('click', () => {
+    sideNavigation.style.width = '0px'
     createColorPicker()
   })
   const aGradients = createA('javascript:void(0);', 'Gradient Picker')
   aGradients.addEventListener('click', () => {
+    sideNavigation.style.width = '0px'
     createGradientPicker()
   })
-  const aTop = createA('javascript:void(0);', 'Top Of Page')
-  aTop.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  })
-
-  const sideNavigation = createDiv()
-  sideNavigation.className = 'side-navigation'
   sideNavigation.appendChild(aColors)
   sideNavigation.appendChild(aGradients)
-  sideNavigation.appendChild(aTop)
-  sideNavigation.addEventListener('click', () => {
-    sideNavigation.style.width = '0px'
-  })
+  sideNavigation.appendChild(createButtonTheme())
 
+  return sideNavigation
+}
+
+function createButtonNavigation(sideNavigation) {
   const navigationButton = document.createElement('button')
   navigationButton.className = 'theme'
   navigationButton.innerText = '\u2630'
-  navigationButton.style.position = 'fixed'
-  navigationButton.style.bottom = "20px"
-  navigationButton.style.left = "20px"
-  navigationButton.style.fontSize = "24px"
+  navigationButton.style.fontSize = '24px'
   navigationButton.addEventListener('click', () => {
     sideNavigation.style.width = '300px'
   })
 
-  document.body.appendChild(sideNavigation)
-  document.body.appendChild(navigationButton)
+  return navigationButton
+}
+
+function createButtonTheme() {
+  const buttonTheme = themes.createButtonTheme(true)
+  buttonTheme.style.position = 'absolute'
+  buttonTheme.style.bottom = '20px'
+  buttonTheme.style.left = '20px'
+
+  return buttonTheme
 }
 
 function createColorPicker() {
@@ -70,9 +65,6 @@ function createColorPicker() {
   document.documentElement.style.setProperty('--thumb-color', colorPicked.formattedHSL)
 
   const divCopied = createDivCopied()
-
-  const titleRow = createDivInnerRow()
-  titleRow.appendChild(createH1('Color Picker'))
 
   const hueRow = createDivColorRow()
   const hueSliders = createDoubleInputRangeSliders(1, 90, 1, 'Separation', 12, 1, 360, 1, 'Degrees', 180, hueRow, buildHueRow, colorPicked, divCopied, storageItem)
@@ -126,9 +118,13 @@ function createColorPicker() {
   historyColumn.appendChild(createH2('History'))
   historyColumn.appendChild(historyColorRow(colorPicked, divCopied, storageItem))
 
+  const header = document.getElementById('header')
+  header.replaceChildren()
+  header.appendChild(createButtonNavigation(sideNavigation))
+  header.appendChild(createH1('Color Picker'))
+
   const outerColumn = document.getElementById('outer-column')
   outerColumn.replaceChildren()
-  outerColumn.appendChild(titleRow)
   outerColumn.appendChild(colorRow)
   outerColumn.appendChild(variationsColumn)
   outerColumn.appendChild(harmoniesColumn)
@@ -155,9 +151,6 @@ function createGradientPicker() {
   localStorage.setItem(storageItem02, colorPicked02.formattedHex)
 
   const divCopied = createDivCopied()
-
-  const titleRow = createDivInnerRow()
-  titleRow.appendChild(createH1('Gradient Picker'))
 
   const boxColumn01 = createBoxColumn(colorPicked01, storageItem01)
   const boxColumn02 = createBoxColumn(colorPicked02, storageItem02)
@@ -204,9 +197,13 @@ function createGradientPicker() {
   }
   examplesColumn.appendChild(createButtonExamples(examplesColumn, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%'))
 
+  const header = document.getElementById('header')
+  header.replaceChildren()
+  header.appendChild(createButtonNavigation(sideNavigation))
+  header.appendChild(createH1('Gradient Picker'))
+
   const outerColumn = document.getElementById('outer-column')
   outerColumn.replaceChildren()
-  outerColumn.appendChild(titleRow)
   outerColumn.appendChild(colorRow01)
   outerColumn.appendChild(colorRow02)
   outerColumn.appendChild(gradientsColumn)

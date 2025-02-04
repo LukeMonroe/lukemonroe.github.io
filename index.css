@@ -14,15 +14,18 @@ body {
 
 div.side-navigation {
     position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
     background-color: var(--color);
-    z-index: 1;
-    height: 100%;
-    width: 0px;
     top: 0px;
     left: 0px;
+    height: 100%;
+    width: 0px;
+    z-index: 1;
     overflow-x: hidden;
     transition: 0.4s;
-    padding-top: 50px;
 }
 
 div.side-navigation a {
@@ -31,7 +34,7 @@ div.side-navigation a {
     font-size: 24px;
     text-decoration: none;
     white-space: nowrap;
-    padding: 10px 20px;
+    padding: 20px 0px 0px 20px;
 }
 
 div.side-navigation a:hover {
@@ -121,13 +124,16 @@ div.marker {
 }
 
 header {
-    text-align: center;
-    padding: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 50px 20px;
 }
 
 footer {
     text-align: center;
-    padding: 25px 50px;
+    padding: 25px 20px;
 }
 
 div.slider {
@@ -233,10 +239,6 @@ button.load {
     padding: 0px 15px;
 }
 
-button.load:hover {
-    animation: jiggle 0.20s 1;
-}
-
 button.theme {
     -webkit-tap-highlight-color: transparent;
     background-color: var(--color);
@@ -247,7 +249,25 @@ button.theme {
     padding: 10px 20px;
 }
 
+button.theme-inverted {
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--background-color);
+    color: var(--color);
+    font-family: monospace;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+}
+
+button.load:hover {
+    animation: jiggle 0.20s 1;
+}
+
 button.theme:hover {
+    animation: jiggle 0.20s 1;
+}
+
+button.theme-inverted:hover {
     animation: jiggle 0.20s 1;
 }
 
