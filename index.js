@@ -1,12 +1,19 @@
 import { ColorPickerThemes } from './color-picker-themes.js'
 import { Colors } from './colors.js'
 
-document.addEventListener('dblclick', event => { event.preventDefault() })
-
 const themes = new ColorPickerThemes()
 themes.setTheme()
 
 const sideNavigation = createSideNavigation()
+
+document.addEventListener('dblclick', event => { event.preventDefault() })
+document.addEventListener('click', event => {
+  if (sideNavigation.style.width === '300px') {
+    if (!sideNavigation.contains(event.target)) {
+      sideNavigation.style.width = '0px'
+    }
+  }
+})
 document.body.appendChild(sideNavigation)
 
 const tool = localStorage.getItem('tool')
@@ -38,7 +45,8 @@ function createButtonNavigation(sideNavigation) {
   navigationButton.className = 'theme'
   navigationButton.innerText = '\u2630'
   navigationButton.style.fontSize = '24px'
-  navigationButton.addEventListener('click', () => {
+  navigationButton.addEventListener('click', event => {
+    event.stopPropagation()
     sideNavigation.style.width = '300px'
   })
 
@@ -280,7 +288,7 @@ function createDivColorPicked(color, divCopied, storageItem) {
 //   }
 // }
 
-function createDivColorWithDivMarker(color, divCopied, storageItem01, storageItem02=null) {
+function createDivColorWithDivMarker(color, divCopied, storageItem01, storageItem02 = null) {
   const divMarker = createDivMarker(color)
   const divColor = createDivColor(color, divCopied, storageItem01, storageItem02)
   divColor.appendChild(divMarker)
@@ -398,7 +406,7 @@ function createDivGradientTextOpenFullscreen(color01, color02, type, value, posi
   return divColorText
 }
 
-function createDivColor(color, divCopied, storageItem01, storageItem02=null) {
+function createDivColor(color, divCopied, storageItem01, storageItem02 = null) {
   const hex = createDivColorText(color.formattedHex, divCopied)
   const rgb = createDivColorText(color.formattedRGB, divCopied)
   const hsl = createDivColorText(color.formattedHSL, divCopied)
