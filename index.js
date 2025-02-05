@@ -250,33 +250,39 @@ function createDivColorPicked(color, divCopied, storageItem) {
   return divColor
 }
 
-function openFullscreen(element) {
-  if (element.requestFullscreen) {
-    element.requestFullscreen()
-  } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen()
-  } else if (element.msRequestFullscreen) {
-    element.msRequestFullscreen()
-  } else if (element.mozRequestFullScreen) {
-    element.mozRequestFullScreen()
-  }
-}
+// if (document.fullscreenElement === null) {
+//   openFullscreen(divColor)
+// } else {
+//   closeFullscreen()
+// }
 
-function closeFullscreen() {
-  if (document.exitFullscreen) {
-    document.exitFullscreen()
-  } else if (document.webkitExitFullscreen) {
-    document.webkitExitFullscreen()
-  } else if (document.msExitFullscreen) {
-    document.msExitFullscreen()
-  } else if (document.mozCancelFullScreen) {
-    document.mozCancelFullScreen()
-  }
-}
+// function openFullscreen(element) {
+//   if (element.requestFullscreen) {
+//     element.requestFullscreen()
+//   } else if (element.webkitRequestFullscreen) {
+//     element.webkitRequestFullscreen()
+//   } else if (element.msRequestFullscreen) {
+//     element.msRequestFullscreen()
+//   } else if (element.mozRequestFullScreen) {
+//     element.mozRequestFullScreen()
+//   }
+// }
 
-function createDivColorWithDivMarker(color, divCopied, storageItem, addFullscreen=true, storageItem02=null) {
+// function closeFullscreen() {
+//   if (document.exitFullscreen) {
+//     document.exitFullscreen()
+//   } else if (document.webkitExitFullscreen) {
+//     document.webkitExitFullscreen()
+//   } else if (document.msExitFullscreen) {
+//     document.msExitFullscreen()
+//   } else if (document.mozCancelFullScreen) {
+//     document.mozCancelFullScreen()
+//   }
+// }
+
+function createDivColorWithDivMarker(color, divCopied, storageItem01, storageItem02=null) {
   const divMarker = createDivMarker(color)
-  const divColor = createDivColor(color, divCopied, storageItem, addFullscreen, storageItem02)
+  const divColor = createDivColor(color, divCopied, storageItem01, storageItem02)
   divColor.appendChild(divMarker)
   divColor.addEventListener('mouseenter', () => {
     divMarker.style.display = 'none'
@@ -286,45 +292,6 @@ function createDivColorWithDivMarker(color, divCopied, storageItem, addFullscree
   })
 
   return divColor
-}
-
-function createDivGradient(color01, color02, divColor01, divColor02, storageItem01, storageItem02, type, value, position) {
-  const divGradient = createDiv()
-  divGradient.className = 'color'
-  divGradient.style.backgroundColor = color01.formattedHSL
-  divGradient.style.color = color01.formattedText
-  divGradient.style.background = color01.formattedHex
-  divGradient.style.background = `${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
-  divGradient.style.background = `-moz-${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
-  divGradient.style.background = `-webkit-${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
-
-  const show = createDivGradientShow(divColor01, divColor02, divGradient)
-  const fullscreen = createDivColorFullscreen(divGradient)
-  const load = createDivGradientLoad(color01, color02, storageItem01, storageItem02)
-
-  divGradient.appendChild(show)
-  divGradient.appendChild(fullscreen)
-  divGradient.appendChild(load)
-  divGradient.addEventListener('mouseenter', () => {
-    show.style.display = 'block'
-    fullscreen.style.display = 'block'
-    load.style.display = 'block'
-    divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
-  })
-  divGradient.addEventListener('mouseleave', () => {
-    show.style.display = 'none'
-    fullscreen.style.display = 'none'
-    load.style.display = 'none'
-    divGradient.style.boxShadow = 'none'
-  })
-  divGradient.addEventListener('click', () => {
-    show.style.display = 'block'
-    fullscreen.style.display = 'block'
-    load.style.display = 'block'
-    divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
-  })
-
-  return divGradient
 }
 
 function createDivMarker(color) {
@@ -357,25 +324,46 @@ function createDivColorText(innerText, divCopied) {
   return divColorText
 }
 
-function createDivColorFullscreen(divColor) {
-  const divColorExpand = createDiv()
-  divColorExpand.className = 'color-text'
-  divColorExpand.innerText = 'fullscreen'
-  divColorExpand.addEventListener('click', () => {
-    if (document.fullscreenElement === null) {
-      openFullscreen(divColor)
-    } else {
-      closeFullscreen()
-    }
+function createDivColorTextLoadColor(color, storageItem) {
+  const divColorLoad = createDiv()
+  divColorLoad.className = 'color-text'
+  divColorLoad.innerText = 'load color'
+  divColorLoad.addEventListener('click', () => {
+    localStorage.setItem(storageItem, color.formattedHex)
+    toolPicked()
   })
 
-  return divColorExpand
+  return divColorLoad
 }
 
-function createDivGradientShow(divColor01, divColor02, divGradient) {
+function createDivColorTextOpenFullscreen(color, divCopied) {
+  const divColorText = createDiv()
+  divColorText.className = 'color-text'
+  divColorText.innerText = 'fullscreen'
+  divColorText.addEventListener('click', () => {
+    document.body.appendChild(createDivColorFullscreen(color, divCopied))
+    document.body.style.overflow = 'hidden'
+  })
+
+  return divColorText
+}
+
+function createDivColorTextCloseFullscreen(divColor) {
+  const divColorText = createDiv()
+  divColorText.className = 'color-text'
+  divColorText.innerText = 'exit'
+  divColorText.addEventListener('click', () => {
+    document.body.removeChild(divColor)
+    document.body.style.overflow = 'auto'
+  })
+
+  return divColorText
+}
+
+function createDivGradientTextShowColors(divColor01, divColor02, divGradient) {
   const divGradientShow = createDiv()
   divGradientShow.className = 'color-text'
-  divGradientShow.innerText = 'show'
+  divGradientShow.innerText = 'show colors'
   divGradientShow.addEventListener('click', () => {
     divColor01.style.display = 'flex'
     divGradient.style.display = 'none'
@@ -385,10 +373,10 @@ function createDivGradientShow(divColor01, divColor02, divGradient) {
   return divGradientShow
 }
 
-function createDivGradientLoad(color01, color02, storageItem01, storageItem02) {
+function createDivGradientTextLoadGradient(color01, color02, storageItem01, storageItem02) {
   const divGradientLoad = createDiv()
   divGradientLoad.className = 'color-text'
-  divGradientLoad.innerText = 'load'
+  divGradientLoad.innerText = 'load gradient'
   divGradientLoad.addEventListener('click', () => {
     localStorage.setItem(storageItem01, color01.formattedHex)
     localStorage.setItem(storageItem02, color02.formattedHex)
@@ -398,50 +386,50 @@ function createDivGradientLoad(color01, color02, storageItem01, storageItem02) {
   return divGradientLoad
 }
 
-function createDivColorLoad(color, storageItem) {
-  const divColorLoad = createDiv()
-  divColorLoad.className = 'color-text'
-  divColorLoad.innerText = 'load'
-  divColorLoad.addEventListener('click', () => {
-    localStorage.setItem(storageItem, color.formattedHex)
-    toolPicked()
+function createDivGradientTextOpenFullscreen(color01, color02, type, value, position, divCopied) {
+  const divColorText = createDiv()
+  divColorText.className = 'color-text'
+  divColorText.innerText = 'fullscreen'
+  divColorText.addEventListener('click', () => {
+    document.body.appendChild(createDivGradientFullscreen(color01, color02, type, value, position, divCopied))
+    document.body.style.overflow = 'hidden'
   })
 
-  return divColorLoad
+  return divColorText
 }
 
-function createDivColor(color, divCopied, storageItem, addFullscreen=true, storageItem02=null) {
+function createDivColor(color, divCopied, storageItem01, storageItem02=null) {
   const hex = createDivColorText(color.formattedHex, divCopied)
   const rgb = createDivColorText(color.formattedRGB, divCopied)
   const hsl = createDivColorText(color.formattedHSL, divCopied)
   const grayscale = createDivColorText(`grayscale: ${color.grayscale}`, divCopied)
-  const load = createDivColorLoad(color, storageItem)
-  const load02 = createDivColorLoad(color, storageItem02)
+  const openFullscreen = createDivColorTextOpenFullscreen(color, divCopied)
+  const loadColor01 = createDivColorTextLoadColor(color, storageItem01)
+  const loadColor02 = createDivColorTextLoadColor(color, storageItem02)
 
   const divColor = createDiv()
   divColor.className = 'color'
   divColor.style.backgroundColor = color.formattedHSL
   divColor.style.color = color.formattedText
-  const fullscreen = createDivColorFullscreen(divColor)
   divColor.appendChild(hex)
   divColor.appendChild(rgb)
   divColor.appendChild(hsl)
   divColor.appendChild(grayscale)
-  if (addFullscreen) {
-    divColor.appendChild(fullscreen)
-  }
-  divColor.appendChild(load)
+  divColor.appendChild(openFullscreen)
+  divColor.appendChild(loadColor01)
   if (storageItem02 !== null) {
-    divColor.appendChild(load02)
+    loadColor01.innerText = `${loadColor01.innerText} as one`
+    loadColor02.innerText = `${loadColor02.innerText} as two`
+    divColor.appendChild(loadColor02)
   }
   divColor.addEventListener('mouseenter', () => {
     hex.style.display = 'block'
     rgb.style.display = 'block'
     hsl.style.display = 'block'
     grayscale.style.display = 'block'
-    fullscreen.style.display = 'block'
-    load.style.display = 'block'
-    load02.style.display = 'block'
+    openFullscreen.style.display = 'block'
+    loadColor01.style.display = 'block'
+    loadColor02.style.display = 'block'
     divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
   })
   divColor.addEventListener('mouseleave', () => {
@@ -449,9 +437,9 @@ function createDivColor(color, divCopied, storageItem, addFullscreen=true, stora
     rgb.style.display = 'none'
     hsl.style.display = 'none'
     grayscale.style.display = 'none'
-    fullscreen.style.display = 'none'
-    load.style.display = 'none'
-    load02.style.display = 'none'
+    openFullscreen.style.display = 'none'
+    loadColor01.style.display = 'none'
+    loadColor02.style.display = 'none'
     divColor.style.boxShadow = 'none'
   })
   divColor.addEventListener('click', () => {
@@ -459,13 +447,127 @@ function createDivColor(color, divCopied, storageItem, addFullscreen=true, stora
     rgb.style.display = 'block'
     hsl.style.display = 'block'
     grayscale.style.display = 'block'
-    fullscreen.style.display = 'block'
-    load.style.display = 'block'
-    load02.style.display = 'block'
+    openFullscreen.style.display = 'block'
+    loadColor01.style.display = 'block'
+    loadColor02.style.display = 'block'
     divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
   })
 
   return divColor
+}
+
+function createDivColorFullscreen(color, divCopied) {
+  const hex = createDivColorText(color.formattedHex, divCopied)
+  const rgb = createDivColorText(color.formattedRGB, divCopied)
+  const hsl = createDivColorText(color.formattedHSL, divCopied)
+  const grayscale = createDivColorText(`grayscale: ${color.grayscale}`, divCopied)
+
+  const divColor = createDiv()
+  divColor.className = 'color-fullscreen'
+  divColor.style.backgroundColor = color.formattedHSL
+  divColor.style.color = color.formattedText
+
+  const closeFullscreen = createDivColorTextCloseFullscreen(divColor)
+
+  divColor.appendChild(hex)
+  divColor.appendChild(rgb)
+  divColor.appendChild(hsl)
+  divColor.appendChild(grayscale)
+  divColor.appendChild(closeFullscreen)
+  divColor.addEventListener('mouseenter', () => {
+    hex.style.display = 'block'
+    rgb.style.display = 'block'
+    hsl.style.display = 'block'
+    grayscale.style.display = 'block'
+    closeFullscreen.style.display = 'block'
+    divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
+  })
+  divColor.addEventListener('mouseleave', () => {
+    hex.style.display = 'none'
+    rgb.style.display = 'none'
+    hsl.style.display = 'none'
+    grayscale.style.display = 'none'
+    closeFullscreen.style.display = 'none'
+    divColor.style.boxShadow = 'none'
+  })
+  divColor.addEventListener('click', () => {
+    hex.style.display = 'block'
+    rgb.style.display = 'block'
+    hsl.style.display = 'block'
+    grayscale.style.display = 'block'
+    closeFullscreen.style.display = 'block'
+    divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
+  })
+
+  return divColor
+}
+
+function createDivGradient(color01, color02, divColor01, divColor02, storageItem01, storageItem02, type, value, position, divCopied) {
+  const divGradient = createDiv()
+  divGradient.className = 'color'
+  divGradient.style.backgroundColor = color01.formattedHSL
+  divGradient.style.color = color01.formattedText
+  divGradient.style.background = color01.formattedHex
+  divGradient.style.background = `${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
+  divGradient.style.background = `-moz-${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
+  divGradient.style.background = `-webkit-${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
+
+  const show = createDivGradientTextShowColors(divColor01, divColor02, divGradient)
+  const openFullscreen = createDivGradientTextOpenFullscreen(color01, color02, type, value, position, divCopied)
+  const load = createDivGradientTextLoadGradient(color01, color02, storageItem01, storageItem02)
+
+  divGradient.appendChild(show)
+  divGradient.appendChild(openFullscreen)
+  divGradient.appendChild(load)
+  divGradient.addEventListener('mouseenter', () => {
+    show.style.display = 'block'
+    openFullscreen.style.display = 'block'
+    load.style.display = 'block'
+    divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
+  })
+  divGradient.addEventListener('mouseleave', () => {
+    show.style.display = 'none'
+    openFullscreen.style.display = 'none'
+    load.style.display = 'none'
+    divGradient.style.boxShadow = 'none'
+  })
+  divGradient.addEventListener('click', () => {
+    show.style.display = 'block'
+    openFullscreen.style.display = 'block'
+    load.style.display = 'block'
+    divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
+  })
+
+  return divGradient
+}
+
+function createDivGradientFullscreen(color01, color02, type, value, position, divCopied) {
+  const divGradient = createDiv()
+  divGradient.className = 'color-fullscreen'
+  divGradient.style.backgroundColor = color01.formattedHSL
+  divGradient.style.color = color01.formattedText
+  divGradient.style.background = color01.formattedHex
+  divGradient.style.background = `${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
+  divGradient.style.background = `-moz-${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
+  divGradient.style.background = `-webkit-${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
+
+  const closeFullscreen = createDivColorTextCloseFullscreen(divGradient)
+
+  divGradient.appendChild(closeFullscreen)
+  divGradient.addEventListener('mouseenter', () => {
+    closeFullscreen.style.display = 'block'
+    divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
+  })
+  divGradient.addEventListener('mouseleave', () => {
+    closeFullscreen.style.display = 'none'
+    divGradient.style.boxShadow = 'none'
+  })
+  divGradient.addEventListener('click', () => {
+    closeFullscreen.style.display = 'block'
+    divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
+  })
+
+  return divGradient
 }
 
 function createDivInputColumn() {
@@ -966,9 +1068,9 @@ function buildColorRow(row, colors, colorPicked, divCopied, storageItem) {
 }
 
 function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position) {
-  const divColor01 = Colors.equal(colors[0], colorPicked01) ? createDivColorWithDivMarker(colors[0], divCopied, storageItem01, false, storageItem02) : createDivColor(colors[0], divCopied, storageItem01, false, storageItem02)
-  const divColor02 = Colors.equal(colors[1], colorPicked02) ? createDivColorWithDivMarker(colors[1], divCopied, storageItem01, false, storageItem02) : createDivColor(colors[1], divCopied, storageItem01, false, storageItem02)
-  const divGradient = createDivGradient(colors[0], colors[1], divColor01, divColor02, storageItem01, storageItem02, type, value, position)
+  const divColor01 = Colors.equal(colors[0], colorPicked01) ? createDivColorWithDivMarker(colors[0], divCopied, storageItem01, storageItem02) : createDivColor(colors[0], divCopied, storageItem01, storageItem02)
+  const divColor02 = Colors.equal(colors[1], colorPicked02) ? createDivColorWithDivMarker(colors[1], divCopied, storageItem01, storageItem02) : createDivColor(colors[1], divCopied, storageItem01, storageItem02)
+  const divGradient = createDivGradient(colors[0], colors[1], divColor01, divColor02, storageItem01, storageItem02, type, value, position, divCopied)
 
   divColor01.style.display = 'none'
   divGradient.style.display = 'flex'
