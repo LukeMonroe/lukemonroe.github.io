@@ -160,16 +160,15 @@ function createGradientPicker() {
 
   const divCopied = createDivCopied()
 
+  const colorRow = createDivInnerRow()
+  colorRow.appendChild(createGradientRowPicked(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%', '300px'))
+
   const boxColumn01 = createBoxColumn(colorPicked01, storageItem01)
   const boxColumn02 = createBoxColumn(colorPicked02, storageItem02)
 
-  const colorRow01 = createDivInnerRow()
-  colorRow01.appendChild(createDivColorPicked(colorPicked01, divCopied, storageItem01))
-  colorRow01.appendChild(boxColumn01)
-
-  const colorRow02 = createDivInnerRow()
-  colorRow02.appendChild(createDivColorPicked(colorPicked02, divCopied, storageItem02))
-  colorRow02.appendChild(boxColumn02)
+  const boxRow = createDivInnerRow()
+  boxRow.appendChild(boxColumn01)
+  boxRow.appendChild(boxColumn02)
 
   const gradientsColumn = createDivInnerColumn()
   gradientsColumn.appendChild(createH2('Gradients'))
@@ -212,8 +211,8 @@ function createGradientPicker() {
 
   const outerColumn = document.getElementById('outer-column')
   outerColumn.replaceChildren()
-  outerColumn.appendChild(colorRow01)
-  outerColumn.appendChild(colorRow02)
+  outerColumn.appendChild(colorRow)
+  outerColumn.appendChild(boxRow)
   outerColumn.appendChild(gradientsColumn)
   outerColumn.appendChild(historyColumn)
   outerColumn.appendChild(examplesColumn)
@@ -256,6 +255,13 @@ function createDivColorPicked(color, divCopied, storageItem) {
   divColor.style.maxWidth = '600px'
 
   return divColor
+}
+
+function createGradientRowPicked(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height=null) {
+  const colorRow = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height)
+  colorRow.style.maxWidth = '600px'
+
+  return colorRow
 }
 
 // if (document.fullscreenElement === null) {
@@ -1002,8 +1008,8 @@ function paletteARow(colorPicked, divCopied, storageItem) {
   return buildColorRow(createDivColorRowSmall(), Colors.paletteA(colorPicked), colorPicked, divCopied, storageItem)
 }
 
-function gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position) {
-  return buildColorGradientRow(createDivColorRowSmall(), Colors.gradient(color01, color02), colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position)
+function gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height=null) {
+  return buildColorGradientRow(createDivColorRowSmall(), Colors.gradient(color01, color02), colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height)
 }
 
 function historyColorRow(colorPicked, divCopied, storageItem) {
@@ -1075,10 +1081,16 @@ function buildColorRow(row, colors, colorPicked, divCopied, storageItem) {
   return row
 }
 
-function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position) {
+function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height=null) {
   const divColor01 = Colors.equal(colors[0], colorPicked01) ? createDivColorWithDivMarker(colors[0], divCopied, storageItem01, storageItem02) : createDivColor(colors[0], divCopied, storageItem01, storageItem02)
   const divColor02 = Colors.equal(colors[1], colorPicked02) ? createDivColorWithDivMarker(colors[1], divCopied, storageItem01, storageItem02) : createDivColor(colors[1], divCopied, storageItem01, storageItem02)
   const divGradient = createDivGradient(colors[0], colors[1], divColor01, divColor02, storageItem01, storageItem02, type, value, position, divCopied)
+
+  if (height !== null) {
+    divColor01.style.height = height
+    divGradient.style.height = height
+    divColor02.style.height = height
+  }
 
   divColor01.style.display = 'none'
   divGradient.style.display = 'flex'
