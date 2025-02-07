@@ -16,7 +16,7 @@ document.addEventListener('click', event => {
 })
 document.body.appendChild(sideNavigation)
 
-const tool = localStorage.getItem('tool')
+let tool = localStorage.getItem('tool')
 let toolPicked = tool === null ? createColorPicker : tool === 'colorPicker' ? createColorPicker : createGradientPicker
 toolPicked()
 
@@ -63,8 +63,9 @@ function createButtonTheme() {
 }
 
 function createColorPicker() {
-  toolPicked = createColorPicker
   localStorage.setItem('tool', 'colorPicker')
+  tool = localStorage.getItem('tool')
+  toolPicked = createColorPicker
 
   const storageItem = 'hexColorPicker'
   const hex = localStorage.getItem(storageItem)
@@ -140,12 +141,15 @@ function createColorPicker() {
   outerColumn.appendChild(historyColumn)
   outerColumn.appendChild(divCopied)
 
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+  setTimeout(function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, 10)
 }
 
 function createGradientPicker() {
-  toolPicked = createGradientPicker
   localStorage.setItem('tool', 'gradientPicker')
+  tool = localStorage.getItem('tool')
+  toolPicked = createGradientPicker
 
   const storageItem01 = 'hexGradientPicker01'
   const hex01 = localStorage.getItem(storageItem01)
@@ -182,15 +186,14 @@ function createGradientPicker() {
 
   const examplesColumn = createDivInnerColumn()
   examplesColumn.appendChild(createH2('Examples'))
-  for (let index = 0; index < 20; index++) {
+  for (let index = 0; index < 10; index++) {
     const color01 = Colors.random()
     const color02 = Colors.random()
     const row = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%')
     // row.appendChild(createButtonGradient(color01, color02, storageItem01, storageItem02))
     examplesColumn.appendChild(row)
   }
-  examplesColumn.appendChild(createButtonExamples(examplesColumn, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%'))
-
+  // examplesColumn.appendChild(createButtonExamples(examplesColumn, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%'))
   const header = document.getElementById('header')
   header.replaceChildren()
   header.appendChild(createButtonNavigation(sideNavigation))
@@ -205,7 +208,27 @@ function createGradientPicker() {
   outerColumn.appendChild(examplesColumn)
   outerColumn.appendChild(divCopied)
 
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+  let timeout = false
+  window.addEventListener('scroll', () => {
+    if (tool === 'gradientPicker' && examplesColumn.children.length <= 991 && ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100)) {
+      timeout = true
+      setTimeout(function () {
+        if (timeout === true) {
+          for (let index = 0; index < 10; index++) {
+            const color01 = Colors.random()
+            const color02 = Colors.random()
+            const row = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%')
+            // row.appendChild(createButtonGradient(color01, color02, storageItem01, storageItem02))
+            examplesColumn.appendChild(row)
+          }
+          timeout = false
+        }
+      }, 1000)
+    }
+  })
+  setTimeout(function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, 10)
 }
 
 function createDivInnerColumn() {
