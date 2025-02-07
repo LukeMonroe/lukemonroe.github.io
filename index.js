@@ -161,7 +161,7 @@ function createGradientPicker() {
   const divCopied = createDivCopied()
 
   const colorRow = createDivInnerRow()
-  colorRow.appendChild(createGradientRowPicked(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%', '300px'))
+  const gradientSliders = createDoubleInputRangeSlidersGradient(0, 360, 1, 'Degrees', 0, 0, 100, 1, 'Percent', 0, colorRow, createGradientRowPicked, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, '300px')
 
   const boxColumn01 = createBoxColumn(colorPicked01, storageItem01)
   const boxColumn02 = createBoxColumn(colorPicked02, storageItem02)
@@ -170,24 +170,10 @@ function createGradientPicker() {
   boxRow.appendChild(boxColumn01)
   boxRow.appendChild(boxColumn02)
 
-  const gradientsColumn = createDivInnerColumn()
-  gradientsColumn.appendChild(createH2('Gradients'))
-  gradientsColumn.appendChild(createH3('Left To Right'))
-  gradientsColumn.appendChild(gradientRow(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%'))
-  gradientsColumn.appendChild(createH3('Right To Left'))
-  gradientsColumn.appendChild(gradientRow(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '180deg', '0%'))
-  gradientsColumn.appendChild(createH3('Bottom Left To Top Right'))
-  gradientsColumn.appendChild(gradientRow(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '45deg', '0%'))
-  gradientsColumn.appendChild(createH3('Bottom Right To Top Left'))
-  gradientsColumn.appendChild(gradientRow(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '135deg', '0%'))
-  gradientsColumn.appendChild(createH3('Bottom To Top'))
-  gradientsColumn.appendChild(gradientRow(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '90deg', '0%'))
-  gradientsColumn.appendChild(createH3('Top To Bottom'))
-  gradientsColumn.appendChild(gradientRow(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '270deg', '0%'))
-  gradientsColumn.appendChild(createH3('Inside To Outside'))
-  gradientsColumn.appendChild(gradientRow(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'radial', 'circle', '0%'))
-  gradientsColumn.appendChild(createH3('Outside To Inside'))
-  gradientsColumn.appendChild(gradientRow(colorPicked02, colorPicked01, colorPicked01, colorPicked01, divCopied, storageItem01, storageItem02, 'radial', 'circle', '0%'))
+  const slidersColumn = createDivInnerColumn()
+  gradientSliders.forEach(gradientSlider => {
+    slidersColumn.appendChild(gradientSlider)
+  })
 
   const historyColumn = createDivInnerColumn()
   historyColumn.appendChild(createH2('History'))
@@ -212,8 +198,8 @@ function createGradientPicker() {
   const outerColumn = document.getElementById('outer-column')
   outerColumn.replaceChildren()
   outerColumn.appendChild(colorRow)
+  outerColumn.appendChild(slidersColumn)
   outerColumn.appendChild(boxRow)
-  outerColumn.appendChild(gradientsColumn)
   outerColumn.appendChild(historyColumn)
   outerColumn.appendChild(examplesColumn)
   outerColumn.appendChild(divCopied)
@@ -257,7 +243,7 @@ function createDivColorPicked(color, divCopied, storageItem) {
   return divColor
 }
 
-function createGradientRowPicked(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height=null) {
+function createGradientRowPicked(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height = null) {
   const colorRow = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height)
   colorRow.style.maxWidth = '600px'
 
@@ -676,18 +662,102 @@ function createDoubleInputRangeSliders(min01, max01, step01, text01, value01, mi
   return [divSlider01, divSlider02]
 }
 
-function createButtonGradient(color01, color02, storageItem01, storageItem02) {
-  const buttonGradient = document.createElement('button')
-  buttonGradient.className = 'load'
-  buttonGradient.innerText = 'Load'
-  buttonGradient.addEventListener('click', () => {
-    localStorage.setItem(storageItem01, color01.formattedHex)
-    localStorage.setItem(storageItem02, color02.formattedHex)
-    toolPicked()
+function createDoubleInputRangeSlidersGradient(min01, max01, step01, text01, value01, min02, max02, step02, text02, value02, row, updateFunction, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, height) {
+  const h4Slider01 = createH4(`${text01}: ${value01}`)
+  const h4Slider02 = createH4(`${text02}: ${value02}`)
+  const h4Slider03 = createH4('Type: linear')
+
+  const inputRangeSlider01 = document.createElement('input')
+  inputRangeSlider01.className = 'slider'
+  inputRangeSlider01.type = 'range'
+  inputRangeSlider01.min = min01
+  inputRangeSlider01.max = max01
+  inputRangeSlider01.step = step01
+  inputRangeSlider01.value = value01
+
+  const inputRangeSlider02 = document.createElement('input')
+  inputRangeSlider02.className = 'slider'
+  inputRangeSlider02.type = 'range'
+  inputRangeSlider02.min = min02
+  inputRangeSlider02.max = max02
+  inputRangeSlider02.step = step02
+  inputRangeSlider02.value = value02
+
+  const inputRangeSlider03 = document.createElement('input')
+  inputRangeSlider03.className = 'slider'
+  inputRangeSlider03.type = 'range'
+  inputRangeSlider03.min = 0
+  inputRangeSlider03.max = 1
+  inputRangeSlider03.step = 1
+  inputRangeSlider03.value = 0
+
+  inputRangeSlider01.addEventListener('input', () => {
+    h4Slider01.innerText = `${text01}: ${inputRangeSlider01.value}`
+    row.replaceChildren()
+    if (inputRangeSlider03.value === '0') {
+      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', `${inputRangeSlider01.value}deg`, `${inputRangeSlider02.value}%`, height))
+    } else {
+      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'radial', 'circle', `${inputRangeSlider02.value}%`, height))
+    }
   })
 
-  return buttonGradient
+  inputRangeSlider02.addEventListener('input', () => {
+    h4Slider02.innerText = `${text02}: ${inputRangeSlider02.value}`
+    row.replaceChildren()
+    if (inputRangeSlider03.value === '0') {
+      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', `${inputRangeSlider01.value}deg`, `${inputRangeSlider02.value}%`, height))
+    } else {
+      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'radial', 'circle', `${inputRangeSlider02.value}%`, height))
+    }
+  })
+
+  inputRangeSlider03.addEventListener('input', () => {
+    h4Slider03.innerText = `Type: ${inputRangeSlider03.value === '0' ? 'linear' : 'radial'}`
+    row.replaceChildren()
+    if (inputRangeSlider03.value === '0') {
+      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', `${inputRangeSlider01.value}deg`, `${inputRangeSlider02.value}%`, height))
+    } else {
+      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'radial', 'circle', `${inputRangeSlider02.value}%`, height))
+    }
+  })
+
+  const divSlider01 = createDiv()
+  divSlider01.className = 'slider'
+  divSlider01.appendChild(h4Slider01)
+  divSlider01.appendChild(inputRangeSlider01)
+
+  const divSlider02 = createDiv()
+  divSlider02.className = 'slider'
+  divSlider02.appendChild(h4Slider02)
+  divSlider02.appendChild(inputRangeSlider02)
+
+  const divSlider03 = createDiv()
+  divSlider03.className = 'slider'
+  divSlider03.appendChild(h4Slider03)
+  divSlider03.appendChild(inputRangeSlider03)
+
+  row.replaceChildren()
+  if (inputRangeSlider03.value === '0') {
+    row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', `${inputRangeSlider01.value}deg`, `${inputRangeSlider02.value}%`, height))
+  } else {
+    row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'radial', 'circle', `${inputRangeSlider02.value}%`, height))
+  }
+
+  return [divSlider01, divSlider02, divSlider03]
 }
+
+// function createButtonGradient(color01, color02, storageItem01, storageItem02) {
+//   const buttonGradient = document.createElement('button')
+//   buttonGradient.className = 'load'
+//   buttonGradient.innerText = 'Load'
+//   buttonGradient.addEventListener('click', () => {
+//     localStorage.setItem(storageItem01, color01.formattedHex)
+//     localStorage.setItem(storageItem02, color02.formattedHex)
+//     toolPicked()
+//   })
+
+//   return buttonGradient
+// }
 
 function createButtonExamples(col, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position) {
   const buttonExamples = document.createElement('button')
@@ -1008,7 +1078,7 @@ function paletteARow(colorPicked, divCopied, storageItem) {
   return buildColorRow(createDivColorRowSmall(), Colors.paletteA(colorPicked), colorPicked, divCopied, storageItem)
 }
 
-function gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height=null) {
+function gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height = null) {
   return buildColorGradientRow(createDivColorRowSmall(), Colors.gradient(color01, color02), colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height)
 }
 
@@ -1081,7 +1151,7 @@ function buildColorRow(row, colors, colorPicked, divCopied, storageItem) {
   return row
 }
 
-function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height=null) {
+function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height = null) {
   const divColor01 = Colors.equal(colors[0], colorPicked01) ? createDivColorWithDivMarker(colors[0], divCopied, storageItem01, storageItem02) : createDivColor(colors[0], divCopied, storageItem01, storageItem02)
   const divColor02 = Colors.equal(colors[1], colorPicked02) ? createDivColorWithDivMarker(colors[1], divCopied, storageItem01, storageItem02) : createDivColor(colors[1], divCopied, storageItem01, storageItem02)
   const divGradient = createDivGradient(colors[0], colors[1], divColor01, divColor02, storageItem01, storageItem02, type, value, position, divCopied)
