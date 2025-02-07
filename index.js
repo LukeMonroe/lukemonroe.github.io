@@ -174,6 +174,7 @@ function createGradientPicker() {
   gradientSliders.forEach(gradientSlider => {
     slidersColumn.appendChild(gradientSlider)
   })
+  slidersColumn.appendChild(createButtonSwitchColors(colorPicked01, colorPicked02, storageItem01, storageItem02))
 
   const historyColumn = createDivInnerColumn()
   historyColumn.appendChild(createH2('History'))
@@ -316,9 +317,19 @@ function createDivColorText(innerText, divCopied) {
   divColorText.className = 'color-text'
   divColorText.innerText = innerText
   divColorText.addEventListener('click', () => {
-    navigator.clipboard.writeText(divColorText.innerText)
-    divCopied.style.opacity = '1'
-    setTimeout(function () { divCopied.style.opacity = '0' }, 3000)
+    if (divCopied.style.display === '') {
+      navigator.clipboard.writeText(divColorText.innerText)
+      divCopied.style.display = 'flex'
+      setTimeout(function () {
+        divCopied.style.opacity = '1'
+      }, 10)
+      setTimeout(function () {
+        divCopied.style.opacity = '0'
+      }, 3000)
+      setTimeout(function () {
+        divCopied.style.display = ''
+      }, 3800)
+    }
   })
 
   return divColorText
@@ -744,6 +755,19 @@ function createDoubleInputRangeSlidersGradient(min01, max01, step01, text01, val
   }
 
   return [divSlider01, divSlider02, divSlider03]
+}
+
+function createButtonSwitchColors(color01, color02, storageItem01, storageItem02) {
+  const buttonSwitchColors = document.createElement('button')
+  buttonSwitchColors.className = 'theme'
+  buttonSwitchColors.innerText = 'Switch Colors'
+  buttonSwitchColors.addEventListener('click', () => {
+    localStorage.setItem(storageItem01, color02.formattedHex)
+    localStorage.setItem(storageItem02, color01.formattedHex)
+    toolPicked()
+  })
+
+  return buttonSwitchColors
 }
 
 // function createButtonGradient(color01, color02, storageItem01, storageItem02) {

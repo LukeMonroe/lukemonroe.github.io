@@ -223,7 +223,7 @@ input[type=range].slider::-moz-range-thumb {
 }
 
 div.copied {
-    display: flex;
+    display: none;
     position: fixed;
     flex-direction: column;
     justify-content: center;
