@@ -17,7 +17,7 @@ document.addEventListener('click', event => {
 document.body.appendChild(sideNavigation)
 
 let tool = localStorage.getItem('tool')
-let toolPicked = tool === null ? createColorPicker : tool === 'colorPicker' ? createColorPicker : createGradientPicker
+let toolPicked = tool === null ? createColorPicker : tool === 'colorPicker' ? createColorPicker : tool === 'gradientPicker' ? createGradientPicker : createLikedColors
 toolPicked()
 
 function createSideNavigation() {
@@ -33,8 +33,14 @@ function createSideNavigation() {
     sideNavigation.style.width = '0px'
     createGradientPicker()
   })
+  const aLikedColors = createA('javascript:void(0);', 'Favorites')
+  aLikedColors.addEventListener('click', () => {
+    sideNavigation.style.width = '0px'
+    createLikedColors()
+  })
   sideNavigation.appendChild(aColors)
   sideNavigation.appendChild(aGradients)
+  sideNavigation.appendChild(aLikedColors)
   sideNavigation.appendChild(createButtonTheme())
 
   return sideNavigation
@@ -231,6 +237,40 @@ function createGradientPicker() {
   }, 10)
 }
 
+function createLikedColors() {
+  localStorage.setItem('tool', 'likedColors')
+  tool = localStorage.getItem('tool')
+  toolPicked = createLikedColors
+
+  const storageItem = 'likedColor'
+  const divCopied = createDivCopied()
+  const colorGrid = loadDivColorGrid(divCopied, storageItem)
+  const gradientGrid = loadDivGradientGrid(divCopied, 'likedGradient')
+
+  const likedColorsColumn = createDivInnerColumn()
+  likedColorsColumn.appendChild(createH2('Colors'))
+  likedColorsColumn.appendChild(colorGrid)
+
+  const likedGradientsColumn = createDivInnerColumn()
+  likedGradientsColumn.appendChild(createH2('Gradients'))
+  likedGradientsColumn.appendChild(gradientGrid)
+
+  const header = document.getElementById('header')
+  header.replaceChildren()
+  header.appendChild(createButtonNavigation(sideNavigation))
+  header.appendChild(createH1('Favorites'))
+
+  const outerColumn = document.getElementById('outer-column')
+  outerColumn.replaceChildren()
+  outerColumn.appendChild(likedColorsColumn)
+  outerColumn.appendChild(likedGradientsColumn)
+  outerColumn.appendChild(divCopied)
+
+  setTimeout(function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, 10)
+}
+
 function createDivInnerColumn() {
   const column = createDiv()
   column.className = 'inner-column'
@@ -257,6 +297,13 @@ function createDivColorRowSmall() {
   row.className = 'color-row-small'
 
   return row
+}
+
+function createDivColorGrid() {
+  const grid = createDiv()
+  grid.className = 'color-grid'
+
+  return grid
 }
 
 function createDivColorPicked(color, divCopied, storageItem) {
@@ -360,8 +407,8 @@ function createDivColorText(innerText, divCopied) {
 
 function createDivColorTextLoadColor(color, storageItem) {
   const divColorLoad = createDiv()
-  divColorLoad.className = 'color-text'
-  divColorLoad.innerText = 'load color'
+  divColorLoad.className = 'color-text-check'
+  divColorLoad.style.backgroundImage = color.grayscale > 150 ? 'url(images/checkmark-black.png)' : 'url(images/checkmark-white.png)'
   divColorLoad.addEventListener('click', () => {
     localStorage.setItem(storageItem, color.formattedHex)
     toolPicked()
@@ -370,10 +417,123 @@ function createDivColorTextLoadColor(color, storageItem) {
   return divColorLoad
 }
 
+function loadDivColorGrid(divCopied, storageItem) {
+  let colors = []
+  let index = 0
+  while (localStorage.getItem(`${storageItem}${index}`) !== null) {
+    colors.push(Colors.createHex(localStorage.getItem(`${storageItem}${index++}`)))
+  }
+  if (colors.length > 100) {
+    colors = colors.slice(colors.length - 100, colors.length)
+  }
+  for (let index = 0; index < colors.length; index++) {
+    localStorage.setItem(`${storageItem}${index}`, colors[index].formattedHex)
+  }
+  const colorGrid = createDivColorGrid()
+  for (let index = 0; index < colors.length; index++) {
+    const divColor = createDivColor(colors[index], divCopied, storageItem)
+    divColor.style.flex = 'none'
+    divColor.style.width = '300px'
+    colorGrid.appendChild(divColor)
+  }
+
+  return colorGrid
+}
+
+function loadDivGradientGrid(divCopied, storageItem) {
+  let gradients = []
+  let index = 0
+  while (localStorage.getItem(`${storageItem}${index}`) !== null) {
+    const gradient = localStorage.getItem(`${storageItem}${index++}`)
+    gradients.push([Colors.createHex(gradient.split(':')[0]), Colors.createHex(gradient.split(':')[1])])
+  }
+  if (gradients.length > 100) {
+    gradients = gradients.slice(gradients.length - 100, gradients.length)
+  }
+  for (let index = 0; index < gradients.length; index++) {
+    localStorage.setItem(`${storageItem}${index}`, `${gradients[index][0].formattedHex}:${gradients[index][1].formattedHex}`)
+  }
+
+  const colorGrid = createDivColorGrid()
+  for (let index = 0; index < gradients.length; index++) {
+    const divGradient = gradientRow(gradients[index][0], gradients[index][1], gradients[index][0], gradients[index][1], divCopied, storageItem, storageItem, 'linear', '0deg', '0%')
+    divGradient.style.flex = 'none'
+    divGradient.style.width = '300px'
+    colorGrid.appendChild(divGradient)
+  }
+
+  return colorGrid
+}
+
+function createDivColorTextLikeColor(colorLiked) {
+  const divLikeColor = createDiv()
+  divLikeColor.className = 'color-text-like'
+  divLikeColor.style.backgroundImage = colorLiked.grayscale > 150 ? 'url(images/heart-empty-black.png)' : 'url(images/heart-empty-white.png)'
+  divLikeColor.addEventListener('click', () => {
+    divLikeColor.style.backgroundImage = colorLiked.grayscale > 150 ? 'url(images/heart-filled-black.png)' : 'url(images/heart-filled-white.png)'
+
+    let colors = []
+    let index = 0
+    while (localStorage.getItem(`likedColor${index}`) !== null) {
+      colors.push(Colors.createHex(localStorage.getItem(`likedColor${index++}`)))
+    }
+    let colorFound = false
+    colors.forEach(color => {
+      if (Colors.equal(color, colorLiked)) {
+        colorFound = true
+      }
+    })
+    if (!colorFound) {
+      colors.push(colorLiked)
+    }
+    if (colors.length > 100) {
+      colors = colors.slice(colors.length - 100, colors.length)
+    }
+    for (let index = 0; index < colors.length; index++) {
+      localStorage.setItem(`likedColor${index}`, colors[index].formattedHex)
+    }
+  })
+
+  return divLikeColor
+}
+
+function createDivColorTextLikeGradient(colorLiked01, colorLiked02) {
+  const divLikeGradient = createDiv()
+  divLikeGradient.className = 'color-text-like'
+  divLikeGradient.style.backgroundImage = colorLiked01.grayscale > 150 ? 'url(images/heart-empty-black.png)' : 'url(images/heart-empty-white.png)'
+  divLikeGradient.addEventListener('click', () => {
+    divLikeGradient.style.backgroundImage = colorLiked01.grayscale > 150 ? 'url(images/heart-filled-black.png)' : 'url(images/heart-filled-white.png)'
+
+    let gradients = []
+    let index = 0
+    while (localStorage.getItem(`likedGradient${index}`) !== null) {
+      const gradient = localStorage.getItem(`likedGradient${index++}`)
+      gradients.push([Colors.createHex(gradient.split(':')[0]), Colors.createHex(gradient.split(':')[1])])
+    }
+    let gradientFound = false
+    gradients.forEach(gradient => {
+      if (Colors.equal(gradient[0], colorLiked01) && Colors.equal(gradient[1], colorLiked02)) {
+        gradientFound = true
+      }
+    })
+    if (!gradientFound) {
+      gradients.push([colorLiked01, colorLiked02])
+    }
+    if (gradients.length > 100) {
+      gradients = gradients.slice(gradients.length - 100, gradients.length)
+    }
+    for (let index = 0; index < gradients.length; index++) {
+      localStorage.setItem(`likedGradient${index}`, `${gradients[index][0].formattedHex}:${gradients[index][1].formattedHex}`)
+    }
+  })
+
+  return divLikeGradient
+}
+
 function createDivColorTextOpenFullscreen(color, divCopied) {
   const divColorText = createDiv()
-  divColorText.className = 'color-text'
-  divColorText.innerText = 'fullscreen'
+  divColorText.className = 'color-text-full'
+  divColorText.style.backgroundImage = color.grayscale > 150 ? 'url(images/fullscreen-black.png)' : 'url(images/fullscreen-white.png)'
   divColorText.addEventListener('click', () => {
     document.body.appendChild(createDivColorFullscreen(color, divCopied))
     document.body.style.overflow = 'hidden'
@@ -382,10 +542,10 @@ function createDivColorTextOpenFullscreen(color, divCopied) {
   return divColorText
 }
 
-function createDivColorTextCloseFullscreen(divColor) {
+function createDivColorTextCloseFullscreen(color, divColor) {
   const divColorText = createDiv()
-  divColorText.className = 'color-text'
-  divColorText.innerText = 'exit'
+  divColorText.className = 'color-text-full'
+  divColorText.style.backgroundImage = color.grayscale > 150 ? 'url(images/fullscreen-black.png)' : 'url(images/fullscreen-white.png)'
   divColorText.addEventListener('click', () => {
     document.body.removeChild(divColor)
     document.body.style.overflow = 'auto'
@@ -394,10 +554,10 @@ function createDivColorTextCloseFullscreen(divColor) {
   return divColorText
 }
 
-function createDivGradientTextShowColors(divColor01, divColor02, divGradient) {
+function createDivGradientTextShowColors(color01, color02, divColor01, divColor02, divGradient) {
   const divGradientShow = createDiv()
-  divGradientShow.className = 'color-text'
-  divGradientShow.innerText = 'show colors'
+  divGradientShow.className = 'color-text-corner'
+  divGradientShow.style.backgroundImage = color01.grayscale > 150 ? 'url(images/corner-triangle-black.png)' : 'url(images/corner-triangle-white.png)'
   divGradientShow.addEventListener('click', () => {
     divColor01.style.display = 'flex'
     divGradient.style.display = 'none'
@@ -409,8 +569,8 @@ function createDivGradientTextShowColors(divColor01, divColor02, divGradient) {
 
 function createDivGradientTextLoadGradient(color01, color02, storageItem01, storageItem02) {
   const divGradientLoad = createDiv()
-  divGradientLoad.className = 'color-text'
-  divGradientLoad.innerText = 'load gradient'
+  divGradientLoad.className = 'color-text-check'
+  divGradientLoad.style.backgroundImage = color02.grayscale > 150 ? 'url(images/checkmark-black.png)' : 'url(images/checkmark-white.png)'
   divGradientLoad.addEventListener('click', () => {
     localStorage.setItem(storageItem01, color01.formattedHex)
     localStorage.setItem(storageItem02, color02.formattedHex)
@@ -422,8 +582,8 @@ function createDivGradientTextLoadGradient(color01, color02, storageItem01, stor
 
 function createDivGradientTextOpenFullscreen(color01, color02, type, value, position, divCopied) {
   const divColorText = createDiv()
-  divColorText.className = 'color-text'
-  divColorText.innerText = 'fullscreen'
+  divColorText.className = 'color-text-full'
+  divColorText.style.backgroundImage = color02.grayscale > 150 ? 'url(images/fullscreen-black.png)' : 'url(images/fullscreen-white.png)'
   divColorText.addEventListener('click', () => {
     document.body.appendChild(createDivGradientFullscreen(color01, color02, type, value, position, divCopied))
     document.body.style.overflow = 'hidden'
@@ -440,6 +600,7 @@ function createDivColor(color, divCopied, storageItem01, storageItem02 = null) {
   const openFullscreen = createDivColorTextOpenFullscreen(color, divCopied)
   const loadColor01 = createDivColorTextLoadColor(color, storageItem01)
   const loadColor02 = createDivColorTextLoadColor(color, storageItem02)
+  const likeColor = createDivColorTextLikeColor(color)
 
   const divColor = createDiv()
   divColor.className = 'color'
@@ -451,9 +612,9 @@ function createDivColor(color, divCopied, storageItem01, storageItem02 = null) {
   divColor.appendChild(grayscale)
   divColor.appendChild(openFullscreen)
   divColor.appendChild(loadColor01)
+  divColor.appendChild(likeColor)
   if (storageItem02 !== null) {
-    loadColor01.innerText = `${loadColor01.innerText} as one`
-    loadColor02.innerText = `${loadColor02.innerText} as two`
+    loadColor02.style.right = '40px'
     divColor.appendChild(loadColor02)
   }
   divColor.addEventListener('mouseenter', () => {
@@ -464,6 +625,7 @@ function createDivColor(color, divCopied, storageItem01, storageItem02 = null) {
     openFullscreen.style.display = 'block'
     loadColor01.style.display = 'block'
     loadColor02.style.display = 'block'
+    likeColor.style.display = 'block'
     divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
   })
   divColor.addEventListener('mouseleave', () => {
@@ -474,6 +636,7 @@ function createDivColor(color, divCopied, storageItem01, storageItem02 = null) {
     openFullscreen.style.display = 'none'
     loadColor01.style.display = 'none'
     loadColor02.style.display = 'none'
+    likeColor.style.display = 'none'
     divColor.style.boxShadow = 'none'
   })
   divColor.addEventListener('click', () => {
@@ -484,6 +647,7 @@ function createDivColor(color, divCopied, storageItem01, storageItem02 = null) {
     openFullscreen.style.display = 'block'
     loadColor01.style.display = 'block'
     loadColor02.style.display = 'block'
+    likeColor.style.display = 'block'
     divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
   })
 
@@ -501,7 +665,7 @@ function createDivColorFullscreen(color, divCopied) {
   divColor.style.backgroundColor = color.formattedHSL
   divColor.style.color = color.formattedText
 
-  const closeFullscreen = createDivColorTextCloseFullscreen(divColor)
+  const closeFullscreen = createDivColorTextCloseFullscreen(color, divColor)
 
   divColor.appendChild(hex)
   divColor.appendChild(rgb)
@@ -546,29 +710,34 @@ function createDivGradient(color01, color02, divColor01, divColor02, storageItem
   divGradient.style.background = `-moz-${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
   divGradient.style.background = `-webkit-${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
 
-  const show = createDivGradientTextShowColors(divColor01, divColor02, divGradient)
+  const show = createDivGradientTextShowColors(color01, color02, divColor01, divColor02, divGradient)
   const openFullscreen = createDivGradientTextOpenFullscreen(color01, color02, type, value, position, divCopied)
   const load = createDivGradientTextLoadGradient(color01, color02, storageItem01, storageItem02)
+  const likeGradient = createDivColorTextLikeGradient(color01, color02)
 
   divGradient.appendChild(show)
   divGradient.appendChild(openFullscreen)
   divGradient.appendChild(load)
+  divGradient.appendChild(likeGradient)
   divGradient.addEventListener('mouseenter', () => {
     show.style.display = 'block'
     openFullscreen.style.display = 'block'
     load.style.display = 'block'
+    likeGradient.style.display = 'block'
     divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
   })
   divGradient.addEventListener('mouseleave', () => {
     show.style.display = 'none'
     openFullscreen.style.display = 'none'
     load.style.display = 'none'
+    likeGradient.style.display = 'none'
     divGradient.style.boxShadow = 'none'
   })
   divGradient.addEventListener('click', () => {
     show.style.display = 'block'
     openFullscreen.style.display = 'block'
     load.style.display = 'block'
+    likeGradient.style.display = 'block'
     divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
   })
 
@@ -585,7 +754,7 @@ function createDivGradientFullscreen(color01, color02, type, value, position, di
   divGradient.style.background = `-moz-${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
   divGradient.style.background = `-webkit-${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
 
-  const closeFullscreen = createDivColorTextCloseFullscreen(divGradient)
+  const closeFullscreen = createDivColorTextCloseFullscreen(color02, divGradient)
 
   divGradient.appendChild(closeFullscreen)
   divGradient.addEventListener('mouseenter', () => {
