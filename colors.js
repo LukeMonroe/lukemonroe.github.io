@@ -1,12 +1,10 @@
 class Colors {
-  static equal(color01, color02) {
-    return color01.formattedHex === color02.formattedHex &&
-      color01.formattedRGB === color02.formattedRGB &&
-      color01.formattedHSL === color02.formattedHSL
+  static equal(color01, color02, strict = true) {
+    return strict ? color01.formattedHex === color02.formattedHex && color01.formattedRGB === color02.formattedRGB && color01.formattedHSL === color02.formattedHSL : color01.formattedHex === color02.formattedHex
   }
 
-  static notEqual(color01, color02) {
-    return !Colors.equal(color01, color02)
+  static notEqual(color01, color02, strict = true) {
+    return !Colors.equal(color01, color02, strict)
   }
 
   static copy(color) {

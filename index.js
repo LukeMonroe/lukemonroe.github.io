@@ -243,9 +243,8 @@ function createLikedColors() {
   tool = localStorage.getItem('tool')
   toolPicked = createLikedColors
 
-  const storageItem = 'likedColor'
   const divCopied = createDivCopied()
-  const colorGrid = loadDivColorGrid(divCopied, storageItem)
+  const colorGrid = loadDivColorGrid(divCopied)
   const gradientGrid = loadDivGradientGrid(divCopied, 'likedGradient')
 
   const likedColorsColumn = createDivInnerColumn()
@@ -396,27 +395,17 @@ function createDivColorTextLoadColor(color, storageItem) {
   return divColorLoad
 }
 
-function loadDivColorGrid(divCopied, storageItem) {
-  let colors = []
-  let index = 0
-  while (localStorage.getItem(`${storageItem}${index}`) !== null) {
-    colors.push(Colors.createHex(localStorage.getItem(`${storageItem}${index++}`)))
-  }
-  if (colors.length > 100) {
-    colors = colors.slice(colors.length - 100, colors.length)
-  }
+function loadDivColorGrid(divCopied) {
+  const divColorGrid = createDivColorGrid()
+  const colors = getLikedColors()
   for (let index = 0; index < colors.length; index++) {
-    localStorage.setItem(`${storageItem}${index}`, colors[index].formattedHex)
-  }
-  const colorGrid = createDivColorGrid()
-  for (let index = 0; index < colors.length; index++) {
-    const divColor = createDivColor(colors[index], colors[index], divCopied, storageItem)
+    const divColor = createDivColor(colors[index], colors[index], divCopied)
     divColor.style.flex = 'none'
     divColor.style.width = '300px'
-    colorGrid.appendChild(divColor)
+    divColorGrid.appendChild(divColor)
   }
 
-  return colorGrid
+  return divColorGrid
 }
 
 function loadDivGradientGrid(divCopied, storageItem) {
@@ -444,33 +433,57 @@ function loadDivGradientGrid(divCopied, storageItem) {
   return colorGrid
 }
 
-function createDivColorTextLikeColor(colorLiked) {
+function getLikedColors() {
+  const colors = []
+  let index = 0
+  while (localStorage.getItem(`likedColor${index}`) !== null) {
+    colors.push(Colors.createHex(localStorage.getItem(`likedColor${index++}`)))
+  }
+
+  return colors
+}
+
+function setLikedColors(colors) {
+  for (let index = (colors.length > 100 ? colors.length - 100 : 0); index < colors.length; index++) {
+    localStorage.setItem(`likedColor${index}`, colors[index].formattedHex)
+  }
+  for (let index = colors.length; index < 100; index++) {
+    localStorage.removeItem(`likedColor${index}`)
+  }
+}
+
+function isColorLiked(color) {
+  const colors = getLikedColors()
+  for (let index = 0; index < colors.length; index++) {
+    if (Colors.equal(colors[index], color, false)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function createDivColorTextLikeColor(color) {
   const divLikeColor = createDiv()
   divLikeColor.className = 'color-text-like'
-  divLikeColor.style.backgroundImage = colorLiked.grayscale > 150 ? 'url(images/heart-empty-black.png)' : 'url(images/heart-empty-white.png)'
+  divLikeColor.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
   divLikeColor.addEventListener('click', () => {
-    divLikeColor.style.backgroundImage = colorLiked.grayscale > 150 ? 'url(images/heart-filled-black.png)' : 'url(images/heart-filled-white.png)'
-
-    let colors = []
-    let index = 0
-    while (localStorage.getItem(`likedColor${index}`) !== null) {
-      colors.push(Colors.createHex(localStorage.getItem(`likedColor${index++}`)))
-    }
-    let colorFound = false
-    colors.forEach(color => {
-      if (Colors.equal(color, colorLiked)) {
-        colorFound = true
-      }
-    })
-    if (!colorFound) {
-      colors.push(colorLiked)
-    }
-    if (colors.length > 100) {
-      colors = colors.slice(colors.length - 100, colors.length)
-    }
+    let colors = getLikedColors()
+    let colorIndex = null
     for (let index = 0; index < colors.length; index++) {
-      localStorage.setItem(`likedColor${index}`, colors[index].formattedHex)
+      if (Colors.equal(colors[index], color, false)) {
+        colorIndex = index
+        break
+      }
     }
+    if (colorIndex === null) {
+      divLikeColor.style.backgroundImage = getBackgroundImage(color, 'heart-filled')
+      colors.push(color)
+    } else {
+      divLikeColor.style.backgroundImage = getBackgroundImage(color, 'heart-empty')
+      colors.splice(colorIndex, 1)
+    }
+    setLikedColors(colors)
   })
 
   return divLikeColor
@@ -571,7 +584,7 @@ function createDivGradientTextOpenFullscreen(color01, color02, type, value, posi
   return divColorText
 }
 
-function createDivColor(color, colorPicked, divCopied, storageItem01, storageItem02 = null, fullscreen = false) {
+function createDivColor(color, colorPicked, divCopied, storageItem01 = null, storageItem02 = null, fullscreen = false) {
   const divColor = createDiv()
   divColor.className = fullscreen ? 'color-fullscreen' : 'color'
   divColor.style.backgroundColor = color.formattedHSL
@@ -593,17 +606,18 @@ function createDivColor(color, colorPicked, divCopied, storageItem01, storageIte
     divColor.appendChild(divMarker)
   }
   if (fullscreen) {
-    const closeFullscreen = createDivColorTextCloseFullscreen(color, divColor)
-    divColor.appendChild(closeFullscreen)
+    divColor.appendChild(createDivColorTextCloseFullscreen(color, divColor))
   } else {
-    const openFullscreen = createDivColorTextOpenFullscreen(color, divCopied)
-    const loadColor01 = createDivColorTextLoadColor(color, storageItem01)
-    const loadColor02 = createDivColorTextLoadColor(color, storageItem02)
-    divColor.appendChild(openFullscreen)
-    divColor.appendChild(loadColor01)
-    if (storageItem02 !== null) {
-      loadColor02.style.right = '40px'
-      divColor.appendChild(loadColor02)
+    divColor.appendChild(createDivColorTextOpenFullscreen(color, divCopied))
+    if (storageItem01 !== null && storageItem02 !== null) {
+      const loadColor01 = createDivColorTextLoadColor(color, storageItem01)
+      loadColor01.style.right = '40px'
+      divColor.appendChild(loadColor01)
+      divColor.appendChild(createDivColorTextLoadColor(color, storageItem02))
+    } else if (storageItem01 !== null) {
+      divColor.appendChild(createDivColorTextLoadColor(color, storageItem01))
+    } else if (storageItem02 !== null) {
+      divColor.appendChild(createDivColorTextLoadColor(color, storageItem02))
     }
   }
 
@@ -614,6 +628,7 @@ function createDivColor(color, colorPicked, divCopied, storageItem01, storageIte
     }
     divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
     divMarker.style.display = 'none'
+    likeColor.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
   })
   divColor.addEventListener('mouseleave', () => {
     const children = divColor.children
@@ -630,6 +645,7 @@ function createDivColor(color, colorPicked, divCopied, storageItem01, storageIte
     }
     divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
     divMarker.style.display = 'none'
+    likeColor.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
   })
 
   return divColor
