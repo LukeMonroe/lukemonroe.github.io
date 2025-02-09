@@ -92,8 +92,12 @@ function createColorPicker() {
 
   const boxColumn = createBoxColumn(colorPicked, storageItem)
 
+  const divColorPicked = createDivColor(colorPicked, colorPicked, divCopied, storageItem)
+  divColorPicked.style.height = '300px'
+  divColorPicked.style.maxWidth = '600px'
+
   const colorRow = createDivInnerRow()
-  colorRow.appendChild(createDivColorPicked(colorPicked, divCopied, storageItem))
+  colorRow.appendChild(divColorPicked)
   colorRow.appendChild(boxColumn)
 
   const variationsColumn = createDivInnerColumn()
@@ -196,10 +200,8 @@ function createGradientPicker() {
     const color01 = Colors.random()
     const color02 = Colors.random()
     const row = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%')
-    // row.appendChild(createButtonGradient(color01, color02, storageItem01, storageItem02))
     examplesColumn.appendChild(row)
   }
-  // examplesColumn.appendChild(createButtonExamples(examplesColumn, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%'))
   const header = document.getElementById('header')
   header.replaceChildren()
   header.appendChild(createButtonNavigation(sideNavigation))
@@ -224,7 +226,6 @@ function createGradientPicker() {
             const color01 = Colors.random()
             const color02 = Colors.random()
             const row = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%')
-            // row.appendChild(createButtonGradient(color01, color02, storageItem01, storageItem02))
             examplesColumn.appendChild(row)
           }
           timeout = false
@@ -306,14 +307,6 @@ function createDivColorGrid() {
   return grid
 }
 
-function createDivColorPicked(color, divCopied, storageItem) {
-  const divColor = createDivColorWithDivMarker(color, divCopied, storageItem)
-  divColor.style.height = '300px'
-  divColor.style.maxWidth = '600px'
-
-  return divColor
-}
-
 function createGradientRowPicked(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height = null) {
   const colorRow = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height)
   colorRow.style.maxWidth = '600px'
@@ -350,20 +343,6 @@ function createGradientRowPicked(color01, color02, colorPicked01, colorPicked02,
 //     document.mozCancelFullScreen()
 //   }
 // }
-
-function createDivColorWithDivMarker(color, divCopied, storageItem01, storageItem02 = null) {
-  const divMarker = createDivMarker(color)
-  const divColor = createDivColor(color, divCopied, storageItem01, storageItem02)
-  divColor.appendChild(divMarker)
-  divColor.addEventListener('mouseenter', () => {
-    divMarker.style.display = 'none'
-  })
-  divColor.addEventListener('mouseleave', () => {
-    divMarker.style.display = 'block'
-  })
-
-  return divColor
-}
 
 function createDivMarker(color) {
   const divMarker = createDiv()
@@ -431,7 +410,7 @@ function loadDivColorGrid(divCopied, storageItem) {
   }
   const colorGrid = createDivColorGrid()
   for (let index = 0; index < colors.length; index++) {
-    const divColor = createDivColor(colors[index], divCopied, storageItem)
+    const divColor = createDivColor(colors[index], colors[index], divCopied, storageItem)
     divColor.style.flex = 'none'
     divColor.style.width = '300px'
     colorGrid.appendChild(divColor)
@@ -533,9 +512,9 @@ function createDivColorTextLikeGradient(colorLiked01, colorLiked02) {
 function createDivColorTextOpenFullscreen(color, divCopied) {
   const divColorText = createDiv()
   divColorText.className = 'color-text-full'
-  divColorText.style.backgroundImage = color.grayscale > 150 ? 'url(images/fullscreen-black.png)' : 'url(images/fullscreen-white.png)'
+  divColorText.style.backgroundImage = getBackgroundImage(color, 'fullscreen')
   divColorText.addEventListener('click', () => {
-    document.body.appendChild(createDivColorFullscreen(color, divCopied))
+    document.body.appendChild(createDivColor(color, null, divCopied, null, null, true))
     document.body.style.overflow = 'hidden'
   })
 
@@ -592,109 +571,65 @@ function createDivGradientTextOpenFullscreen(color01, color02, type, value, posi
   return divColorText
 }
 
-function createDivColor(color, divCopied, storageItem01, storageItem02 = null) {
+function createDivColor(color, colorPicked, divCopied, storageItem01, storageItem02 = null, fullscreen = false) {
+  const divColor = createDiv()
+  divColor.className = fullscreen ? 'color-fullscreen' : 'color'
+  divColor.style.backgroundColor = color.formattedHSL
+  divColor.style.color = color.formattedText
+
+  const divMarker = createDivMarker(color)
   const hex = createDivColorText(color.formattedHex, divCopied)
   const rgb = createDivColorText(color.formattedRGB, divCopied)
   const hsl = createDivColorText(color.formattedHSL, divCopied)
   const grayscale = createDivColorText(`grayscale: ${color.grayscale}`, divCopied)
-  const openFullscreen = createDivColorTextOpenFullscreen(color, divCopied)
-  const loadColor01 = createDivColorTextLoadColor(color, storageItem01)
-  const loadColor02 = createDivColorTextLoadColor(color, storageItem02)
   const likeColor = createDivColorTextLikeColor(color)
 
-  const divColor = createDiv()
-  divColor.className = 'color'
-  divColor.style.backgroundColor = color.formattedHSL
-  divColor.style.color = color.formattedText
   divColor.appendChild(hex)
   divColor.appendChild(rgb)
   divColor.appendChild(hsl)
   divColor.appendChild(grayscale)
-  divColor.appendChild(openFullscreen)
-  divColor.appendChild(loadColor01)
   divColor.appendChild(likeColor)
-  if (storageItem02 !== null) {
-    loadColor02.style.right = '40px'
-    divColor.appendChild(loadColor02)
+  if (colorPicked !== null && Colors.equal(color, colorPicked)) {
+    divColor.appendChild(divMarker)
   }
+  if (fullscreen) {
+    const closeFullscreen = createDivColorTextCloseFullscreen(color, divColor)
+    divColor.appendChild(closeFullscreen)
+  } else {
+    const openFullscreen = createDivColorTextOpenFullscreen(color, divCopied)
+    const loadColor01 = createDivColorTextLoadColor(color, storageItem01)
+    const loadColor02 = createDivColorTextLoadColor(color, storageItem02)
+    divColor.appendChild(openFullscreen)
+    divColor.appendChild(loadColor01)
+    if (storageItem02 !== null) {
+      loadColor02.style.right = '40px'
+      divColor.appendChild(loadColor02)
+    }
+  }
+
   divColor.addEventListener('mouseenter', () => {
-    hex.style.display = 'block'
-    rgb.style.display = 'block'
-    hsl.style.display = 'block'
-    grayscale.style.display = 'block'
-    openFullscreen.style.display = 'block'
-    loadColor01.style.display = 'block'
-    loadColor02.style.display = 'block'
-    likeColor.style.display = 'block'
+    const children = divColor.children
+    for (let index = 0; index < children.length; index++) {
+      children[index].style.display = 'block'
+    }
     divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
+    divMarker.style.display = 'none'
   })
   divColor.addEventListener('mouseleave', () => {
-    hex.style.display = 'none'
-    rgb.style.display = 'none'
-    hsl.style.display = 'none'
-    grayscale.style.display = 'none'
-    openFullscreen.style.display = 'none'
-    loadColor01.style.display = 'none'
-    loadColor02.style.display = 'none'
-    likeColor.style.display = 'none'
+    const children = divColor.children
+    for (let index = 0; index < children.length; index++) {
+      children[index].style.display = 'none'
+    }
     divColor.style.boxShadow = 'none'
+    divMarker.style.display = 'block'
   })
   divColor.addEventListener('click', () => {
-    hex.style.display = 'block'
-    rgb.style.display = 'block'
-    hsl.style.display = 'block'
-    grayscale.style.display = 'block'
-    openFullscreen.style.display = 'block'
-    loadColor01.style.display = 'block'
-    loadColor02.style.display = 'block'
-    likeColor.style.display = 'block'
+    const children = divColor.children
+    for (let index = 0; index < children.length; index++) {
+      children[index].style.display = 'block'
+    }
     divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
-  })
-
-  return divColor
-}
-
-function createDivColorFullscreen(color, divCopied) {
-  const hex = createDivColorText(color.formattedHex, divCopied)
-  const rgb = createDivColorText(color.formattedRGB, divCopied)
-  const hsl = createDivColorText(color.formattedHSL, divCopied)
-  const grayscale = createDivColorText(`grayscale: ${color.grayscale}`, divCopied)
-
-  const divColor = createDiv()
-  divColor.className = 'color-fullscreen'
-  divColor.style.backgroundColor = color.formattedHSL
-  divColor.style.color = color.formattedText
-
-  const closeFullscreen = createDivColorTextCloseFullscreen(color, divColor)
-
-  divColor.appendChild(hex)
-  divColor.appendChild(rgb)
-  divColor.appendChild(hsl)
-  divColor.appendChild(grayscale)
-  divColor.appendChild(closeFullscreen)
-  divColor.addEventListener('mouseenter', () => {
-    hex.style.display = 'block'
-    rgb.style.display = 'block'
-    hsl.style.display = 'block'
-    grayscale.style.display = 'block'
-    closeFullscreen.style.display = 'block'
-    divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
-  })
-  divColor.addEventListener('mouseleave', () => {
-    hex.style.display = 'none'
-    rgb.style.display = 'none'
-    hsl.style.display = 'none'
-    grayscale.style.display = 'none'
-    closeFullscreen.style.display = 'none'
-    divColor.style.boxShadow = 'none'
-  })
-  divColor.addEventListener('click', () => {
-    hex.style.display = 'block'
-    rgb.style.display = 'block'
-    hsl.style.display = 'block'
-    grayscale.style.display = 'block'
-    closeFullscreen.style.display = 'block'
-    divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
+    divMarker.style.display = 'none'
   })
 
   return divColor
@@ -975,22 +910,22 @@ function createButtonSwitchColors(color01, color02, storageItem01, storageItem02
 //   return buttonGradient
 // }
 
-function createButtonExamples(col, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position) {
-  const buttonExamples = document.createElement('button')
-  buttonExamples.className = 'theme'
-  buttonExamples.innerText = 'Load More'
-  buttonExamples.addEventListener('click', () => {
-    for (let index = 0; index < 20; index++) {
-      const color01 = Colors.random()
-      const color02 = Colors.random()
-      const row = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position)
-      // row.appendChild(createButtonGradient(color01, color02, storageItem01, storageItem02))
-      col.insertBefore(row, col.lastElementChild)
-    }
-  })
+// function createButtonExamples(col, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position) {
+//   const buttonExamples = document.createElement('button')
+//   buttonExamples.className = 'theme'
+//   buttonExamples.innerText = 'Load More'
+//   buttonExamples.addEventListener('click', () => {
+//     for (let index = 0; index < 20; index++) {
+//       const color01 = Colors.random()
+//       const color02 = Colors.random()
+//       const row = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position)
+//       // row.appendChild(createButtonGradient(color01, color02, storageItem01, storageItem02))
+//       col.insertBefore(row, col.lastElementChild)
+//     }
+//   })
 
-  return buttonExamples
-}
+//   return buttonExamples
+// }
 
 function createButtonEyedropper(colorPicked, storageItem) {
   const buttonEyedropper = document.createElement('button')
@@ -1353,7 +1288,6 @@ function historyGradientRow(col, colorPicked01, colorPicked02, divCopied, storag
     const color01 = index < colors01.length ? colors01[index] : colors01[colors01.length - 1]
     const color02 = index < colors02.length ? colors02[index] : colors02[colors02.length - 1]
     const row = gradientRow(color01, color02, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, 'linear', '0deg', '0%')
-    // row.appendChild(createButtonGradient(color01, color02, storageItem01, storageItem02))
     col.appendChild(row)
   }
 }
@@ -1361,15 +1295,15 @@ function historyGradientRow(col, colorPicked01, colorPicked02, divCopied, storag
 function buildColorRow(row, colors, colorPicked, divCopied, storageItem) {
   row.replaceChildren()
   colors.forEach(color => {
-    row.appendChild(Colors.equal(color, colorPicked) ? createDivColorWithDivMarker(color, divCopied, storageItem) : createDivColor(color, divCopied, storageItem))
+    row.appendChild(createDivColor(color, colorPicked, divCopied, storageItem))
   })
 
   return row
 }
 
 function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, divCopied, storageItem01, storageItem02, type, value, position, height = null) {
-  const divColor01 = Colors.equal(colors[0], colorPicked01) ? createDivColorWithDivMarker(colors[0], divCopied, storageItem01, storageItem02) : createDivColor(colors[0], divCopied, storageItem01, storageItem02)
-  const divColor02 = Colors.equal(colors[1], colorPicked02) ? createDivColorWithDivMarker(colors[1], divCopied, storageItem01, storageItem02) : createDivColor(colors[1], divCopied, storageItem01, storageItem02)
+  const divColor01 = createDivColor(colors[0], colorPicked01, divCopied, storageItem01, storageItem02)
+  const divColor02 = createDivColor(colors[1], colorPicked02, divCopied, storageItem01, storageItem02)
   const divGradient = createDivGradient(colors[0], colors[1], divColor01, divColor02, storageItem01, storageItem02, type, value, position, divCopied)
 
   if (height !== null) {
@@ -1393,4 +1327,21 @@ function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, divCop
   })
 
   return row
+}
+
+function getBackgroundImage(color, name) {
+  let backgroundImage = 'blank.png'
+  if (name === 'checkmark') {
+    backgroundImage = color.grayscale > 150 ? 'checkmark-black.png' : 'checkmark-white.png'
+  } else if (name === 'corner-triangle') {
+    backgroundImage = color.grayscale > 150 ? 'corner-triangle-black.png' : 'corner-triangle-white.png'
+  } else if (name === 'fullscreen') {
+    backgroundImage = color.grayscale > 150 ? 'fullscreen-black.png' : 'fullscreen-white.png'
+  } else if (name === 'heart-empty') {
+    backgroundImage = color.grayscale > 150 ? 'heart-empty-black.png' : 'heart-empty-white.png'
+  } else if (name === 'heart-filled') {
+    backgroundImage = color.grayscale > 150 ? 'heart-filled-black.png' : 'heart-filled-white.png'
+  }
+
+  return `url(images/${backgroundImage})`
 }
