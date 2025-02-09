@@ -91,7 +91,7 @@ class Themes {
     return `${theme.substr(0, 1).toUpperCase()}${theme.substr(1)}`
   }
 
-  createButtonTheme(inverted=false) {
+  createButtonTheme(inverted = false) {
     const buttonTheme = document.createElement('button')
     buttonTheme.className = inverted === false ? 'theme' : 'theme-inverted'
     buttonTheme.innerText = this.formatTheme(this.getTheme())
