@@ -73,30 +73,26 @@ function createColorPicker() {
   tool = localStorage.getItem('tool')
   toolPicked = createColorPicker
 
-  const storageItem = 'hexColorPicker'
-  const hex = localStorage.getItem(storageItem)
-  const colorPicked = hex === null ? Colors.random() : Colors.createHex(hex)
-  localStorage.setItem(storageItem, colorPicked.formattedHex)
-  document.documentElement.style.setProperty('--thumb-color', colorPicked.formattedHSL)
+  const colors = getHistoryColors()
+  const color = colors.length > 0 ? colors[colors.length - 1] : Colors.random()
+  document.documentElement.style.setProperty('--thumb-color', color.formattedHSL)
 
   const hueRow = createDivColorRow()
-  const hueSliders = createDoubleInputRangeSliders(1, 90, 1, 'Separation', 12, 1, 360, 1, 'Degrees', 180, hueRow, buildHueRow, colorPicked, storageItem)
+  const hueSliders = createDoubleInputRangeSliders(1, 90, 1, 'Separation', 12, 1, 360, 1, 'Degrees', 180, hueRow, buildHueRow, color)
 
   const saturationRow = createDivColorRow()
-  const saturationSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, buildSaturationRow, colorPicked, storageItem)
+  const saturationSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, buildSaturationRow, color)
 
   const lightnessRow = createDivColorRow()
-  const lightnessSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, buildLightnessRow, colorPicked, storageItem)
+  const lightnessSlider = createInputRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, buildLightnessRow, color)
 
-  const boxColumn = createBoxColumn(colorPicked, storageItem)
-
-  const divColorPicked = createDivColor(colorPicked, colorPicked, storageItem)
+  const divColorPicked = createDivColor(color, color)
   divColorPicked.style.height = '300px'
   divColorPicked.style.maxWidth = '600px'
 
   const colorRow = createDivInnerRow()
   colorRow.appendChild(divColorPicked)
-  colorRow.appendChild(boxColumn)
+  colorRow.appendChild(createBoxColumn(color, null))
 
   const variationsColumn = createDivInnerColumn()
   variationsColumn.appendChild(createH2('Variations'))
@@ -115,25 +111,25 @@ function createColorPicker() {
   const harmoniesColumn = createDivInnerColumn()
   harmoniesColumn.appendChild(createH2('Harmonies'))
   harmoniesColumn.appendChild(createH3('Complementary'))
-  harmoniesColumn.appendChild(complementaryRow(colorPicked, storageItem))
+  harmoniesColumn.appendChild(complementaryRow(color))
   harmoniesColumn.appendChild(createH3('Split Complementary'))
-  harmoniesColumn.appendChild(splitComplementaryRow(colorPicked, storageItem))
+  harmoniesColumn.appendChild(splitComplementaryRow(color))
   harmoniesColumn.appendChild(createH3('Analogous'))
-  harmoniesColumn.appendChild(analogousRow(colorPicked, storageItem))
+  harmoniesColumn.appendChild(analogousRow(color))
   harmoniesColumn.appendChild(createH3('Triadic'))
-  harmoniesColumn.appendChild(triadicRow(colorPicked, storageItem))
+  harmoniesColumn.appendChild(triadicRow(color))
   harmoniesColumn.appendChild(createH3('Tetradic'))
-  harmoniesColumn.appendChild(tetradicRow(colorPicked, storageItem))
+  harmoniesColumn.appendChild(tetradicRow(color))
   harmoniesColumn.appendChild(createH3('Square'))
-  harmoniesColumn.appendChild(squareRow(colorPicked, storageItem))
+  harmoniesColumn.appendChild(squareRow(color))
 
   const palettesColumn = createDivInnerColumn()
   palettesColumn.appendChild(createH2('Palettes'))
-  palettesColumn.appendChild(paletteARow(colorPicked, storageItem))
+  palettesColumn.appendChild(paletteARow(color))
 
   const historyColumn = createDivInnerColumn()
   historyColumn.appendChild(createH2('History'))
-  historyColumn.appendChild(historyColorRow(colorPicked, storageItem))
+  historyColumn.appendChild(buildColorRow(createDivColorRowSmall(), getHistoryColors(), color))
 
   const header = document.getElementById('header')
   header.replaceChildren()
@@ -158,41 +154,35 @@ function createGradientPicker() {
   tool = localStorage.getItem('tool')
   toolPicked = createGradientPicker
 
-  const storageItem = 'hexGradientPicker'
-  const gradient = localStorage.getItem(storageItem)
-  const colorPicked01 = gradient === null ? Colors.random() : Colors.createHex(gradient.split(":")[0])
-  const colorPicked02 = gradient === null ? Colors.random() : Colors.createHex(gradient.split(":")[1])
-  localStorage.setItem(storageItem, `${colorPicked01.formattedHex}:${colorPicked02.formattedHex}`)
-  document.documentElement.style.setProperty('--thumb-color', colorPicked01.formattedHSL)
+  const gradients = getHistoryGradients()
+  const gradient = gradients.length > 0 ? gradients[gradients.length - 1] : [Colors.random(), Colors.random()]
+  document.documentElement.style.setProperty('--thumb-color', gradient[0].formattedHSL)
 
   const colorRow = createDivInnerRow()
-  const gradientSliders = createDoubleInputRangeSlidersGradient(0, 360, 1, 'Degrees', 0, 0, 100, 1, 'Percent', 0, colorRow, createGradientRowPicked, colorPicked01, colorPicked02, storageItem, '300px')
-
-  const boxColumn01 = createBoxColumn(colorPicked01, storageItem, colorPicked02)
-  const boxColumn02 = createBoxColumn(colorPicked02, storageItem, colorPicked01)
+  const gradientSliders = createDoubleInputRangeSlidersGradient(0, 360, 1, 'Degrees', 0, 0, 100, 1, 'Percent', 0, colorRow, createGradientRowPicked, gradient[0], gradient[1], '300px')
 
   const boxRow = createDivInnerRow()
-  boxRow.appendChild(boxColumn01)
-  boxRow.appendChild(boxColumn02)
+  boxRow.appendChild(createBoxColumn(gradient[0], gradient[1]))
+  boxRow.appendChild(createBoxColumn(gradient[1], gradient[0]))
 
   const slidersColumn = createDivInnerColumn()
   gradientSliders.forEach(gradientSlider => {
     slidersColumn.appendChild(gradientSlider)
   })
-  slidersColumn.appendChild(createButtonSwitchColors(colorPicked01, colorPicked02, storageItem))
+  slidersColumn.appendChild(createButtonSwitchColors(gradient))
 
   const historyColumn = createDivInnerColumn()
   historyColumn.appendChild(createH2('History'))
-  // historyGradientRow(historyColumn, colorPicked01, colorPicked02, storageItem)
+  for (let index = 0; index < gradients.length; index++) {
+    historyColumn.appendChild(gradientRow(gradients[index][0], gradients[index][1], gradient[0], gradient[1], 'linear', '0deg', '0%'))
+  }
 
   const examplesColumn = createDivInnerColumn()
   examplesColumn.appendChild(createH2('Examples'))
   for (let index = 0; index < 10; index++) {
-    const color01 = Colors.random()
-    const color02 = Colors.random()
-    const row = gradientRow(color01, color02, colorPicked01, colorPicked02, storageItem, 'linear', '0deg', '0%')
-    examplesColumn.appendChild(row)
+    examplesColumn.appendChild(gradientRow(Colors.random(), Colors.random(), gradient[0], gradient[1], 'linear', '0deg', '0%'))
   }
+
   const header = document.getElementById('header')
   header.replaceChildren()
   header.appendChild(createButtonNavigation(sideNavigation))
@@ -213,10 +203,7 @@ function createGradientPicker() {
       setTimeout(function () {
         if (timeout === true) {
           for (let index = 0; index < 10; index++) {
-            const color01 = Colors.random()
-            const color02 = Colors.random()
-            const row = gradientRow(color01, color02, colorPicked01, colorPicked02, storageItem, 'linear', '0deg', '0%')
-            examplesColumn.appendChild(row)
+            examplesColumn.appendChild(gradientRow(Colors.random(), Colors.random(), gradient[0], gradient[1], 'linear', '0deg', '0%'))
           }
           timeout = false
         }
@@ -233,16 +220,13 @@ function createLikedColors() {
   tool = localStorage.getItem('tool')
   toolPicked = createLikedColors
 
-  const colorGrid = loadDivColorGrid()
-  const gradientGrid = loadDivGradientGrid('likedGradient')
-
   const likedColorsColumn = createDivInnerColumn()
   likedColorsColumn.appendChild(createH2('Colors'))
-  likedColorsColumn.appendChild(colorGrid)
+  likedColorsColumn.appendChild(createDivColorGrid())
 
   const likedGradientsColumn = createDivInnerColumn()
   likedGradientsColumn.appendChild(createH2('Gradients'))
-  likedGradientsColumn.appendChild(gradientGrid)
+  likedGradientsColumn.appendChild(createDivGradientGrid())
 
   const header = document.getElementById('header')
   header.replaceChildren()
@@ -287,15 +271,8 @@ function createDivColorRowSmall() {
   return row
 }
 
-function createDivColorGrid() {
-  const grid = createDiv()
-  grid.className = 'color-grid'
-
-  return grid
-}
-
-function createGradientRowPicked(color01, color02, colorPicked01, colorPicked02, storageItem, type, value, position, height = null) {
-  const colorRow = gradientRow(color01, color02, colorPicked01, colorPicked02, storageItem, type, value, position, height)
+function createGradientRowPicked(color01, color02, colorPicked01, colorPicked02, type, value, position, height = null) {
+  const colorRow = gradientRow(color01, color02, colorPicked01, colorPicked02, type, value, position, height)
   colorRow.style.maxWidth = '600px'
 
   return colorRow
@@ -310,8 +287,10 @@ function createDivMarker(color) {
   return divMarker
 }
 
-function loadDivColorGrid() {
-  const divColorGrid = createDivColorGrid()
+function createDivColorGrid() {
+  const divColorGrid = createDiv()
+  divColorGrid.className = 'color-grid'
+
   const colors = getLikedColors()
   for (let index = 0; index < colors.length; index++) {
     const divColor = createDivColor(colors[index], colors[index])
@@ -323,29 +302,82 @@ function loadDivColorGrid() {
   return divColorGrid
 }
 
-function loadDivGradientGrid(storageItem) {
-  let gradients = []
-  let index = 0
-  while (localStorage.getItem(`${storageItem}${index}`) !== null) {
-    const gradient = localStorage.getItem(`${storageItem}${index++}`)
-    gradients.push([Colors.createHex(gradient.split(':')[0]), Colors.createHex(gradient.split(':')[1])])
-  }
-  if (gradients.length > 100) {
-    gradients = gradients.slice(gradients.length - 100, gradients.length)
-  }
-  for (let index = 0; index < gradients.length; index++) {
-    localStorage.setItem(`${storageItem}${index}`, `${gradients[index][0].formattedHex}:${gradients[index][1].formattedHex}`)
-  }
+function createDivGradientGrid() {
+  const divColorGrid = createDiv()
+  divColorGrid.className = 'color-grid'
 
-  const colorGrid = createDivColorGrid()
+  const gradients = getLikedGradients()
   for (let index = 0; index < gradients.length; index++) {
-    const divGradient = gradientRow(gradients[index][0], gradients[index][1], gradients[index][0], gradients[index][1], storageItem, storageItem, 'linear', '0deg', '0%')
+    const divGradient = gradientRow(gradients[index][0], gradients[index][1], gradients[index][0], gradients[index][1], 'linear', '0deg', '0%')
     divGradient.style.flex = 'none'
     divGradient.style.width = '300px'
-    colorGrid.appendChild(divGradient)
+    divColorGrid.appendChild(divGradient)
   }
 
-  return colorGrid
+  return divColorGrid
+}
+
+function getHistoryColors() {
+  const colors = []
+  let index = 0
+  while (localStorage.getItem(`historyColor${index}`) !== null) {
+    colors.push(Colors.createHex(localStorage.getItem(`historyColor${index++}`)))
+  }
+
+  return colors
+}
+
+function isHistoryColor(color) {
+  const colors = getHistoryColors()
+  for (let index = 0; index < colors.length; index++) {
+    if (Colors.equal(colors[index], color, false)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function setHistoryColors(colors) {
+  let pos = 0
+  for (let index = (colors.length > 8 ? colors.length - 8 : 0); index < colors.length; index++) {
+    localStorage.setItem(`historyColor${pos++}`, colors[index].formattedHex)
+  }
+  for (let index = (colors.length > 8 ? 8 : colors.length); index < 16; index++) {
+    localStorage.removeItem(`historyColor${index}`)
+  }
+}
+
+function getHistoryGradients() {
+  const gradients = []
+  let index = 0
+  while (localStorage.getItem(`historyGradient${index}`) !== null) {
+    const gradient = localStorage.getItem(`historyGradient${index++}`)
+    gradients.push([Colors.createHex(gradient.split(":")[0]), Colors.createHex(gradient.split(":")[1])])
+  }
+
+  return gradients
+}
+
+function isHistoryGradient(gradient) {
+  const gradients = getHistoryGradients()
+  for (let index = 0; index < gradients.length; index++) {
+    if (Colors.equal(gradients[index][0], gradient[0], false) && Colors.equal(gradients[index][1], gradient[1], false)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function setHistorGradients(gradients) {
+  let pos = 0
+  for (let index = (gradients.length > 8 ? gradients.length - 8 : 0); index < gradients.length; index++) {
+    localStorage.setItem(`historyGradient${pos++}`, `${gradients[index][0].formattedHex}:${gradients[index][1].formattedHex}`)
+  }
+  for (let index = (gradients.length > 8 ? 8 : gradients.length); index < 16; index++) {
+    localStorage.removeItem(`historyGradient${index}`)
+  }
 }
 
 function getLikedColors() {
@@ -370,11 +402,44 @@ function isColorLiked(color) {
 }
 
 function setLikedColors(colors) {
+  let pos = 0
   for (let index = (colors.length > 100 ? colors.length - 100 : 0); index < colors.length; index++) {
-    localStorage.setItem(`likedColor${index}`, colors[index].formattedHex)
+    localStorage.setItem(`likedColor${pos++}`, colors[index].formattedHex)
   }
-  for (let index = colors.length; index < 100; index++) {
+  for (let index = (colors.length > 100 ? 100 : colors.length); index < 200; index++) {
     localStorage.removeItem(`likedColor${index}`)
+  }
+}
+
+function getLikedGradients() {
+  const gradients = []
+  let index = 0
+  while (localStorage.getItem(`likedGradient${index}`) !== null) {
+    const gradient = localStorage.getItem(`likedGradient${index++}`)
+    gradients.push([Colors.createHex(gradient.split(":")[0]), Colors.createHex(gradient.split(":")[1])])
+  }
+
+  return gradients
+}
+
+function isGradientLiked(gradient) {
+  const gradients = getLikedGradients()
+  for (let index = 0; index < gradients.length; index++) {
+    if (Colors.equal(gradients[index][0], gradient[0], false) && Colors.equal(gradients[index][1], gradient[1], false)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function setLikedGradients(gradients) {
+  let pos = 0
+  for (let index = (gradients.length > 100 ? gradients.length - 100 : 0); index < gradients.length; index++) {
+    localStorage.setItem(`likedGradient${pos++}`, `${gradients[index][0].formattedHex}:${gradients[index][1].formattedHex}`)
+  }
+  for (let index = (gradients.length > 100 ? 100 : gradients.length); index < 200; index++) {
+    localStorage.removeItem(`likedGradient${index}`)
   }
 }
 
@@ -439,7 +504,7 @@ function createDivColorIconOpenFullscreen(color01, color02, type, value, positio
   divColorIcon.style.right = '10px'
   divColorIcon.addEventListener('click', () => {
     if (color02 === null) {
-      document.body.appendChild(createDivColor(color01, null, null, true))
+      document.body.appendChild(createDivColor(color01, null, true))
     } else {
       document.body.appendChild(createDivGradientFullscreen(color01, color02, type, value, position))
     }
@@ -463,15 +528,25 @@ function createDivColorIconCloseFullscreen(color, divColor) {
   return divColorIcon
 }
 
-function createDivColorIconCheckmark(color01, color02, storageItem) {
+function createDivColorIconCheckmark(color01, color02) {
   const divColorIcon = createDiv()
   divColorIcon.className = 'color-icon'
   divColorIcon.style.backgroundImage = getBackgroundImage(color02 === null ? color01 : color02, 'checkmark')
   divColorIcon.style.bottom = '10px'
   divColorIcon.style.right = '10px'
   divColorIcon.addEventListener('click', () => {
-    localStorage.setItem(storageItem, color02 === null ? color01.formattedHex : `${color01.formattedHex}:${color02.formattedHex}`)
-    toolPicked()
+    if (tool !== 'likedColors') {
+      if (color02 === null) {
+        const colors = getHistoryColors()
+        colors.push(color01)
+        setHistoryColors(colors)
+      } else {
+        const gradients = getHistoryGradients()
+        gradients.push([color01, color02])
+        setHistorGradients(gradients)
+      }
+      toolPicked()
+    }
   })
 
   return divColorIcon
@@ -492,42 +567,35 @@ function createDivColorIconCornerTriangle(color, divColor01, divColor02, divGrad
   return divColorIcon
 }
 
-function createDivColorTextLikeGradient(colorLiked01, colorLiked02) {
+function createDivGradientIconHeart(gradient) {
   const divColorIcon = createDiv()
   divColorIcon.className = 'color-icon'
-  divColorIcon.style.backgroundImage = getBackgroundImage(colorLiked01, 'heart-empty')
+  divColorIcon.style.backgroundImage = isGradientLiked(gradient) ? getBackgroundImage(gradient[0], 'heart-filled') : getBackgroundImage(gradient[0], 'heart-empty')
   divColorIcon.style.top = '10px'
   divColorIcon.style.left = '10px'
   divColorIcon.addEventListener('click', () => {
-    divColorIcon.style.backgroundImage = getBackgroundImage(colorLiked02, 'heart-filled')
-
-    let gradients = []
-    let index = 0
-    while (localStorage.getItem(`likedGradient${index}`) !== null) {
-      const gradient = localStorage.getItem(`likedGradient${index++}`)
-      gradients.push([Colors.createHex(gradient.split(':')[0]), Colors.createHex(gradient.split(':')[1])])
-    }
-    let gradientFound = false
-    gradients.forEach(gradient => {
-      if (Colors.equal(gradient[0], colorLiked01) && Colors.equal(gradient[1], colorLiked02)) {
-        gradientFound = true
-      }
-    })
-    if (!gradientFound) {
-      gradients.push([colorLiked01, colorLiked02])
-    }
-    if (gradients.length > 100) {
-      gradients = gradients.slice(gradients.length - 100, gradients.length)
-    }
+    let gradients = getLikedGradients()
+    let gradientIndex = null
     for (let index = 0; index < gradients.length; index++) {
-      localStorage.setItem(`likedGradient${index}`, `${gradients[index][0].formattedHex}:${gradients[index][1].formattedHex}`)
+      if (Colors.equal(gradients[index][0], gradient[0], false) && Colors.equal(gradients[index][1], gradient[1], false)) {
+        gradientIndex = index
+        break
+      }
     }
+    if (gradientIndex === null) {
+      divColorIcon.style.backgroundImage = getBackgroundImage(gradient[0], 'heart-filled')
+      gradients.push(gradient)
+    } else {
+      divColorIcon.style.backgroundImage = getBackgroundImage(gradient[0], 'heart-empty')
+      gradients.splice(gradientIndex, 1)
+    }
+    setLikedGradients(gradients)
   })
 
   return divColorIcon
 }
 
-function createDivColor(color, colorPicked, storageItem = null, fullscreen = false, color02 = null) {
+function createDivColor(color, colorPicked, fullscreen = false, color02 = null) {
   const divColor = createDiv()
   divColor.className = fullscreen ? 'color-fullscreen' : 'color'
   divColor.style.backgroundColor = color.formattedHSL
@@ -548,16 +616,7 @@ function createDivColor(color, colorPicked, storageItem = null, fullscreen = fal
     divColor.appendChild(createDivColorIconCloseFullscreen(color, divColor))
   } else {
     divColor.appendChild(createDivColorIconOpenFullscreen(color, null, null, null, null))
-    if (storageItem !== null && color02 !== null) {
-      const loadColor01 = createDivColorIconCheckmark(color, color02, storageItem)
-      loadColor01.style.right = '40px'
-      divColor.appendChild(loadColor01)
-      divColor.appendChild(createDivColorIconCheckmark(color02, color, storageItem))
-    } else if (storageItem !== null) {
-      divColor.appendChild(createDivColorIconCheckmark(color, null, storageItem))
-    } else if (color02 !== null) {
-      divColor.appendChild(createDivColorIconCheckmark(color, null, storageItem))
-    }
+    divColor.appendChild(createDivColorIconCheckmark(color, null))
   }
 
   divColor.addEventListener('mouseenter', () => {
@@ -590,7 +649,7 @@ function createDivColor(color, colorPicked, storageItem = null, fullscreen = fal
   return divColor
 }
 
-function createDivGradient(color01, color02, divColor01, divColor02, storageItem, type, value, position) {
+function createDivGradient(color01, color02, divColor01, divColor02, type, value, position) {
   const divGradient = createDiv()
   divGradient.className = 'color'
   divGradient.style.backgroundColor = color01.formattedHSL
@@ -602,8 +661,8 @@ function createDivGradient(color01, color02, divColor01, divColor02, storageItem
 
   const show = createDivColorIconCornerTriangle(color01, divColor01, divColor02, divGradient)
   const openFullscreen = createDivColorIconOpenFullscreen(color01, color02, type, value, position)
-  const load = createDivColorIconCheckmark(color01, color02, storageItem)
-  const likeGradient = createDivColorTextLikeGradient(color01, color02)
+  const load = createDivColorIconCheckmark(color01, color02)
+  const likeGradient = createDivGradientIconHeart([color01, color02])
 
   divGradient.appendChild(show)
   divGradient.appendChild(openFullscreen)
@@ -685,7 +744,7 @@ function createInputTextBox() {
   return inputTextBox
 }
 
-function createInputRangeSlider(min, max, step, text, value, row, updateFunction, colorPicked, storageItem) {
+function createInputRangeSlider(min, max, step, text, value, row, updateFunction, colorPicked) {
   const h4Slider = createH4(`${text}: ${value}`)
 
   const inputRangeSlider = document.createElement('input')
@@ -697,7 +756,7 @@ function createInputRangeSlider(min, max, step, text, value, row, updateFunction
   inputRangeSlider.value = value
   inputRangeSlider.addEventListener('input', () => {
     h4Slider.innerText = `${text}: ${inputRangeSlider.value}`
-    updateFunction(row, inputRangeSlider.value, colorPicked, storageItem)
+    updateFunction(row, inputRangeSlider.value, colorPicked)
   })
 
   const divSlider = createDiv()
@@ -705,12 +764,12 @@ function createInputRangeSlider(min, max, step, text, value, row, updateFunction
   divSlider.appendChild(h4Slider)
   divSlider.appendChild(inputRangeSlider)
 
-  updateFunction(row, inputRangeSlider.value, colorPicked, storageItem)
+  updateFunction(row, inputRangeSlider.value, colorPicked)
 
   return divSlider
 }
 
-function createDoubleInputRangeSliders(min01, max01, step01, text01, value01, min02, max02, step02, text02, value02, row, updateFunction, colorPicked, storageItem) {
+function createDoubleInputRangeSliders(min01, max01, step01, text01, value01, min02, max02, step02, text02, value02, row, updateFunction, colorPicked) {
   const h4Slider01 = createH4(`${text01}: ${value01}`)
   const h4Slider02 = createH4(`${text02}: ${value02}`)
 
@@ -732,12 +791,12 @@ function createDoubleInputRangeSliders(min01, max01, step01, text01, value01, mi
 
   inputRangeSlider01.addEventListener('input', () => {
     h4Slider01.innerText = `${text01}: ${inputRangeSlider01.value}`
-    updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value, colorPicked, storageItem)
+    updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value, colorPicked)
   })
 
   inputRangeSlider02.addEventListener('input', () => {
     h4Slider02.innerText = `${text02}: ${inputRangeSlider02.value}`
-    updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value, colorPicked, storageItem)
+    updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value, colorPicked)
   })
 
   const divSlider01 = createDiv()
@@ -750,12 +809,12 @@ function createDoubleInputRangeSliders(min01, max01, step01, text01, value01, mi
   divSlider02.appendChild(h4Slider02)
   divSlider02.appendChild(inputRangeSlider02)
 
-  updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value, colorPicked, storageItem)
+  updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value, colorPicked)
 
   return [divSlider01, divSlider02]
 }
 
-function createDoubleInputRangeSlidersGradient(min01, max01, step01, text01, value01, min02, max02, step02, text02, value02, row, updateFunction, colorPicked01, colorPicked02, storageItem, height) {
+function createDoubleInputRangeSlidersGradient(min01, max01, step01, text01, value01, min02, max02, step02, text02, value02, row, updateFunction, colorPicked01, colorPicked02, height) {
   const h4Slider01 = createH4(`${text01}: ${value01}`)
   const h4Slider02 = createH4(`${text02}: ${value02}`)
   const h4Slider03 = createH4('Type: linear')
@@ -788,9 +847,9 @@ function createDoubleInputRangeSlidersGradient(min01, max01, step01, text01, val
     h4Slider01.innerText = `${text01}: ${inputRangeSlider01.value}`
     row.replaceChildren()
     if (inputRangeSlider03.value === '0') {
-      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, storageItem, 'linear', `${inputRangeSlider01.value}deg`, `${inputRangeSlider02.value}%`, height))
+      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, 'linear', `${inputRangeSlider01.value}deg`, `${inputRangeSlider02.value}%`, height))
     } else {
-      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, storageItem, 'radial', 'circle', `${inputRangeSlider02.value}%`, height))
+      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, 'radial', 'circle', `${inputRangeSlider02.value}%`, height))
     }
   })
 
@@ -798,9 +857,9 @@ function createDoubleInputRangeSlidersGradient(min01, max01, step01, text01, val
     h4Slider02.innerText = `${text02}: ${inputRangeSlider02.value}`
     row.replaceChildren()
     if (inputRangeSlider03.value === '0') {
-      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, storageItem, 'linear', `${inputRangeSlider01.value}deg`, `${inputRangeSlider02.value}%`, height))
+      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, 'linear', `${inputRangeSlider01.value}deg`, `${inputRangeSlider02.value}%`, height))
     } else {
-      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, storageItem, 'radial', 'circle', `${inputRangeSlider02.value}%`, height))
+      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, 'radial', 'circle', `${inputRangeSlider02.value}%`, height))
     }
   })
 
@@ -808,9 +867,9 @@ function createDoubleInputRangeSlidersGradient(min01, max01, step01, text01, val
     h4Slider03.innerText = `Type: ${inputRangeSlider03.value === '0' ? 'linear' : 'radial'}`
     row.replaceChildren()
     if (inputRangeSlider03.value === '0') {
-      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, storageItem, 'linear', `${inputRangeSlider01.value}deg`, `${inputRangeSlider02.value}%`, height))
+      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, 'linear', `${inputRangeSlider01.value}deg`, `${inputRangeSlider02.value}%`, height))
     } else {
-      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, storageItem, 'radial', 'circle', `${inputRangeSlider02.value}%`, height))
+      row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, 'radial', 'circle', `${inputRangeSlider02.value}%`, height))
     }
   })
 
@@ -831,27 +890,29 @@ function createDoubleInputRangeSlidersGradient(min01, max01, step01, text01, val
 
   row.replaceChildren()
   if (inputRangeSlider03.value === '0') {
-    row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, storageItem, 'linear', `${inputRangeSlider01.value}deg`, `${inputRangeSlider02.value}%`, height))
+    row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, 'linear', `${inputRangeSlider01.value}deg`, `${inputRangeSlider02.value}%`, height))
   } else {
-    row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, storageItem, 'radial', 'circle', `${inputRangeSlider02.value}%`, height))
+    row.appendChild(updateFunction(colorPicked01, colorPicked02, colorPicked01, colorPicked02, 'radial', 'circle', `${inputRangeSlider02.value}%`, height))
   }
 
   return [divSlider01, divSlider02, divSlider03]
 }
 
-function createButtonSwitchColors(color01, color02, storageItem) {
+function createButtonSwitchColors(gradient) {
   const buttonSwitchColors = document.createElement('button')
   buttonSwitchColors.className = 'theme'
   buttonSwitchColors.innerText = 'Switch Colors'
   buttonSwitchColors.addEventListener('click', () => {
-    localStorage.setItem(storageItem, `${color02.formattedHex}:${color01.formattedHex}`)
+    const gradients = getHistoryGradients()
+    gradients.push([gradient[1], gradient[0]])
+    setHistorGradients(gradients)
     toolPicked()
   })
 
   return buttonSwitchColors
 }
 
-function createButtonEyedropper(colorPicked, storageItem) {
+function createButtonEyedropper(color01, color02) {
   const buttonEyedropper = document.createElement('button')
   buttonEyedropper.className = 'theme'
   buttonEyedropper.innerText = 'Eyedropper'
@@ -861,12 +922,9 @@ function createButtonEyedropper(colorPicked, storageItem) {
     eyeDropper
       .open()
       .then((colorSelectionResult) => {
-        const color = Colors.createHex(colorSelectionResult.sRGBHex)
-        if (color !== null && Colors.notEqual(color, colorPicked)) {
-          localStorage.setItem(storageItem, color.formattedHex)
-          toolPicked()
-        } else {
-          hexBox.value = colorPicked.formattedHex
+        const eyedropColor = Colors.createHex(colorSelectionResult.sRGBHex)
+        if (eyedropColor !== null && Colors.notEqual(eyedropColor, color01)) {
+          loadTool(eyedropColor, color01, color02)
         }
       })
       .catch(error => {
@@ -876,29 +934,40 @@ function createButtonEyedropper(colorPicked, storageItem) {
   return buttonEyedropper
 }
 
-function createBoxColumn(colorPicked, storageItem, color02 = null) {
+function loadTool(color, color01, color02) {
+  if (color02 === null) {
+    const colors = getHistoryColors()
+    colors.push(color)
+    setHistoryColors(colors)
+  } else {
+    const gradients = getHistoryGradients()
+    gradients.push([color, color02])
+    setHistorGradients(gradients)
+  }
+  toolPicked()
+}
+
+function createBoxColumn(color01, color02) {
   const hexBoxRow = createDivInputRow()
   const hexBox = createInputTextBox()
   hexBox.maxLength = '7'
   hexBox.style.width = '107px'
-  hexBox.value = colorPicked.formattedHex
+  hexBox.value = color01.formattedHex
   hexBox.addEventListener('focusout', () => {
     const color = Colors.createHex(hexBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-      toolPicked()
+    if (color !== null && Colors.notEqual(color, color01)) {
+      loadTool(color, color01, color02)
     } else {
-      hexBox.value = colorPicked.formattedHex
+      hexBox.value = color01.formattedHex
     }
   })
   hexBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createHex(hexBox.value)
-      if (color !== null && Colors.notEqual(color, colorPicked)) {
-        localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-        toolPicked()
+      if (color !== null && Colors.notEqual(color, color01)) {
+        loadTool(color, color01, color02)
       } else {
-        hexBox.value = colorPicked.formattedHex
+        hexBox.value = color01.formattedHex
       }
     }
   })
@@ -909,71 +978,65 @@ function createBoxColumn(colorPicked, storageItem, color02 = null) {
   const rgbBoxRow = createDivInputRow()
   const rBox = createInputTextBox()
   rBox.maxLength = '3'
-  rBox.value = colorPicked.rgb.r
+  rBox.value = color01.rgb.r
   const gBox = createInputTextBox()
   gBox.maxLength = '3'
-  gBox.value = colorPicked.rgb.g
+  gBox.value = color01.rgb.g
   const bBox = createInputTextBox()
   bBox.maxLength = '3'
-  bBox.value = colorPicked.rgb.b
+  bBox.value = color01.rgb.b
 
   rBox.addEventListener('focusout', () => {
     const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-      toolPicked()
+    if (color !== null && Colors.notEqual(color, color01)) {
+      loadTool(color, color01, color02)
     } else {
-      rBox.value = colorPicked.rgb.r
+      rBox.value = color01.rgb.r
     }
   })
   rBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-      if (color !== null && Colors.notEqual(color, colorPicked)) {
-        localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-        toolPicked()
+      if (color !== null && Colors.notEqual(color, color01)) {
+        loadTool(color, color01, color02)
       } else {
-        rBox.value = colorPicked.rgb.r
+        rBox.value = color01.rgb.r
       }
     }
   })
   gBox.addEventListener('focusout', () => {
     const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-      toolPicked()
+    if (color !== null && Colors.notEqual(color, color01)) {
+      loadTool(color, color01, color02)
     } else {
-      gBox.value = colorPicked.rgb.g
+      gBox.value = color01.rgb.g
     }
   })
   gBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-      if (color !== null && Colors.notEqual(color, colorPicked)) {
-        localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-        toolPicked()
+      if (color !== null && Colors.notEqual(color, color01)) {
+        loadTool(color, color01, color02)
       } else {
-        gBox.value = colorPicked.rgb.g
+        gBox.value = color01.rgb.g
       }
     }
   })
   bBox.addEventListener('focusout', () => {
     const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-      toolPicked()
+    if (color !== null && Colors.notEqual(color, color01)) {
+      loadTool(color, color01, color02)
     } else {
-      bBox.value = colorPicked.rgb.b
+      bBox.value = color01.rgb.b
     }
   })
   bBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-      if (color !== null && Colors.notEqual(color, colorPicked)) {
-        localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-        toolPicked()
+      if (color !== null && Colors.notEqual(color, color01)) {
+        loadTool(color, color01, color02)
       } else {
-        bBox.value = colorPicked.rgb.b
+        bBox.value = color01.rgb.b
       }
     }
   })
@@ -986,71 +1049,65 @@ function createBoxColumn(colorPicked, storageItem, color02 = null) {
   const hslBoxRow = createDivInputRow()
   const hBox = createInputTextBox()
   hBox.maxLength = '3'
-  hBox.value = colorPicked.hsl.h
+  hBox.value = color01.hsl.h
   const sBox = createInputTextBox()
   sBox.maxLength = '3'
-  sBox.value = colorPicked.hsl.s
+  sBox.value = color01.hsl.s
   const lBox = createInputTextBox()
   lBox.maxLength = '3'
-  lBox.value = colorPicked.hsl.l
+  lBox.value = color01.hsl.l
 
   hBox.addEventListener('focusout', () => {
     const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-      toolPicked()
+    if (color !== null && Colors.notEqual(color, color01)) {
+      loadTool(color, color01, color02)
     } else {
-      hBox.value = colorPicked.hsl.h
+      hBox.value = color01.hsl.h
     }
   })
   hBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-      if (color !== null && Colors.notEqual(color, colorPicked)) {
-        localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-        toolPicked()
+      if (color !== null && Colors.notEqual(color, color01)) {
+        loadTool(color, color01, color02)
       } else {
-        hBox.value = colorPicked.hsl.h
+        hBox.value = color01.hsl.h
       }
     }
   })
   sBox.addEventListener('focusout', () => {
     const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-      toolPicked()
+    if (color !== null && Colors.notEqual(color, color01)) {
+      loadTool(color, color01, color02)
     } else {
-      sBox.value = colorPicked.hsl.s
+      sBox.value = color01.hsl.s
     }
   })
   sBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-      if (color !== null && Colors.notEqual(color, colorPicked)) {
-        localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-        toolPicked()
+      if (color !== null && Colors.notEqual(color, color01)) {
+        loadTool(color, color01, color02)
       } else {
-        sBox.value = colorPicked.hsl.s
+        sBox.value = color01.hsl.s
       }
     }
   })
   lBox.addEventListener('focusout', () => {
     const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-    if (color !== null && Colors.notEqual(color, colorPicked)) {
-      localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-      toolPicked()
+    if (color !== null && Colors.notEqual(color, color01)) {
+      loadTool(color, color01, color02)
     } else {
-      lBox.value = colorPicked.hsl.l
+      lBox.value = color01.hsl.l
     }
   })
   lBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-      if (color !== null && Colors.notEqual(color, colorPicked)) {
-        localStorage.setItem(storageItem, color02 === null ? colorPicked.formattedHex : `${colorPicked.formattedHex}:${color02.formattedHex}`)
-        toolPicked()
+      if (color !== null && Colors.notEqual(color, color01)) {
+        loadTool(color, color01, color02)
       } else {
-        lBox.value = colorPicked.hsl.l
+        lBox.value = color01.hsl.l
       }
     }
   })
@@ -1066,7 +1123,7 @@ function createBoxColumn(colorPicked, storageItem, color02 = null) {
   boxColumn.appendChild(hslBoxRow)
   if (window.EyeDropper) {
     const buttonRow = createDivInputRow()
-    buttonRow.appendChild(createButtonEyedropper(colorPicked, storageItem))
+    buttonRow.appendChild(createButtonEyedropper(color01, color02))
     boxColumn.appendChild(buttonRow)
   }
 
@@ -1113,122 +1170,63 @@ function createA(href, innerText) {
   return a
 }
 
-function buildHueRow(row, value, degrees, colorPicked, storageItem) {
-  buildColorRow(row, Colors.hues(colorPicked, degrees, value), colorPicked, storageItem)
+function buildHueRow(row, value, degrees, colorPicked) {
+  buildColorRow(row, Colors.hues(colorPicked, degrees, value), colorPicked)
 }
 
-function buildSaturationRow(row, value, colorPicked, storageItem) {
-  buildColorRow(row, Colors.saturations(colorPicked, value), colorPicked, storageItem)
+function buildSaturationRow(row, value, colorPicked) {
+  buildColorRow(row, Colors.saturations(colorPicked, value), colorPicked)
 }
 
-function buildLightnessRow(row, value, colorPicked, storageItem) {
-  buildColorRow(row, Colors.lightnesses(colorPicked, value), colorPicked, storageItem)
+function buildLightnessRow(row, value, colorPicked) {
+  buildColorRow(row, Colors.lightnesses(colorPicked, value), colorPicked)
 }
 
-function complementaryRow(colorPicked, storageItem) {
-  return buildColorRow(createDivColorRowSmall(), Colors.complementary(colorPicked), colorPicked, storageItem)
+function complementaryRow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.complementary(colorPicked), colorPicked)
 }
 
-function splitComplementaryRow(colorPicked, storageItem) {
-  return buildColorRow(createDivColorRowSmall(), Colors.splitComplementary(colorPicked), colorPicked, storageItem)
+function splitComplementaryRow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.splitComplementary(colorPicked), colorPicked)
 }
 
-function analogousRow(colorPicked, storageItem) {
-  return buildColorRow(createDivColorRowSmall(), Colors.analogous(colorPicked), colorPicked, storageItem)
+function analogousRow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.analogous(colorPicked), colorPicked)
 }
 
-function triadicRow(colorPicked, storageItem) {
-  return buildColorRow(createDivColorRowSmall(), Colors.triadic(colorPicked), colorPicked, storageItem)
+function triadicRow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.triadic(colorPicked), colorPicked)
 }
 
-function tetradicRow(colorPicked, storageItem) {
-  return buildColorRow(createDivColorRowSmall(), Colors.tetradic(colorPicked), colorPicked, storageItem)
+function tetradicRow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.tetradic(colorPicked), colorPicked)
 }
 
-function squareRow(colorPicked, storageItem) {
-  return buildColorRow(createDivColorRowSmall(), Colors.square(colorPicked), colorPicked, storageItem)
+function squareRow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.square(colorPicked), colorPicked)
 }
 
-function paletteARow(colorPicked, storageItem) {
-  return buildColorRow(createDivColorRowSmall(), Colors.paletteA(colorPicked), colorPicked, storageItem)
+function paletteARow(colorPicked) {
+  return buildColorRow(createDivColorRowSmall(), Colors.paletteA(colorPicked), colorPicked)
 }
 
-function gradientRow(color01, color02, colorPicked01, colorPicked02, storageItem, type, value, position, height = null) {
-  return buildColorGradientRow(createDivColorRowSmall(), Colors.gradient(color01, color02), colorPicked01, colorPicked02, storageItem, type, value, position, height)
+function gradientRow(color01, color02, colorPicked01, colorPicked02, type, value, position, height = null) {
+  return buildColorGradientRow(createDivColorRowSmall(), Colors.gradient(color01, color02), colorPicked01, colorPicked02, type, value, position, height)
 }
 
-function historyColorRow(colorPicked, storageItem) {
-  let colors = []
-  let index = 0
-  while (localStorage.getItem(`history${storageItem}${index}`) !== null) {
-    colors.push(Colors.createHex(localStorage.getItem(`history${storageItem}${index++}`)))
-  }
-  if (colors.length === 0 || Colors.notEqual(colors[colors.length - 1], colorPicked)) {
-    colors.push(colorPicked)
-  }
-  if (colors.length > 8) {
-    colors = colors.slice(colors.length - 8, colors.length)
-  }
-  for (let index = 0; index < colors.length; index++) {
-    localStorage.setItem(`history${storageItem}${index}`, colors[index].formattedHex)
-  }
-
-  return buildColorRow(createDivColorRowSmall(), colors.reverse(), colorPicked, storageItem)
-}
-
-// function historyGradientRow(col, colorPicked01, colorPicked02, storageItem) {
-//   let colors01 = []
-//   let index01 = 0
-//   while (localStorage.getItem(`history${storageItem}${index01}`) !== null) {
-//     colors01.push(Colors.createHex(localStorage.getItem(`history${storageItem}${index01++}`).split(":")[0]))
-//   }
-//   if (colors01.length === 0 || Colors.notEqual(colors01[colors01.length - 1], colorPicked01)) {
-//     colors01.push(colorPicked01)
-//   }
-//   if (colors01.length > 8) {
-//     colors01 = colors01.slice(colors01.length - 8, colors01.length)
-//   }
-//   for (let index = 0; index < colors01.length; index++) {
-//     localStorage.setItem(`history${storageItem}${index}`, colors01[index].formattedHex)
-//   }
-
-//   let colors02 = []
-//   let index02 = 0
-//   while (localStorage.getItem(`history${storageItem}${index02}`) !== null) {
-//     colors02.push(Colors.createHex(localStorage.getItem(`history${storageItem}${index02++}`).split(":")[1]))
-//   }
-//   if (colors02.length === 0 || Colors.notEqual(colors02[colors02.length - 1], colorPicked02)) {
-//     colors02.push(colorPicked02)
-//   }
-//   if (colors02.length > 8) {
-//     colors02 = colors02.slice(colors02.length - 8, colors02.length)
-//   }
-//   for (let index = 0; index < colors02.length; index++) {
-//     localStorage.setItem(`history${storageItem}${index}`, colors02[index].formattedHex)
-//   }
-
-//   const length = colors01.length < colors02.length ? colors02.length : colors01.length
-//   for (let index = length - 1; index >= 0; index--) {
-//     const color01 = index < colors01.length ? colors01[index] : colors01[colors01.length - 1]
-//     const color02 = index < colors02.length ? colors02[index] : colors02[colors02.length - 1]
-//     const row = gradientRow(color01, color02, colorPicked01, colorPicked02, storageItem, 'linear', '0deg', '0%')
-//     col.appendChild(row)
-//   }
-// }
-
-function buildColorRow(row, colors, colorPicked, storageItem) {
+function buildColorRow(row, colors, colorPicked) {
   row.replaceChildren()
   colors.forEach(color => {
-    row.appendChild(createDivColor(color, colorPicked, storageItem))
+    row.appendChild(createDivColor(color, colorPicked))
   })
 
   return row
 }
 
-function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, storageItem, type, value, position, height = null) {
-  const divColor01 = createDivColor(colors[0], colorPicked01, storageItem, false, colors[1])
-  const divColor02 = createDivColor(colors[1], colorPicked02, storageItem, false, colors[0])
-  const divGradient = createDivGradient(colors[0], colors[1], divColor01, divColor02, storageItem, type, value, position)
+function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, type, value, position, height = null) {
+  const divColor01 = createDivColor(colors[0], colorPicked01, false, colors[1])
+  const divColor02 = createDivColor(colors[1], colorPicked02, false, colors[0])
+  const divGradient = createDivGradient(colors[0], colors[1], divColor01, divColor02, type, value, position)
 
   if (height !== null) {
     divColor01.style.height = height
@@ -1269,34 +1267,3 @@ function getBackgroundImage(color, name) {
 
   return `url(images/${backgroundImage})`
 }
-
-// if (document.fullscreenElement === null) {
-//   openFullscreen(divColor)
-// } else {
-//   closeFullscreen()
-// }
-
-// function openFullscreen(element) {
-//   if (element.requestFullscreen) {
-//     element.requestFullscreen()
-//   } else if (element.webkitRequestFullscreen) {
-//     element.webkitRequestFullscreen()
-//   } else if (element.msRequestFullscreen) {
-//     element.msRequestFullscreen()
-//   } else if (element.mozRequestFullScreen) {
-//     element.mozRequestFullScreen()
-//   }
-// }
-
-// function closeFullscreen() {
-//   if (document.exitFullscreen) {
-//     document.exitFullscreen()
-//   } else if (document.webkitExitFullscreen) {
-//     document.webkitExitFullscreen()
-//   } else if (document.msExitFullscreen) {
-//     document.msExitFullscreen()
-//   } else if (document.mozCancelFullScreen) {
-//     document.mozCancelFullScreen()
-//   }
-// }
-
