@@ -139,7 +139,7 @@ div.color-text {
     padding: 0px 10px;
 }
 
-div.color-text-like {
+div.color-icon {
     position: absolute;
     display: none;
     background-position: center;
@@ -148,47 +148,6 @@ div.color-text-like {
     cursor: pointer;
     height: 20px;
     width: 20px;
-    top: 10px;
-    left: 10px;
-}
-
-div.color-text-full {
-    position: absolute;
-    display: none;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    cursor: pointer;
-    height: 20px;
-    width: 20px;
-    top: 10px;
-    right: 10px;
-}
-
-div.color-text-check {
-    position: absolute;
-    display: none;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    cursor: pointer;
-    height: 20px;
-    width: 20px;
-    bottom: 10px;
-    right: 10px;
-}
-
-div.color-text-corner {
-    position: absolute;
-    display: none;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    cursor: pointer;
-    height: 20px;
-    width: 20px;
-    bottom: 10px;
-    left: 10px;
 }
 
 div.color-text:hover {
@@ -285,7 +244,7 @@ input[type=range].slider::-moz-range-thumb {
 }
 
 div.copied {
-    display: none;
+    display: flex;
     position: fixed;
     flex-direction: column;
     justify-content: center;
