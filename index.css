@@ -139,6 +139,10 @@ div.color-text {
     padding: 0px 10px;
 }
 
+div.color-text:hover {
+    text-decoration: underline;
+}
+
 div.color-icon {
     position: absolute;
     display: none;
@@ -150,8 +154,17 @@ div.color-icon {
     width: 20px;
 }
 
-div.color-text:hover {
-    text-decoration: underline;
+div.tooltip {
+    display: none;
+    position: absolute;
+    background-color: var(--color);
+    color: var(--background-color);
+    cursor: pointer;
+    top: 50%;
+    left: 120%;
+    z-index: 4;
+    padding: 10px;
+    transform: translate(0%, -50%);
 }
 
 div.marker {

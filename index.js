@@ -505,11 +505,26 @@ function createDivColorIconHeart(color) {
 }
 
 function createDivColorIconOpenFullscreen(color01, color02, type, value, position) {
+  const divTooltip = createDiv()
+  divTooltip.className = 'tooltip'
+  divTooltip.innerText = 'fullscreen'
+
   const divColorIcon = createDiv()
   divColorIcon.className = 'color-icon'
   divColorIcon.style.backgroundImage = getBackgroundImage(color02 === null ? color01 : color02, 'fullscreen')
   divColorIcon.style.top = '10px'
   divColorIcon.style.right = '10px'
+  divColorIcon.appendChild(divTooltip)
+  let tooltopTimeout = null
+  divColorIcon.addEventListener('mouseenter', () => {
+    tooltopTimeout = setTimeout(function () {
+      divTooltip.style.display = 'block'
+    }, 1000)
+  })
+  divColorIcon.addEventListener('mouseleave', () => {
+    clearTimeout(tooltopTimeout)
+    divTooltip.style.display = 'none'
+  })
   divColorIcon.addEventListener('click', () => {
     if (color02 === null) {
       document.body.appendChild(createDivColor(color01, null, true))
