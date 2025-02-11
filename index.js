@@ -74,7 +74,11 @@ function createColorPicker() {
   toolPicked = createColorPicker
 
   const colors = getHistoryColors()
-  const color = colors.length > 0 ? colors[colors.length - 1] : Colors.random()
+  if (colors.length === 0) {
+    colors.push(Colors.randomGrayscaleRange(55, 200))
+    setHistoryColors(colors)
+  }
+  const color = colors[colors.length - 1]
   document.documentElement.style.setProperty('--thumb-color', color.formattedHSL)
 
   const hueRow = createDivColorRow()
@@ -155,7 +159,11 @@ function createGradientPicker() {
   toolPicked = createGradientPicker
 
   const gradients = getHistoryGradients()
-  const gradient = gradients.length > 0 ? gradients[gradients.length - 1] : [Colors.random(), Colors.random()]
+  if (gradients.length === 0) {
+    gradients.push([Colors.randomGrayscaleRange(55, 200), Colors.randomGrayscaleRange(55, 200)])
+    setHistorGradients(gradients)
+  }
+  const gradient = gradients[gradients.length - 1]
   document.documentElement.style.setProperty('--thumb-color', gradient[0].formattedHSL)
 
   const colorRow = createDivInnerRow()

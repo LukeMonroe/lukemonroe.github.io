@@ -80,6 +80,24 @@ class Colors {
     return Colors.buildHSL(h, s, l)
   }
 
+  static randomGrayscaleRange(grayscaleMin, grayscaleMax) {
+    let gMin = grayscaleMin >= 0 ? grayscaleMin : 0
+    let gMax = grayscaleMax <= 255 ? grayscaleMax : 255
+
+    let h = Math.round(Math.random() * 359)
+    let s = Math.round(Math.random() * 100)
+    let l = Math.round(Math.random() * 100)
+    let color = Colors.buildHSL(h, s, l)
+    while (color.grayscale < gMin || color.grayscale > gMax) {
+      h = Math.round(Math.random() * 359)
+      s = Math.round(Math.random() * 100)
+      l = Math.round(Math.random() * 100)
+      color = Colors.buildHSL(h, s, l)
+    }
+
+    return color
+  }
+
   static hexToRGB(hex) {
     const r = parseInt(hex.slice(1, 3), 16)
     const g = parseInt(hex.slice(3, 5), 16)
