@@ -134,6 +134,7 @@ div.color-fullscreen {
 }
 
 div.color-text {
+    position: relative;
     display: none;
     cursor: pointer;
     padding: 0px 10px;
@@ -159,12 +160,14 @@ div.tooltip {
     position: absolute;
     background-color: var(--color);
     color: var(--background-color);
+    white-space: nowrap;
+    overflow: hidden;
     cursor: pointer;
-    top: 50%;
-    left: 120%;
+    bottom: calc(100% + 10px);
+    left: 50%;
     z-index: 4;
     padding: 10px;
-    transform: translate(0%, -50%);
+    transform: translate(-50%, 0%);
 }
 
 div.marker {

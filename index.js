@@ -451,10 +451,29 @@ function setLikedGradients(gradients) {
   }
 }
 
+function createDivTooltip(divParent, innerText) {
+  const divTooltip = createDiv()
+  divTooltip.className = 'tooltip'
+  divTooltip.innerText = innerText
+
+  divParent.appendChild(divTooltip)
+  let tooltopTimeout = null
+  divParent.addEventListener('mouseenter', () => {
+    tooltopTimeout = setTimeout(function () {
+      divTooltip.style.display = 'block'
+    }, 1000)
+  })
+  divParent.addEventListener('mouseleave', () => {
+    clearTimeout(tooltopTimeout)
+    divTooltip.style.display = 'none'
+  })
+}
+
 function createDivColorText(innerText) {
   const divColorText = createDiv()
   divColorText.className = 'color-text'
   divColorText.innerText = innerText
+  createDivTooltip(divColorText, 'copy')
   divColorText.addEventListener('click', () => {
     navigator.clipboard.writeText(divColorText.innerText)
 
@@ -482,6 +501,7 @@ function createDivColorIconHeart(color) {
   divColorIcon.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
   divColorIcon.style.top = '10px'
   divColorIcon.style.left = '10px'
+  createDivTooltip(divColorIcon, 'favorite')
   divColorIcon.addEventListener('click', () => {
     let colors = getLikedColors()
     let colorIndex = null
@@ -505,26 +525,12 @@ function createDivColorIconHeart(color) {
 }
 
 function createDivColorIconOpenFullscreen(color01, color02, type, value, position) {
-  const divTooltip = createDiv()
-  divTooltip.className = 'tooltip'
-  divTooltip.innerText = 'fullscreen'
-
   const divColorIcon = createDiv()
   divColorIcon.className = 'color-icon'
   divColorIcon.style.backgroundImage = getBackgroundImage(color02 === null ? color01 : color02, 'fullscreen')
   divColorIcon.style.top = '10px'
   divColorIcon.style.right = '10px'
-  divColorIcon.appendChild(divTooltip)
-  let tooltopTimeout = null
-  divColorIcon.addEventListener('mouseenter', () => {
-    tooltopTimeout = setTimeout(function () {
-      divTooltip.style.display = 'block'
-    }, 1000)
-  })
-  divColorIcon.addEventListener('mouseleave', () => {
-    clearTimeout(tooltopTimeout)
-    divTooltip.style.display = 'none'
-  })
+  createDivTooltip(divColorIcon, 'fullscreen')
   divColorIcon.addEventListener('click', () => {
     if (color02 === null) {
       document.body.appendChild(createDivColor(color01, null, true))
@@ -543,6 +549,7 @@ function createDivColorIconCloseFullscreen(color, divColor) {
   divColorIcon.style.backgroundImage = getBackgroundImage(color, 'fullscreen')
   divColorIcon.style.top = '10px'
   divColorIcon.style.right = '10px'
+  createDivTooltip(divColorIcon, 'fullscreen')
   divColorIcon.addEventListener('click', () => {
     document.body.removeChild(divColor)
     document.body.style.overflow = 'auto'
@@ -557,6 +564,7 @@ function createDivColorIconCheckmark(color01, color02) {
   divColorIcon.style.backgroundImage = getBackgroundImage(color02 === null ? color01 : color02, 'checkmark')
   divColorIcon.style.bottom = '10px'
   divColorIcon.style.right = '10px'
+  createDivTooltip(divColorIcon, color02 === null ? 'load color' : 'load gradient')
   divColorIcon.addEventListener('click', () => {
     if (tool !== 'likedColors') {
       if (color02 === null) {
@@ -581,6 +589,7 @@ function createDivColorIconCornerTriangle(color, divColor01, divColor02, divGrad
   divColorIcon.style.backgroundImage = getBackgroundImage(color, 'corner-triangle')
   divColorIcon.style.bottom = '10px'
   divColorIcon.style.left = '10px'
+  createDivTooltip(divColorIcon, 'show colors')
   divColorIcon.addEventListener('click', () => {
     divColor01.style.display = 'flex'
     divGradient.style.display = 'none'
@@ -596,6 +605,7 @@ function createDivGradientIconHeart(gradient) {
   divColorIcon.style.backgroundImage = isGradientLiked(gradient) ? getBackgroundImage(gradient[0], 'heart-filled') : getBackgroundImage(gradient[0], 'heart-empty')
   divColorIcon.style.top = '10px'
   divColorIcon.style.left = '10px'
+  createDivTooltip(divColorIcon, 'favorite')
   divColorIcon.addEventListener('click', () => {
     let gradients = getLikedGradients()
     let gradientIndex = null
