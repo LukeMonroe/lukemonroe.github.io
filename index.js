@@ -306,6 +306,9 @@ function createDivColorGrid() {
     divColor.style.width = '300px'
     divColorGrid.appendChild(divColor)
   }
+  if (colors.length === 0) {
+    divColorGrid.appendChild(createH3('No favorites yet :('))
+  }
 
   return divColorGrid
 }
@@ -320,6 +323,9 @@ function createDivGradientGrid() {
     divGradient.style.flex = 'none'
     divGradient.style.width = '300px'
     divColorGrid.appendChild(divGradient)
+  }
+  if (gradients.length === 0) {
+    divColorGrid.appendChild(createH3('No favorites yet :('))
   }
 
   return divColorGrid
@@ -457,14 +463,14 @@ function createDivTooltip(divParent, innerText) {
   divTooltip.innerText = innerText
 
   divParent.appendChild(divTooltip)
-  let tooltopTimeout = null
+  let tooltipTimeout = null
   divParent.addEventListener('mouseenter', () => {
-    tooltopTimeout = setTimeout(function () {
+    tooltipTimeout = setTimeout(function () {
       divTooltip.style.display = 'block'
-    }, 1000)
+    }, 400)
   })
   divParent.addEventListener('mouseleave', () => {
-    clearTimeout(tooltopTimeout)
+    clearTimeout(tooltipTimeout)
     divTooltip.style.display = 'none'
   })
 }
@@ -551,6 +557,10 @@ function createDivColorIconCloseFullscreen(color, divColor) {
   divColorIcon.style.right = '10px'
   createDivTooltip(divColorIcon, 'fullscreen')
   divColorIcon.addEventListener('click', () => {
+    document.body.removeChild(divColor)
+    document.body.style.overflow = 'auto'
+  })
+  divColor.addEventListener('dblclick', () => {
     document.body.removeChild(divColor)
     document.body.style.overflow = 'auto'
   })
