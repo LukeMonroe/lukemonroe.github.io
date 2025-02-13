@@ -626,14 +626,13 @@ function createDivTooltip(divParent, innerText) {
   divTooltip.innerText = innerText
 
   divParent.appendChild(divTooltip)
-  let tooltipTimeout = null
   divParent.addEventListener('mouseenter', () => {
-    tooltipTimeout = setTimeout(function () {
-      divTooltip.style.display = 'block'
-    }, 400)
+    divTooltip.style.display = 'block'
   })
   divParent.addEventListener('mouseleave', () => {
-    clearTimeout(tooltipTimeout)
+    divTooltip.style.display = 'none'
+  })
+  divParent.addEventListener('click', () => {
     divTooltip.style.display = 'none'
   })
 }
