@@ -17,7 +17,7 @@ document.addEventListener('click', event => {
 document.body.appendChild(sideNavigation)
 
 let tool = localStorage.getItem('tool')
-let toolPicked = tool === null ? createColorPicker : tool === 'colorPicker' ? createColorPicker : tool === 'gradientPicker' ? createGradientPicker : createLikedColors
+let toolPicked = tool === null ? createColorPicker : tool === 'colorPicker' ? createColorPicker : tool === 'gradientPicker' ? createGradientPicker : tool === 'likedColors' ? createLikedColors : createContrastPicker
 toolPicked()
 
 function createSideNavigation() {
@@ -33,6 +33,11 @@ function createSideNavigation() {
     sideNavigation.style.width = '0px'
     createGradientPicker()
   })
+  const aContrastPicker = createA('javascript:void(0);', 'Contrast Picker')
+  aContrastPicker.addEventListener('click', () => {
+    sideNavigation.style.width = '0px'
+    createContrastPicker()
+  })
   const aLikedColors = createA('javascript:void(0);', 'Favorites')
   aLikedColors.addEventListener('click', () => {
     sideNavigation.style.width = '0px'
@@ -40,6 +45,7 @@ function createSideNavigation() {
   })
   sideNavigation.appendChild(aColors)
   sideNavigation.appendChild(aGradients)
+  sideNavigation.appendChild(aContrastPicker)
   sideNavigation.appendChild(aLikedColors)
   sideNavigation.appendChild(createButtonTheme())
 
@@ -96,7 +102,7 @@ function createColorPicker() {
 
   const colorRow = createDivInnerRow()
   colorRow.appendChild(divColorPicked)
-  colorRow.appendChild(createBoxColumn(color, null))
+  colorRow.appendChild(createBoxColumn(color, null, null))
 
   const variationsColumn = createDivInnerColumn()
   variationsColumn.appendChild(createH2('Variations'))
@@ -170,8 +176,8 @@ function createGradientPicker() {
   const gradientSliders = createDoubleInputRangeSlidersGradient(0, 360, 1, 'Degrees', 0, 0, 100, 1, 'Percent', 0, colorRow, createGradientRowPicked, gradient[0], gradient[1], '300px')
 
   const boxRow = createDivInnerRow()
-  boxRow.appendChild(createBoxColumn(gradient[0], gradient[1]))
-  boxRow.appendChild(createBoxColumn(gradient[1], gradient[0]))
+  boxRow.appendChild(createBoxColumn(gradient[0], gradient[1], 'left'))
+  boxRow.appendChild(createBoxColumn(gradient[0], gradient[1], 'right'))
 
   const slidersColumn = createDivInnerColumn()
   gradientSliders.forEach(gradientSlider => {
@@ -218,6 +224,101 @@ function createGradientPicker() {
       }, 1000)
     }
   })
+  setTimeout(function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, 10)
+}
+
+function createContrastPicker() {
+  localStorage.setItem('tool', 'contrastPicker')
+  tool = localStorage.getItem('tool')
+  toolPicked = createContrastPicker
+
+  const colors = getHistoryContrastColors()
+  if (colors.length === 0) {
+    colors.push(Colors.randomGrayscaleRange(55, 200))
+    setHistoryContrastColors(colors)
+  }
+  const color = colors[colors.length - 1]
+  document.documentElement.style.setProperty('--thumb-color', color.formattedHSL)
+
+  const textColors = getHistoryContrastTextColors()
+  if (textColors.length === 0) {
+    let randomColor = Colors.random()
+    while (Math.abs(color.grayscale - randomColor.grayscale) < 64) {
+      randomColor = Colors.random()
+    }
+    textColors.push(randomColor)
+    setHistoryContrastTextColors(textColors)
+  }
+  const textColor = textColors[textColors.length - 1]
+
+  const divColorPicked = createDivColor(color, color)
+  divColorPicked.style.height = '300px'
+  divColorPicked.style.maxWidth = '600px'
+  divColorPicked.style.color = textColor.formattedHex
+
+  const colorRow = createDivInnerRow()
+  colorRow.appendChild(divColorPicked)
+
+  const boxRow = createDivInnerRow()
+  boxRow.appendChild(createBoxColumn(color, null, 'left'))
+  boxRow.appendChild(createBoxColumn(null, textColor, 'right'))
+
+  const historyColumn = createDivInnerColumn()
+  historyColumn.appendChild(createH2('History'))
+  historyColumn.appendChild(createH3('Colors'))
+  historyColumn.appendChild(buildColorRow1(createDivColorRowSmall(), getHistoryContrastColors(), color, 'left'))
+  historyColumn.appendChild(createH3('Text Colors'))
+  historyColumn.appendChild(buildColorRow1(createDivColorRowSmall(), getHistoryContrastTextColors(), textColor, 'right'))
+
+  const header = document.getElementById('header')
+  header.replaceChildren()
+  header.appendChild(createButtonNavigation(sideNavigation))
+  header.appendChild(createH1('Contrast Picker'))
+
+  const grayscaleDelta = Math.abs(color.grayscale - textColor.grayscale)
+  let rating = 1
+  let textRating = 'disgusting'
+  if (grayscaleDelta < 16) {
+    rating = 1
+    textRating = 'disgusting'
+  } else if (grayscaleDelta < 32) {
+    rating = 2
+    textRating = 'awful'
+  } else if (grayscaleDelta < 48) {
+    rating = 3
+    textRating = 'bad'
+  } else if (grayscaleDelta < 64) {
+    rating = 4
+    textRating = 'okay'
+  } else if (grayscaleDelta < 80) {
+    rating = 5
+    textRating = 'alright'
+  } else if (grayscaleDelta < 96) {
+    rating = 6
+    textRating = 'better'
+  } else if (grayscaleDelta < 112) {
+    rating = 7
+    textRating = 'good'
+  } else if (grayscaleDelta < 128) {
+    rating = 8
+    textRating = 'great'
+  } else if (grayscaleDelta < 128) {
+    rating = 9
+    textRating = 'best'
+  } else {
+    rating = 10
+    textRating = 'perfect'
+  }
+
+  const outerColumn = document.getElementById('outer-column')
+  outerColumn.replaceChildren()
+  outerColumn.appendChild(colorRow)
+  outerColumn.appendChild(createH3(`Contrast Rating: ${textRating} (${rating}/10)`))
+  outerColumn.appendChild(boxRow)
+  outerColumn.appendChild(historyColumn)
+
   setTimeout(function () {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, 10)
@@ -391,6 +492,68 @@ function setHistorGradients(gradients) {
   }
   for (let index = (gradients.length > 8 ? 8 : gradients.length); index < 16; index++) {
     localStorage.removeItem(`historyGradient${index}`)
+  }
+}
+
+function getHistoryContrastColors() {
+  const colors = []
+  let index = 0
+  while (localStorage.getItem(`historyContrastColor${index}`) !== null) {
+    colors.push(Colors.createHex(localStorage.getItem(`historyContrastColor${index++}`)))
+  }
+
+  return colors
+}
+
+function isHistoryContrastColor(color) {
+  const colors = getHistoryContrastColors()
+  for (let index = 0; index < colors.length; index++) {
+    if (Colors.equal(colors[index], color, false)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function setHistoryContrastColors(colors) {
+  let pos = 0
+  for (let index = (colors.length > 8 ? colors.length - 8 : 0); index < colors.length; index++) {
+    localStorage.setItem(`historyContrastColor${pos++}`, colors[index].formattedHex)
+  }
+  for (let index = (colors.length > 8 ? 8 : colors.length); index < 16; index++) {
+    localStorage.removeItem(`historyContrastColor${index}`)
+  }
+}
+
+function getHistoryContrastTextColors() {
+  const colors = []
+  let index = 0
+  while (localStorage.getItem(`historyContrastTextColor${index}`) !== null) {
+    colors.push(Colors.createHex(localStorage.getItem(`historyContrastTextColor${index++}`)))
+  }
+
+  return colors
+}
+
+function isHistoryContrastTextColor(color) {
+  const colors = getHistoryContrastTextColors()
+  for (let index = 0; index < colors.length; index++) {
+    if (Colors.equal(colors[index], color, false)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function setHistoryContrastTextColors(colors) {
+  let pos = 0
+  for (let index = (colors.length > 8 ? colors.length - 8 : 0); index < colors.length; index++) {
+    localStorage.setItem(`historyContrastTextColor${pos++}`, colors[index].formattedHex)
+  }
+  for (let index = (colors.length > 8 ? 8 : colors.length); index < 16; index++) {
+    localStorage.removeItem(`historyContrastTextColor${index}`)
   }
 }
 
@@ -568,26 +731,16 @@ function createDivColorIconCloseFullscreen(color, divColor) {
   return divColorIcon
 }
 
-function createDivColorIconCheckmark(color01, color02) {
+function createDivColorIconCheckmark(color01, color02, side) {
+  const baseColor = side === null ? color01 : side === 'left' ? color01 : color02
   const divColorIcon = createDiv()
   divColorIcon.className = 'color-icon'
-  divColorIcon.style.backgroundImage = getBackgroundImage(color02 === null ? color01 : color02, 'checkmark')
+  divColorIcon.style.backgroundImage = getBackgroundImage((side === null || color02 === null) ? color01 : side === 'left' ? color01 : color02, 'checkmark')
   divColorIcon.style.bottom = '10px'
   divColorIcon.style.right = '10px'
   createDivTooltip(divColorIcon, color02 === null ? 'load color' : 'load gradient')
   divColorIcon.addEventListener('click', () => {
-    if (tool !== 'likedColors') {
-      if (color02 === null) {
-        const colors = getHistoryColors()
-        colors.push(color01)
-        setHistoryColors(colors)
-      } else {
-        const gradients = getHistoryGradients()
-        gradients.push([color01, color02])
-        setHistorGradients(gradients)
-      }
-      toolPicked()
-    }
+    loadTool(baseColor, color01, color02, side)
   })
 
   return divColorIcon
@@ -638,7 +791,7 @@ function createDivGradientIconHeart(gradient) {
   return divColorIcon
 }
 
-function createDivColor(color, colorPicked, fullscreen = false, color02 = null) {
+function createDivColor(color, colorPicked, fullscreen = false, color02 = null, side = null) {
   const divColor = createDiv()
   divColor.className = fullscreen ? 'color-fullscreen' : 'color'
   divColor.style.backgroundColor = color.formattedHSL
@@ -659,7 +812,21 @@ function createDivColor(color, colorPicked, fullscreen = false, color02 = null) 
     divColor.appendChild(createDivColorIconCloseFullscreen(color, divColor))
   } else {
     divColor.appendChild(createDivColorIconOpenFullscreen(color, null, null, null, null))
-    divColor.appendChild(createDivColorIconCheckmark(color, null))
+    if (color02 !== null && side !== null) {
+      if (side === 'left') {
+        const load = createDivColorIconCheckmark(color, color02, 'left')
+        load.style.right = '40px'
+        divColor.appendChild(load)
+        divColor.appendChild(createDivColorIconCheckmark(colorPicked, color, 'right'))
+      } else {
+        const load = createDivColorIconCheckmark(color, colorPicked, 'left')
+        load.style.right = '40px'
+        divColor.appendChild(load)
+        divColor.appendChild(createDivColorIconCheckmark(color02, color, 'right'))
+      }
+    } else {
+      divColor.appendChild(createDivColorIconCheckmark(color, null, null))
+    }
   }
 
   divColor.addEventListener('mouseenter', () => {
@@ -704,7 +871,7 @@ function createDivGradient(color01, color02, divColor01, divColor02, type, value
 
   const show = createDivColorIconCornerTriangle(color01, divColor01, divColor02, divGradient)
   const openFullscreen = createDivColorIconOpenFullscreen(color01, color02, type, value, position)
-  const load = createDivColorIconCheckmark(color01, color02)
+  const load = createDivColorIconCheckmark(color01, color02, 'right')
   const likeGradient = createDivGradientIconHeart([color01, color02])
 
   divGradient.appendChild(show)
@@ -977,40 +1144,57 @@ function createButtonEyedropper(color01, color02) {
   return buttonEyedropper
 }
 
-function loadTool(color, color01, color02) {
-  if (color02 === null) {
-    const colors = getHistoryColors()
-    colors.push(color)
-    setHistoryColors(colors)
-  } else {
-    const gradients = getHistoryGradients()
-    gradients.push([color, color02])
-    setHistorGradients(gradients)
+function loadTool(color, color01, color02, side) {
+  if (tool !== 'likedColors') {
+    if (tool === 'colorPicker') {
+      const colors = getHistoryColors()
+      colors.push(color)
+      setHistoryColors(colors)
+    } else if (tool === 'contrastPicker') {
+      if (side === null || side === 'left') {
+        const colors = getHistoryContrastColors()
+        colors.push(color)
+        setHistoryContrastColors(colors)
+      } else {
+        const colors = getHistoryContrastTextColors()
+        colors.push(color)
+        setHistoryContrastTextColors(colors)
+      }
+    } else {
+      const gradients = getHistoryGradients()
+      if (side === null || side === 'left') {
+        gradients.push([color, color02])
+      } else {
+        gradients.push([color01, color])
+      }
+      setHistorGradients(gradients)
+    }
+    toolPicked()
   }
-  toolPicked()
 }
 
-function createBoxColumn(color01, color02) {
+function createBoxColumn(color01, color02, side) {
+  const baseColor = side === null ? color01 : side === 'left' ? color01 : color02
   const hexBoxRow = createDivInputRow()
   const hexBox = createInputTextBox()
   hexBox.maxLength = '7'
   hexBox.style.width = '107px'
-  hexBox.value = color01.formattedHex
+  hexBox.value = baseColor.formattedHex
   hexBox.addEventListener('focusout', () => {
     const color = Colors.createHex(hexBox.value)
-    if (color !== null && Colors.notEqual(color, color01)) {
-      loadTool(color, color01, color02)
+    if (color !== null && Colors.notEqual(color, baseColor)) {
+      loadTool(color, color01, color02, side)
     } else {
-      hexBox.value = color01.formattedHex
+      hexBox.value = baseColor.formattedHex
     }
   })
   hexBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createHex(hexBox.value)
-      if (color !== null && Colors.notEqual(color, color01)) {
-        loadTool(color, color01, color02)
+      if (color !== null && Colors.notEqual(color, baseColor)) {
+        loadTool(color, color01, color02, side)
       } else {
-        hexBox.value = color01.formattedHex
+        hexBox.value = baseColor.formattedHex
       }
     }
   })
@@ -1021,65 +1205,65 @@ function createBoxColumn(color01, color02) {
   const rgbBoxRow = createDivInputRow()
   const rBox = createInputTextBox()
   rBox.maxLength = '3'
-  rBox.value = color01.rgb.r
+  rBox.value = baseColor.rgb.r
   const gBox = createInputTextBox()
   gBox.maxLength = '3'
-  gBox.value = color01.rgb.g
+  gBox.value = baseColor.rgb.g
   const bBox = createInputTextBox()
   bBox.maxLength = '3'
-  bBox.value = color01.rgb.b
+  bBox.value = baseColor.rgb.b
 
   rBox.addEventListener('focusout', () => {
     const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-    if (color !== null && Colors.notEqual(color, color01)) {
-      loadTool(color, color01, color02)
+    if (color !== null && Colors.notEqual(color, baseColor)) {
+      loadTool(color, color01, color02, side)
     } else {
-      rBox.value = color01.rgb.r
+      rBox.value = baseColor.rgb.r
     }
   })
   rBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-      if (color !== null && Colors.notEqual(color, color01)) {
-        loadTool(color, color01, color02)
+      if (color !== null && Colors.notEqual(color, baseColor)) {
+        loadTool(color, color01, color02, side)
       } else {
-        rBox.value = color01.rgb.r
+        rBox.value = baseColor.rgb.r
       }
     }
   })
   gBox.addEventListener('focusout', () => {
     const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-    if (color !== null && Colors.notEqual(color, color01)) {
-      loadTool(color, color01, color02)
+    if (color !== null && Colors.notEqual(color, baseColor)) {
+      loadTool(color, color01, color02, side)
     } else {
-      gBox.value = color01.rgb.g
+      gBox.value = baseColor.rgb.g
     }
   })
   gBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-      if (color !== null && Colors.notEqual(color, color01)) {
-        loadTool(color, color01, color02)
+      if (color !== null && Colors.notEqual(color, baseColor)) {
+        loadTool(color, color01, color02, side)
       } else {
-        gBox.value = color01.rgb.g
+        gBox.value = baseColor.rgb.g
       }
     }
   })
   bBox.addEventListener('focusout', () => {
     const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-    if (color !== null && Colors.notEqual(color, color01)) {
-      loadTool(color, color01, color02)
+    if (color !== null && Colors.notEqual(color, baseColor)) {
+      loadTool(color, color01, color02, side)
     } else {
-      bBox.value = color01.rgb.b
+      bBox.value = baseColor.rgb.b
     }
   })
   bBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createRGB(rBox.value, gBox.value, bBox.value)
-      if (color !== null && Colors.notEqual(color, color01)) {
-        loadTool(color, color01, color02)
+      if (color !== null && Colors.notEqual(color, baseColor)) {
+        loadTool(color, color01, color02, side)
       } else {
-        bBox.value = color01.rgb.b
+        bBox.value = baseColor.rgb.b
       }
     }
   })
@@ -1092,65 +1276,65 @@ function createBoxColumn(color01, color02) {
   const hslBoxRow = createDivInputRow()
   const hBox = createInputTextBox()
   hBox.maxLength = '3'
-  hBox.value = color01.hsl.h
+  hBox.value = baseColor.hsl.h
   const sBox = createInputTextBox()
   sBox.maxLength = '3'
-  sBox.value = color01.hsl.s
+  sBox.value = baseColor.hsl.s
   const lBox = createInputTextBox()
   lBox.maxLength = '3'
-  lBox.value = color01.hsl.l
+  lBox.value = baseColor.hsl.l
 
   hBox.addEventListener('focusout', () => {
     const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-    if (color !== null && Colors.notEqual(color, color01)) {
-      loadTool(color, color01, color02)
+    if (color !== null && Colors.notEqual(color, baseColor)) {
+      loadTool(color, color01, color02, side)
     } else {
-      hBox.value = color01.hsl.h
+      hBox.value = baseColor.hsl.h
     }
   })
   hBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-      if (color !== null && Colors.notEqual(color, color01)) {
-        loadTool(color, color01, color02)
+      if (color !== null && Colors.notEqual(color, baseColor)) {
+        loadTool(color, color01, color02, side)
       } else {
-        hBox.value = color01.hsl.h
+        hBox.value = baseColor.hsl.h
       }
     }
   })
   sBox.addEventListener('focusout', () => {
     const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-    if (color !== null && Colors.notEqual(color, color01)) {
-      loadTool(color, color01, color02)
+    if (color !== null && Colors.notEqual(color, baseColor)) {
+      loadTool(color, color01, color02, side)
     } else {
-      sBox.value = color01.hsl.s
+      sBox.value = baseColor.hsl.s
     }
   })
   sBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-      if (color !== null && Colors.notEqual(color, color01)) {
-        loadTool(color, color01, color02)
+      if (color !== null && Colors.notEqual(color, baseColor)) {
+        loadTool(color, color01, color02, side)
       } else {
-        sBox.value = color01.hsl.s
+        sBox.value = baseColor.hsl.s
       }
     }
   })
   lBox.addEventListener('focusout', () => {
     const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-    if (color !== null && Colors.notEqual(color, color01)) {
-      loadTool(color, color01, color02)
+    if (color !== null && Colors.notEqual(color, baseColor)) {
+      loadTool(color, color01, color02, side)
     } else {
-      lBox.value = color01.hsl.l
+      lBox.value = baseColor.hsl.l
     }
   })
   lBox.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       const color = Colors.createHSL(hBox.value, sBox.value, lBox.value)
-      if (color !== null && Colors.notEqual(color, color01)) {
-        loadTool(color, color01, color02)
+      if (color !== null && Colors.notEqual(color, baseColor)) {
+        loadTool(color, color01, color02, side)
       } else {
-        lBox.value = color01.hsl.l
+        lBox.value = baseColor.hsl.l
       }
     }
   })
@@ -1266,9 +1450,18 @@ function buildColorRow(row, colors, colorPicked) {
   return row
 }
 
+function buildColorRow1(row, colors, colorPicked, side) {
+  row.replaceChildren()
+  colors.forEach(color => {
+    row.appendChild(createDivColor(color, colorPicked, false, color, side))
+  })
+
+  return row
+}
+
 function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, type, value, position, height = null) {
-  const divColor01 = createDivColor(colors[0], colorPicked01, false, colors[1])
-  const divColor02 = createDivColor(colors[1], colorPicked02, false, colors[0])
+  const divColor01 = createDivColor(colors[0], colorPicked01, false, colorPicked02, 'left')
+  const divColor02 = createDivColor(colors[1], colorPicked02, false, colorPicked01, 'right')
   const divGradient = createDivGradient(colors[0], colors[1], divColor01, divColor02, type, value, position)
 
   if (height !== null) {
@@ -1297,15 +1490,15 @@ function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, type, 
 function getBackgroundImage(color, name) {
   let backgroundImage = 'blank.png'
   if (name === 'checkmark') {
-    backgroundImage = color.grayscale > 150 ? 'checkmark-black.png' : 'checkmark-white.png'
+    backgroundImage = color.grayscale > 127 ? 'checkmark-black.png' : 'checkmark-white.png'
   } else if (name === 'corner-triangle') {
-    backgroundImage = color.grayscale > 150 ? 'corner-triangle-black.png' : 'corner-triangle-white.png'
+    backgroundImage = color.grayscale > 127 ? 'corner-triangle-black.png' : 'corner-triangle-white.png'
   } else if (name === 'fullscreen') {
-    backgroundImage = color.grayscale > 150 ? 'fullscreen-black.png' : 'fullscreen-white.png'
+    backgroundImage = color.grayscale > 127 ? 'fullscreen-black.png' : 'fullscreen-white.png'
   } else if (name === 'heart-empty') {
-    backgroundImage = color.grayscale > 150 ? 'heart-empty-black.png' : 'heart-empty-white.png'
+    backgroundImage = color.grayscale > 127 ? 'heart-empty-black.png' : 'heart-empty-white.png'
   } else if (name === 'heart-filled') {
-    backgroundImage = color.grayscale > 150 ? 'heart-filled-black.png' : 'heart-filled-white.png'
+    backgroundImage = color.grayscale > 127 ? 'heart-filled-black.png' : 'heart-filled-white.png'
   }
 
   return `url(images/${backgroundImage})`
