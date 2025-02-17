@@ -1412,27 +1412,29 @@ function buildLightnessRow(row, value, colorPicked) {
 function createColorWidget(color) {
   const col = createDivInnerColumn()
 
+  let hColor = Colors.copy(color)
   const hoveredColor = createDiv()
   hoveredColor.style.height = '100px'
   hoveredColor.style.width = '100px'
+  hoveredColor.style.border = '2px solid blue'
+  hoveredColor.addEventListener('click', () => {
+    loadTool(hColor, null, null, null)
+  })
 
+  let mouseDown = false
   const canvas = document.createElement('canvas')
   canvas.height = 200
-  canvas.width = 600
-
-  const context = canvas.getContext('2d')
-
-  const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height)
-  gradient.addColorStop(0, "lightblue")
-  gradient.addColorStop(0.33, "darkblue")
-  gradient.addColorStop(0.67, "green")
-  gradient.addColorStop(1, "orange")
-
-  context.fillStyle = gradient
-  context.fillRect(0, 0, canvas.width, canvas.height)
-
-  canvas.addEventListener("mousemove", (event) => getImageData(event, canvas, context, hoveredColor, false))
-  canvas.addEventListener("click", (event) => getImageData(event, canvas, context, hoveredColor, true))
+  canvas.width = 200
+  canvas.style.border = '2px solid blue'
+  canvas.addEventListener("mousedown", () => { mouseDown = true })
+  canvas.addEventListener("mouseup", () => { mouseDown = false })
+  canvas.addEventListener("mousemove", (event) => {
+    const jColor = getImageData(event, canvas, hoveredColor, mouseDown)
+    if (jColor !== null) {
+      hColor = jColor
+    }
+  })
+  drawCanvas(canvas, 100, 100)
 
   col.appendChild(canvas)
   col.appendChild(hoveredColor)
@@ -1440,19 +1442,58 @@ function createColorWidget(color) {
   return col
 }
 
-function getImageData(event, canvas, context, destination, load) {
-  const bounding = canvas.getBoundingClientRect()
-  const x = event.clientX - bounding.left
-  const y = event.clientY - bounding.top
-  const pixel = context.getImageData(x, y, 1, 1)
-  const data = pixel.data
+function drawCanvas(canvas, x, y) {
+    const context = canvas.getContext('2d')
 
-  const rgbColor = `rgb(${data[0]}, ${data[1]}, ${data[2]})`
-  destination.style.background = rgbColor
+    context.clearRect(0, 0, canvas.width, canvas.height)
 
-  if (load) {
-    loadTool(Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`))
+    let gradient = context.createLinearGradient(0, 0, canvas.width, 0)
+    gradient.addColorStop(0, "rgb(255, 0, 0)");
+    gradient.addColorStop(0.15, "rgb(255, 0, 255)");
+    gradient.addColorStop(0.33, "rgb(0, 0, 255)");
+    gradient.addColorStop(0.49, "rgb(0, 255, 255)");
+    gradient.addColorStop(0.67, "rgb(0, 255, 0)");
+    gradient.addColorStop(0.84, "rgb(255, 255, 0)");
+    gradient.addColorStop(1, "rgb(255, 0, 0)");
+
+    context.fillStyle = gradient
+    context.fillRect(0, 0, canvas.width, canvas.height)
+
+    gradient = context.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
+    gradient.addColorStop(0.5, "rgba(255, 255, 255, 0)");
+    gradient.addColorStop(0.5, "rgba(0, 0, 0, 0)");
+    gradient.addColorStop(1, "rgba(0, 0, 0, 1)");
+
+    context.fillStyle = gradient
+    context.fillRect(0, 0, canvas.width, canvas.height)
+
+    context.beginPath()
+    context.arc(x, y, 6, 0, Math.PI * 2)
+    context.strokeStyle = "black"
+    context.stroke()
+    context.closePath()
+}
+
+function getImageData(event, canvas, destination, mouseDown) {
+  if (mouseDown) {
+    const context = canvas.getContext('2d')
+
+    const bounding = canvas.getBoundingClientRect()
+    const x = event.clientX - bounding.left
+    const y = event.clientY - bounding.top
+    const pixel = context.getImageData(x, y, 1, 1)
+    const data = pixel.data
+
+    const hColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
+    destination.style.background = hColor.formattedHSL
+
+    drawCanvas(canvas, x, y)
+
+    return hColor
   }
+
+  return null
 }
 
 function complementaryRow(colorPicked) {
