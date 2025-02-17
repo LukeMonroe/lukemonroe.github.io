@@ -7,6 +7,10 @@ class Colors {
     return !Colors.equal(color01, color02, strict)
   }
 
+  static equalWithTolerance(color01, color02, tolerance = 2) {
+    return Math.abs(color01.hsl.h - color02.hsl.h) < tolerance && Math.abs(color01.hsl.s - color02.hsl.s) < tolerance && Math.abs(color01.hsl.l - color02.hsl.l) < tolerance
+  }
+
   static copy(color) {
     return Colors.buildRGB(color.rgb.r, color.rgb.g, color.rgb.b)
   }

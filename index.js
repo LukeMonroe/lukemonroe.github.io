@@ -1411,13 +1411,13 @@ function buildLightnessRow(row, value, colorPicked) {
 
 function createColorWidget(pickedColor) {
   const divInnerRow = createDivInnerRow()
+  divInnerRow.style.border = '2px solid var(--color)'
 
   let hoveredColor = Colors.copy(pickedColor)
   const divHoveredColor = createDiv()
   divHoveredColor.className = 'color'
   divHoveredColor.style.height = '200px'
-  divHoveredColor.style.width = '200px'
-  divHoveredColor.style.border = '2px solid var(--color)'
+  divHoveredColor.style.width = '100%'
   divHoveredColor.addEventListener('click', () => {
     loadTool(hoveredColor, null, null, null)
   })
@@ -1425,13 +1425,11 @@ function createColorWidget(pickedColor) {
   let mouseDown = false
   let touchDown = false
   const canvas = document.createElement('canvas')
+  canvas.style.touchAction = 'none'
   canvas.style.height = '200px'
-  canvas.style.width = '200px'
+  canvas.style.width = '100%'
   canvas.height = 200
   canvas.width = 200
-  canvas.style.touchAction = 'none'
-  canvas.style.border = '2px solid var(--color)'
-  // canvas.addEventListener('load', () => {loadCanvas(canvas)})
   canvas.addEventListener('mousedown', () => { mouseDown = true })
   canvas.addEventListener('mouseup', () => { mouseDown = false })
   canvas.addEventListener('touchstart', () => { touchDown = true })
@@ -1454,11 +1452,16 @@ function createColorWidget(pickedColor) {
       hoveredColor = potentialColor
     }
   })
-  drawCanvas(canvas, canvas.width / 2, canvas.height / 2, pickedColor, pickedColor)
-  const potentialColor = findImageData(canvas, pickedColor, divHoveredColor)
-  if (potentialColor !== null) {
-    hoveredColor = potentialColor
-  }
+  window.addEventListener('load', () => { resizeCanvas(canvas, pickedColor) })
+  window.addEventListener('resize', () => { resizeCanvas(canvas, pickedColor) })
+  resizeCanvas(canvas, pickedColor)
+  setTimeout(function () {
+    resizeCanvas(canvas, pickedColor)
+    const potentialColor = findImageData(canvas, pickedColor, divHoveredColor)
+    if (potentialColor !== null) {
+      hoveredColor = potentialColor
+    }
+  }, 100)
 
   divInnerRow.appendChild(divHoveredColor)
   divInnerRow.appendChild(canvas)
@@ -1466,32 +1469,46 @@ function createColorWidget(pickedColor) {
   return divInnerRow
 }
 
-function loadCanvas(canvas) {
-  const dpr = window.devicePixelRatio
-  const rect = canvas.getBoundingClientRect()
-  canvas.width = rect.width * dpr
-  canvas.height = rect.height * dpr
+function getCanvasHeight(canvas) {
+  return canvas.getBoundingClientRect().height
+}
+
+function getCanvasWidth(canvas) {
+  return canvas.getBoundingClientRect().width
+}
+
+function getDPR() {
+  return window.devicePixelRatio
+}
+
+function resizeCanvas(canvas, pickedColor) {
   const context = canvas.getContext('2d')
+  const height = getCanvasHeight(canvas)
+  const width = getCanvasWidth(canvas)
+  const dpr = getDPR()
+
+  canvas.height = height * dpr
+  canvas.width = width * dpr
   context.scale(dpr, dpr)
-  canvas.style.width = `${rect.width}px`
-  canvas.style.height = `${rect.height}px`
+
+  drawCanvas(canvas, getCanvasWidth(canvas) / 2, getCanvasHeight(canvas) / 2, pickedColor, pickedColor)
 }
 
 function drawCanvas(canvas, x, y, pickedColor, hoveredColor) {
   const context = canvas.getContext('2d')
-  context.clearRect(0, 0, canvas.width, canvas.height)
+  context.clearRect(0, 0, getCanvasWidth(canvas), getCanvasHeight(canvas))
 
-  const colorGradient = context.createLinearGradient(0, 0, canvas.width, 0)
-  colorGradient.addColorStop(0, '#ffffff')
-  colorGradient.addColorStop(1, pickedColor.formattedHex)
+  const colorGradient = context.createLinearGradient(0, 0, getCanvasWidth(canvas), 0)
+  colorGradient.addColorStop(0.01, '#ffffff')
+  colorGradient.addColorStop(0.99, Colors.createHSL(`${pickedColor.hsl.h}`, '100', '50').formattedHex)
   context.fillStyle = colorGradient
-  context.fillRect(0, 0, canvas.width, canvas.height)
+  context.fillRect(0, 0, getCanvasWidth(canvas), getCanvasHeight(canvas))
 
-  const blackGradient = context.createLinearGradient(0, 0, 0, canvas.height)
-  blackGradient.addColorStop(0, '#00000000')
-  blackGradient.addColorStop(1, '#000000')
+  const blackGradient = context.createLinearGradient(0, 0, 0, getCanvasHeight(canvas))
+  blackGradient.addColorStop(0.01, '#00000000')
+  blackGradient.addColorStop(0.99, '#000000')
   context.fillStyle = blackGradient
-  context.fillRect(0, 0, canvas.width, canvas.height)
+  context.fillRect(0, 0, getCanvasWidth(canvas), getCanvasHeight(canvas))
 
   context.lineWidth = 2
   context.strokeStyle = hoveredColor.formattedText
@@ -1502,11 +1519,11 @@ function getImageData(event, canvas, divHoveredColor, mouseDown, touchDown, pick
   if (mouseDown || touchDown) {
     const context = canvas.getContext('2d')
 
+    const dpr = getDPR()
     const bounding = canvas.getBoundingClientRect()
     const x = (mouseDown ? event.clientX : event.touches[0].clientX) - bounding.left
     const y = (mouseDown ? event.clientY : event.touches[0].clientY) - bounding.top
-    const pixel = context.getImageData(x, y, 1, 1)
-    const data = pixel.data
+    const data = context.getImageData(x * dpr, y * dpr, 1, 1).data
 
     const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
     divHoveredColor.style.background = hoveredColor.formattedHSL
@@ -1514,7 +1531,15 @@ function getImageData(event, canvas, divHoveredColor, mouseDown, touchDown, pick
     const hex = createDivColorText(hoveredColor.formattedHex)
     hex.style.display = 'block'
     hex.style.color = hoveredColor.formattedText
+    const rgb = createDivColorText(hoveredColor.formattedRGB)
+    rgb.style.display = 'block'
+    rgb.style.color = hoveredColor.formattedText
+    const hsl = createDivColorText(hoveredColor.formattedHSL)
+    hsl.style.display = 'block'
+    hsl.style.color = hoveredColor.formattedText
     divHoveredColor.appendChild(hex)
+    divHoveredColor.appendChild(rgb)
+    divHoveredColor.appendChild(hsl)
 
     drawCanvas(canvas, x, y, pickedColor, hoveredColor)
 
@@ -1526,20 +1551,60 @@ function getImageData(event, canvas, divHoveredColor, mouseDown, touchDown, pick
 
 function findImageData(canvas, pickedColor, divHoveredColor) {
   const context = canvas.getContext('2d')
+  const dpr = getDPR()
 
-  for (let y = 0; y <= canvas.height; y++) {
-    for (let x = 0; x <= canvas.width; x++) {
-      const data = context.getImageData(x, y, 1, 1).data
-      const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
-      if (Colors.equal(hoveredColor, pickedColor, false)) {
-        divHoveredColor.style.background = hoveredColor.formattedHSL
-        divHoveredColor.replaceChildren()
-        const hex = createDivColorText(hoveredColor.formattedHex)
-        hex.style.display = 'block'
-        hex.style.color = hoveredColor.formattedText
-        divHoveredColor.appendChild(hex)
-        drawCanvas(canvas, x, y, pickedColor, hoveredColor)
-        return hoveredColor
+  let narrowSearch = false
+  let tolerance = 20
+  let step = 10
+  let yMin = 0
+  let xMin = 0
+  let yMax = canvas.height
+  let xMax = canvas.width
+  while (tolerance > 0) {
+    narrowSearch = false
+    for (let y = yMin; y <= yMax; y += step) {
+      for (let x = xMin; x <= xMax; x += step) {
+        const data = context.getImageData(x, y, 1, 1).data
+        const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
+        if (Colors.equalWithTolerance(hoveredColor, pickedColor, tolerance)) {
+          if (tolerance <= 8) {
+            divHoveredColor.style.background = hoveredColor.formattedHSL
+            divHoveredColor.replaceChildren()
+            const hex = createDivColorText(hoveredColor.formattedHex)
+            hex.style.display = 'block'
+            hex.style.color = hoveredColor.formattedText
+            const rgb = createDivColorText(hoveredColor.formattedRGB)
+            rgb.style.display = 'block'
+            rgb.style.color = hoveredColor.formattedText
+            const hsl = createDivColorText(hoveredColor.formattedHSL)
+            hsl.style.display = 'block'
+            hsl.style.color = hoveredColor.formattedText
+            divHoveredColor.appendChild(hex)
+            divHoveredColor.appendChild(rgb)
+            divHoveredColor.appendChild(hsl)
+            drawCanvas(canvas, x / dpr, y / dpr, pickedColor, hoveredColor)
+            return hoveredColor
+          }
+          // console.log(pickedColor.formattedHSL, hoveredColor.formattedHSL, tolerance, step)
+          // console.log(xMin, xMax, yMin, yMax)
+          narrowSearch = true
+          tolerance -= 2
+          step--
+          yMin = y - (tolerance * 3)
+          xMin = x - (tolerance * 3)
+          yMax = y + (tolerance * 3)
+          xMax = x + (tolerance * 3)
+          yMin = yMin < 0 ? 0 : yMin
+          xMin = xMin < 0 ? 0 : xMin
+          yMax = yMax > canvas.height ? canvas.height : yMax
+          xMax = xMax > canvas.width ? canvas.width : xMax
+          // console.log('next:', pickedColor.formattedHSL, hoveredColor.formattedHSL, tolerance, step)
+          // console.log('next:', xMin, xMax, yMin, yMax)
+          break
+        }
+      }
+      if (narrowSearch) {
+        break
       }
     }
   }
