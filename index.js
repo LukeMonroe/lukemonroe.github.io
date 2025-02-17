@@ -1434,7 +1434,8 @@ function createColorWidget(color) {
       hColor = jColor
     }
   })
-  drawCanvas(canvas, 100, 100)
+  drawCanvas(canvas, canvas.width / 2, canvas.height / 2)
+  // findImageData(canvas, color, hoveredColor)
 
   col.appendChild(canvas)
   col.appendChild(hoveredColor)
@@ -1443,36 +1444,36 @@ function createColorWidget(color) {
 }
 
 function drawCanvas(canvas, x, y) {
-    const context = canvas.getContext('2d')
+  const context = canvas.getContext('2d')
 
-    context.clearRect(0, 0, canvas.width, canvas.height)
+  context.clearRect(0, 0, canvas.width, canvas.height)
 
-    let gradient = context.createLinearGradient(0, 0, canvas.width, 0)
-    gradient.addColorStop(0, "rgb(255, 0, 0)");
-    gradient.addColorStop(0.15, "rgb(255, 0, 255)");
-    gradient.addColorStop(0.33, "rgb(0, 0, 255)");
-    gradient.addColorStop(0.49, "rgb(0, 255, 255)");
-    gradient.addColorStop(0.67, "rgb(0, 255, 0)");
-    gradient.addColorStop(0.84, "rgb(255, 255, 0)");
-    gradient.addColorStop(1, "rgb(255, 0, 0)");
+  let gradient = context.createLinearGradient(0, 0, canvas.width, 0)
+  gradient.addColorStop(0, "rgb(255, 0, 0)");
+  gradient.addColorStop(0.15, "rgb(255, 0, 255)");
+  gradient.addColorStop(0.33, "rgb(0, 0, 255)");
+  gradient.addColorStop(0.49, "rgb(0, 255, 255)");
+  gradient.addColorStop(0.67, "rgb(0, 255, 0)");
+  gradient.addColorStop(0.84, "rgb(255, 255, 0)");
+  gradient.addColorStop(1, "rgb(255, 0, 0)");
 
-    context.fillStyle = gradient
-    context.fillRect(0, 0, canvas.width, canvas.height)
+  context.fillStyle = gradient
+  context.fillRect(0, 0, canvas.width, canvas.height)
 
-    gradient = context.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
-    gradient.addColorStop(0.5, "rgba(255, 255, 255, 0)");
-    gradient.addColorStop(0.5, "rgba(0, 0, 0, 0)");
-    gradient.addColorStop(1, "rgba(0, 0, 0, 1)");
+  gradient = context.createLinearGradient(0, 0, 0, canvas.height);
+  gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
+  gradient.addColorStop(0.5, "rgba(255, 255, 255, 0)");
+  gradient.addColorStop(0.5, "rgba(0, 0, 0, 0)");
+  gradient.addColorStop(1, "rgba(0, 0, 0, 1)");
 
-    context.fillStyle = gradient
-    context.fillRect(0, 0, canvas.width, canvas.height)
+  context.fillStyle = gradient
+  context.fillRect(0, 0, canvas.width, canvas.height)
 
-    context.beginPath()
-    context.arc(x, y, 6, 0, Math.PI * 2)
-    context.strokeStyle = "black"
-    context.stroke()
-    context.closePath()
+  context.beginPath()
+  context.arc(x, y, 6, 0, Math.PI * 2)
+  context.strokeStyle = "black"
+  context.stroke()
+  context.closePath()
 }
 
 function getImageData(event, canvas, destination, mouseDown) {
@@ -1494,6 +1495,22 @@ function getImageData(event, canvas, destination, mouseDown) {
   }
 
   return null
+}
+
+function findImageData(canvas, color, destination) {
+  const context = canvas.getContext('2d')
+
+  for (let index = 0; index < canvas.height; index++) {
+    for (let jindex = 0; jindex < canvas.width; jindex++) {
+      const data = context.getImageData(index, jindex, 1, 1).data
+      const hColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
+      if (Colors.equal(hColor, color, false)) {
+        destination.style.background = hColor.formattedHSL
+        drawCanvas(canvas, index, jindex)
+        return
+      }
+    }
+  }
 }
 
 function complementaryRow(colorPicked) {
