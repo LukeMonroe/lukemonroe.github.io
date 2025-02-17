@@ -8,7 +8,7 @@ class Colors {
   }
 
   static copy(color) {
-    return Colors.buildRGB(color.rgb.r, color.rgb.g, color.rgb.b)
+    return Colors.buildHSL(color.hsl.h, color.hsl.s, color.hsl.l)
   }
 
   static createHex(hex) {
@@ -33,7 +33,7 @@ class Colors {
     s = Number(s.trim())
     l = Number(l.trim())
 
-    const hsl = h >= 0 && h <= 359 && s >= 0 && s <= 100 && l >= 0 && l <= 100
+    const hsl = h >= 0 && h <= 360 && s >= 0 && s <= 100 && l >= 0 && l <= 100
 
     return hsl ? Colors.buildHSL(h, s, l) : null
   }
@@ -73,7 +73,7 @@ class Colors {
   }
 
   static random() {
-    const h = Math.round(Math.random() * 359)
+    const h = Math.round(Math.random() * 360)
     const s = Math.round(Math.random() * 100)
     const l = Math.round(Math.random() * 100)
 
@@ -84,12 +84,12 @@ class Colors {
     let gMin = grayscaleMin >= 0 ? grayscaleMin : 0
     let gMax = grayscaleMax <= 255 ? grayscaleMax : 255
 
-    let h = Math.round(Math.random() * 359)
+    let h = Math.round(Math.random() * 360)
     let s = Math.round(Math.random() * 100)
     let l = Math.round(Math.random() * 100)
     let color = Colors.buildHSL(h, s, l)
     while (color.grayscale < gMin || color.grayscale > gMax) {
-      h = Math.round(Math.random() * 359)
+      h = Math.round(Math.random() * 360)
       s = Math.round(Math.random() * 100)
       l = Math.round(Math.random() * 100)
       color = Colors.buildHSL(h, s, l)
