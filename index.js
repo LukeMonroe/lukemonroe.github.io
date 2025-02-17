@@ -1414,13 +1414,9 @@ function createColorWidget(pickedColor) {
   divInnerRow.style.border = '2px solid var(--color)'
 
   let hoveredColor = Colors.copy(pickedColor)
-  const divHoveredColor = createDiv()
-  divHoveredColor.className = 'color'
-  divHoveredColor.style.height = '200px'
-  divHoveredColor.style.width = '100%'
-  divHoveredColor.addEventListener('click', () => {
-    loadTool(hoveredColor, null, null, null)
-  })
+  let divColor = createDivColor(hoveredColor, pickedColor)
+  divColor.style.height = '200px'
+  divColor.style.width = '100%'
 
   let mouseDown = false
   let touchDown = false
@@ -1435,35 +1431,48 @@ function createColorWidget(pickedColor) {
   canvas.addEventListener('touchstart', () => { touchDown = true })
   canvas.addEventListener('touchend', () => { touchDown = false })
   canvas.addEventListener('mousemove', (event) => {
-    const potentialColor = getImageData(event, canvas, divHoveredColor, mouseDown, false, pickedColor)
-    if (potentialColor !== null) {
+    const potentialColor = getImageData(event, canvas, mouseDown, false, pickedColor)
+    if (mouseDown && Colors.notEqual(potentialColor, hoveredColor)) {
       hoveredColor = potentialColor
+      let divColor = createDivColor(hoveredColor, pickedColor)
+      divColor.style.height = '200px'
+      divColor.style.width = '100%'
+      divInnerRow.replaceChildren()
+      divInnerRow.appendChild(divColor)
+      divInnerRow.appendChild(canvas)
     }
   })
   canvas.addEventListener('touchmove', (event) => {
-    const potentialColor = getImageData(event, canvas, divHoveredColor, false, touchDown, pickedColor)
-    if (potentialColor !== null) {
+    const potentialColor = getImageData(event, canvas, false, touchDown, pickedColor)
+    if (touchDown && Colors.notEqual(potentialColor, hoveredColor)) {
       hoveredColor = potentialColor
+      let divColor = createDivColor(hoveredColor, pickedColor)
+      divColor.style.height = '200px'
+      divColor.style.width = '100%'
+      divInnerRow.replaceChildren()
+      divInnerRow.appendChild(divColor)
+      divInnerRow.appendChild(canvas)
     }
   })
   canvas.addEventListener('click', (event) => {
-    const potentialColor = getImageData(event, canvas, divHoveredColor, true, false, pickedColor)
-    if (potentialColor !== null) {
+    const potentialColor = getImageData(event, canvas, true, false, pickedColor)
+    if (Colors.notEqual(potentialColor, hoveredColor)) {
       hoveredColor = potentialColor
+      let divColor = createDivColor(hoveredColor, pickedColor)
+      divColor.style.height = '200px'
+      divColor.style.width = '100%'
+      divInnerRow.replaceChildren()
+      divInnerRow.appendChild(divColor)
+      divInnerRow.appendChild(canvas)
     }
   })
   window.addEventListener('load', () => { resizeCanvas(canvas, pickedColor) })
   window.addEventListener('resize', () => { resizeCanvas(canvas, pickedColor) })
-  resizeCanvas(canvas, pickedColor)
   setTimeout(function () {
     resizeCanvas(canvas, pickedColor)
-    const potentialColor = findImageData(canvas, pickedColor, divHoveredColor)
-    if (potentialColor !== null) {
-      hoveredColor = potentialColor
-    }
-  }, 100)
+  }, 10)
 
-  divInnerRow.appendChild(divHoveredColor)
+  divInnerRow.appendChild(divColor)
   divInnerRow.appendChild(canvas)
 
   return divInnerRow
@@ -1515,7 +1524,7 @@ function drawCanvas(canvas, x, y, pickedColor, hoveredColor) {
   context.strokeRect(x - 6, y - 6, 12, 12)
 }
 
-function getImageData(event, canvas, divHoveredColor, mouseDown, touchDown, pickedColor) {
+function getImageData(event, canvas, mouseDown, touchDown, pickedColor) {
   if (mouseDown || touchDown) {
     const context = canvas.getContext('2d')
 
@@ -1524,32 +1533,16 @@ function getImageData(event, canvas, divHoveredColor, mouseDown, touchDown, pick
     const x = (mouseDown ? event.clientX : event.touches[0].clientX) - bounding.left
     const y = (mouseDown ? event.clientY : event.touches[0].clientY) - bounding.top
     const data = context.getImageData(x * dpr, y * dpr, 1, 1).data
-
     const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
-    divHoveredColor.style.background = hoveredColor.formattedHSL
-    divHoveredColor.replaceChildren()
-    const hex = createDivColorText(hoveredColor.formattedHex)
-    hex.style.display = 'block'
-    hex.style.color = hoveredColor.formattedText
-    const rgb = createDivColorText(hoveredColor.formattedRGB)
-    rgb.style.display = 'block'
-    rgb.style.color = hoveredColor.formattedText
-    const hsl = createDivColorText(hoveredColor.formattedHSL)
-    hsl.style.display = 'block'
-    hsl.style.color = hoveredColor.formattedText
-    divHoveredColor.appendChild(hex)
-    divHoveredColor.appendChild(rgb)
-    divHoveredColor.appendChild(hsl)
-
     drawCanvas(canvas, x, y, pickedColor, hoveredColor)
 
     return hoveredColor
   }
 
-  return null
+  return pickedColor
 }
 
-function findImageData(canvas, pickedColor, divHoveredColor) {
+function findImageData(canvas, pickedColor) {
   const context = canvas.getContext('2d')
   const dpr = getDPR()
 
@@ -1568,20 +1561,6 @@ function findImageData(canvas, pickedColor, divHoveredColor) {
         const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
         if (Colors.equalWithTolerance(hoveredColor, pickedColor, tolerance)) {
           if (tolerance <= 8) {
-            divHoveredColor.style.background = hoveredColor.formattedHSL
-            divHoveredColor.replaceChildren()
-            const hex = createDivColorText(hoveredColor.formattedHex)
-            hex.style.display = 'block'
-            hex.style.color = hoveredColor.formattedText
-            const rgb = createDivColorText(hoveredColor.formattedRGB)
-            rgb.style.display = 'block'
-            rgb.style.color = hoveredColor.formattedText
-            const hsl = createDivColorText(hoveredColor.formattedHSL)
-            hsl.style.display = 'block'
-            hsl.style.color = hoveredColor.formattedText
-            divHoveredColor.appendChild(hex)
-            divHoveredColor.appendChild(rgb)
-            divHoveredColor.appendChild(hsl)
             drawCanvas(canvas, x / dpr, y / dpr, pickedColor, hoveredColor)
             return hoveredColor
           }
@@ -1609,7 +1588,7 @@ function findImageData(canvas, pickedColor, divHoveredColor) {
     }
   }
 
-  return null
+  return pickedColor
 }
 
 function complementaryRow(colorPicked) {
