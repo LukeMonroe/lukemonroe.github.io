@@ -106,6 +106,7 @@ function createColorPicker() {
 
   const variationsColumn = createDivInnerColumn()
   variationsColumn.appendChild(createH2('Variations'))
+  variationsColumn.appendChild(createColorWidget(color))
   variationsColumn.appendChild(createH3('Hue'))
   hueSliders.forEach(hueSlider => {
     variationsColumn.appendChild(hueSlider)
@@ -1406,6 +1407,52 @@ function buildSaturationRow(row, value, colorPicked) {
 
 function buildLightnessRow(row, value, colorPicked) {
   buildColorRow(row, Colors.lightnesses(colorPicked, value), colorPicked)
+}
+
+function createColorWidget(color) {
+  const col = createDivInnerColumn()
+
+  const hoveredColor = createDiv()
+  hoveredColor.style.height = '100px'
+  hoveredColor.style.width = '100px'
+
+  const canvas = document.createElement('canvas')
+  canvas.height = 200
+  canvas.width = 600
+
+  const context = canvas.getContext('2d')
+
+  const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height)
+  gradient.addColorStop(0, "lightblue")
+  gradient.addColorStop(0.33, "darkblue")
+  gradient.addColorStop(0.67, "green")
+  gradient.addColorStop(1, "orange")
+
+  context.fillStyle = gradient
+  context.fillRect(0, 0, canvas.width, canvas.height)
+
+  canvas.addEventListener("mousemove", (event) => getImageData(event, canvas, context, hoveredColor, false))
+  canvas.addEventListener("click", (event) => getImageData(event, canvas, context, hoveredColor, true))
+
+  col.appendChild(canvas)
+  col.appendChild(hoveredColor)
+
+  return col
+}
+
+function getImageData(event, canvas, context, destination, load) {
+  const bounding = canvas.getBoundingClientRect()
+  const x = event.clientX - bounding.left
+  const y = event.clientY - bounding.top
+  const pixel = context.getImageData(x, y, 1, 1)
+  const data = pixel.data
+
+  const rgbColor = `rgb(${data[0]}, ${data[1]}, ${data[2]})`
+  destination.style.background = rgbColor
+
+  if (load) {
+    loadTool(Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`))
+  }
 }
 
 function complementaryRow(colorPicked) {
