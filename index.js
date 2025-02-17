@@ -1440,6 +1440,23 @@ function createColorWidget(pickedColor) {
       divInnerRow.replaceChildren()
       divInnerRow.appendChild(divColor)
       divInnerRow.appendChild(canvas)
+      const children = divColor.children
+      for (let index = 0; index < children.length; index++) {
+        if (children[index].className === 'color-text') {
+          children[index].style.display = 'block'
+        }
+      }
+      divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
+
+      divInnerRow.addEventListener('mouseleave', () => {
+        const children = divColor.children
+        for (let index = 0; index < children.length; index++) {
+          if (children[index].className === 'color-text') {
+            children[index].style.display = 'none'
+          }
+        }
+        divColor.style.boxShadow = 'none'
+      })
     }
   })
   canvas.addEventListener('touchmove', (event) => {
@@ -1452,6 +1469,23 @@ function createColorWidget(pickedColor) {
       divInnerRow.replaceChildren()
       divInnerRow.appendChild(divColor)
       divInnerRow.appendChild(canvas)
+      const children = divColor.children
+      for (let index = 0; index < children.length; index++) {
+        if (children[index].className === 'color-text') {
+          children[index].style.display = 'block'
+        }
+      }
+      divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
+
+      divInnerRow.addEventListener('mouseleave', () => {
+        const children = divColor.children
+        for (let index = 0; index < children.length; index++) {
+          if (children[index].className === 'color-text') {
+            children[index].style.display = 'none'
+          }
+        }
+        divColor.style.boxShadow = 'none'
+      })
     }
   })
   canvas.addEventListener('click', (event) => {
@@ -1464,6 +1498,23 @@ function createColorWidget(pickedColor) {
       divInnerRow.replaceChildren()
       divInnerRow.appendChild(divColor)
       divInnerRow.appendChild(canvas)
+      const children = divColor.children
+      for (let index = 0; index < children.length; index++) {
+        if (children[index].className === 'color-text') {
+          children[index].style.display = 'block'
+        }
+      }
+      divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
+
+      divInnerRow.addEventListener('mouseleave', () => {
+        const children = divColor.children
+        for (let index = 0; index < children.length; index++) {
+          if (children[index].className === 'color-text') {
+            children[index].style.display = 'none'
+          }
+        }
+        divColor.style.boxShadow = 'none'
+      })
     }
   })
   window.addEventListener('load', () => { resizeCanvas(canvas, pickedColor) })
