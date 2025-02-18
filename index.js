@@ -1452,6 +1452,8 @@ function createColorWidget(pickedColor) {
 
   let xColors = getCanvasWidth(canvasColors) / 2
   let yColors = getCanvasHeight(canvasColors) / 2
+  let xHues = getCanvasWidth(canvasHues) / 2
+  let yHues = getCanvasHeight(canvasHues) / 2
 
   canvasColors.addEventListener('mousedown', () => { mouseDownColors = true })
   canvasColors.addEventListener('mouseup', () => { mouseDownColors = false })
@@ -1559,8 +1561,11 @@ function createColorWidget(pickedColor) {
   canvasHues.addEventListener('touchstart', () => { touchDownHues = true })
   canvasHues.addEventListener('touchend', () => { touchDownHues = false })
   canvasHues.addEventListener('mousemove', (event) => {
-    const potentialColor = getImageDataHues(event, canvasHues, mouseDownHues, false, pickedColor)
+    const potentialHueXY = getImageDataHues(event, canvasHues, mouseDownHues, false, pickedColor)
+    const potentialColor = potentialHueXY[0]
     if (mouseDownHues && Colors.notEqual(potentialColor, pickedColor)) {
+      xHues = potentialHueXY[1]
+      yHues = potentialHueXY[2]
       pickedColor = potentialColor
       const potentialColor_x_y = getImageDataColorsXY(canvasColors, xColors, yColors, pickedColor)
       hoveredColor = potentialColor_x_y[0]
@@ -1590,8 +1595,11 @@ function createColorWidget(pickedColor) {
     }
   })
   canvasHues.addEventListener('touchmove', (event) => {
-    const potentialColor = getImageDataHues(event, canvasHues, false, touchDownHues, pickedColor)
+    const potentialHueXY = getImageDataHues(event, canvasHues, false, touchDownHues, pickedColor)
+    const potentialColor = potentialHueXY[0]
     if (touchDownHues && Colors.notEqual(potentialColor, pickedColor)) {
+      xHues = potentialHueXY[1]
+      yHues = potentialHueXY[2]
       pickedColor = potentialColor
       const potentialColor_x_y = getImageDataColorsXY(canvasColors, xColors, yColors, pickedColor)
       hoveredColor = potentialColor_x_y[0]
@@ -1621,8 +1629,11 @@ function createColorWidget(pickedColor) {
     }
   })
   canvasHues.addEventListener('click', (event) => {
-    const potentialColor = getImageDataHues(event, canvasHues, true, false, pickedColor)
+    const potentialHueXY = getImageDataHues(event, canvasHues, true, false, pickedColor)
+    const potentialColor = potentialHueXY[0]
     if (Colors.notEqual(potentialColor, pickedColor)) {
+      xHues = potentialHueXY[1]
+      yHues = potentialHueXY[2]
       pickedColor = potentialColor
       const potentialColor_x_y = getImageDataColorsXY(canvasColors, xColors, yColors, pickedColor)
       hoveredColor = potentialColor_x_y[0]
@@ -1653,16 +1664,32 @@ function createColorWidget(pickedColor) {
   })
 
   window.addEventListener('load', () => {
-    resizeCanvasColors(canvasColors, pickedColor)
-    resizeCanvasHues(canvasHues, pickedColor)
+    const xyColors = resizeCanvasColors(canvasColors, pickedColor, xColors, yColors)
+    const xyHues = resizeCanvasHues(canvasHues, pickedColor, xHues, yHues)
+    xColors = xyColors[0]
+    yColors = xyColors[1]
+    xHues = xyHues[0]
+    yHues = xyHues[1]
   })
   window.addEventListener('resize', () => {
-    resizeCanvasColors(canvasColors, pickedColor)
-    resizeCanvasHues(canvasHues, pickedColor)
+    const xyColors = resizeCanvasColors(canvasColors, pickedColor, xColors, yColors)
+    const xyHues = resizeCanvasHues(canvasHues, pickedColor, xHues, yHues)
+    xColors = xyColors[0]
+    yColors = xyColors[1]
+    xHues = xyHues[0]
+    yHues = xyHues[1]
   })
   setTimeout(function () {
-    resizeCanvasColors(canvasColors, pickedColor)
-    resizeCanvasHues(canvasHues, pickedColor)
+    xColors = getCanvasWidth(canvasColors) / 2
+    yColors = getCanvasHeight(canvasColors) / 2
+    xHues = getCanvasWidth(canvasHues) / 2
+    yHues = getCanvasHeight(canvasHues) / 2
+    const xyColors = resizeCanvasColors(canvasColors, pickedColor, xColors, yColors, true)
+    const xyHues = resizeCanvasHues(canvasHues, pickedColor, xHues, yHues, true)
+    xColors = xyColors[0]
+    yColors = xyColors[1]
+    xHues = xyHues[0]
+    yHues = xyHues[1]
   }, 10)
 
   divInnerRow.appendChild(divColor)
@@ -1683,30 +1710,46 @@ function getDPR() {
   return window.devicePixelRatio
 }
 
-function resizeCanvasColors(canvas, pickedColor) {
+function resizeCanvasColors(canvas, pickedColor, x, y, initial = false) {
   const context = canvas.getContext('2d')
   const height = getCanvasHeight(canvas)
   const width = getCanvasWidth(canvas)
   const dpr = getDPR()
 
+  const xPct = Math.round((x / (canvas.width / dpr)) * 100) / 100
+  const yPct = Math.round((y / (canvas.height / dpr)) * 100) / 100
+
   canvas.height = height * dpr
   canvas.width = width * dpr
   context.scale(dpr, dpr)
 
-  drawCanvasColors(canvas, getCanvasWidth(canvas) / 2, getCanvasHeight(canvas) / 2, pickedColor, pickedColor)
+  const x1 = initial ? x : xPct * width
+  const y1 = initial ? y : yPct * height
+
+  drawCanvasColors(canvas, x1, y1, pickedColor, pickedColor)
+
+  return [x1, y1]
 }
 
-function resizeCanvasHues(canvas, pickedColor) {
+function resizeCanvasHues(canvas, pickedColor, x, y, initial = false) {
   const context = canvas.getContext('2d')
   const height = getCanvasHeight(canvas)
   const width = getCanvasWidth(canvas)
   const dpr = getDPR()
 
+  const xPct = Math.round((x / (canvas.width / dpr)) * 100) / 100
+  const yPct = Math.round((y / (canvas.height / dpr)) * 100) / 100
+
   canvas.height = height * dpr
   canvas.width = width * dpr
   context.scale(dpr, dpr)
 
-  drawCanvasHues(canvas, getCanvasWidth(canvas) / 2, getCanvasHeight(canvas) / 2, pickedColor, pickedColor)
+  const x1 = initial ? x : xPct * width
+  const y1 = initial ? y : yPct * height
+
+  drawCanvasHues(canvas, x1, y1, pickedColor, pickedColor)
+
+  return [x1, y1]
 }
 
 function drawCanvasColors(canvas, x, y, pickedColor, hoveredColor) {
@@ -1773,11 +1816,11 @@ function getImageDataColors(event, canvas, mouseDown, touchDown, pickedColor) {
 }
 
 function getImageDataColorsXY(canvas, x, y, pickedColor) {
+  drawCanvasColors(canvas, x, y, pickedColor, pickedColor)
   const context = canvas.getContext('2d')
   const dpr = getDPR()
   const data = context.getImageData(x * dpr, y * dpr, 1, 1).data
   const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
-  drawCanvasColors(canvas, x, y, pickedColor, hoveredColor)
 
   return [hoveredColor, x, y]
 }
@@ -1794,10 +1837,10 @@ function getImageDataHues(event, canvas, mouseDown, touchDown, pickedColor) {
     const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
     drawCanvasHues(canvas, x, y, pickedColor, hoveredColor)
 
-    return hoveredColor
+    return [hoveredColor, x, y]
   }
 
-  return pickedColor
+  return [pickedColor, getCanvasWidth(canvas) / 2, getCanvasHeight(canvas) / 2]
 }
 
 function findImageDataColors(canvas, pickedColor) {
