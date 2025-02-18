@@ -1553,7 +1553,7 @@ function createColorWidget(pickedColor) {
   })
   canvasHues.addEventListener('touchmove', (event) => {
     const potentialColor = getImageDataHues(event, canvasHues, false, touchDownHues, pickedColor)
-    if (touchDownColors && Colors.notEqual(potentialColor, pickedColor)) {
+    if (touchDownHues && Colors.notEqual(potentialColor, pickedColor)) {
       pickedColor = potentialColor
       drawCanvasColors(canvasColors, getCanvasWidth(canvasColors) / 2, getCanvasHeight(canvasColors) / 2, pickedColor, pickedColor)
     }
