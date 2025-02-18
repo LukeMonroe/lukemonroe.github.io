@@ -1450,13 +1450,19 @@ function createColorWidget(pickedColor) {
   divCanvasRow.appendChild(canvasColors)
   divCanvasRow.appendChild(canvasHues)
 
+  let xColors = getCanvasWidth(canvasColors) / 2
+  let yColors = getCanvasHeight(canvasColors) / 2
+
   canvasColors.addEventListener('mousedown', () => { mouseDownColors = true })
   canvasColors.addEventListener('mouseup', () => { mouseDownColors = false })
   canvasColors.addEventListener('touchstart', () => { touchDownColors = true })
   canvasColors.addEventListener('touchend', () => { touchDownColors = false })
   canvasColors.addEventListener('mousemove', (event) => {
-    const potentialColor = getImageDataColors(event, canvasColors, mouseDownColors, false, pickedColor)
+    const potentialColor_x_y = getImageDataColors(event, canvasColors, mouseDownColors, false, pickedColor)
+    const potentialColor = potentialColor_x_y[0]
     if (mouseDownColors && Colors.notEqual(potentialColor, hoveredColor)) {
+      xColors = potentialColor_x_y[1]
+      yColors = potentialColor_x_y[2]
       hoveredColor = potentialColor
       let divColor = createDivColor(hoveredColor, pickedColor)
       divColor.style.height = '200px'
@@ -1484,8 +1490,11 @@ function createColorWidget(pickedColor) {
     }
   })
   canvasColors.addEventListener('touchmove', (event) => {
-    const potentialColor = getImageDataColors(event, canvasColors, false, touchDownColors, pickedColor)
+    const potentialColor_x_y = getImageDataColors(event, canvasColors, false, touchDownColors, pickedColor)
+    const potentialColor = potentialColor_x_y[0]
     if (touchDownColors && Colors.notEqual(potentialColor, hoveredColor)) {
+      xColors = potentialColor_x_y[1]
+      yColors = potentialColor_x_y[2]
       hoveredColor = potentialColor
       let divColor = createDivColor(hoveredColor, pickedColor)
       divColor.style.height = '200px'
@@ -1513,8 +1522,11 @@ function createColorWidget(pickedColor) {
     }
   })
   canvasColors.addEventListener('click', (event) => {
-    const potentialColor = getImageDataColors(event, canvasColors, true, false, pickedColor)
+    const potentialColor_x_y = getImageDataColors(event, canvasColors, true, false, pickedColor)
+    const potentialColor = potentialColor_x_y[0]
     if (Colors.notEqual(potentialColor, hoveredColor)) {
+      xColors = potentialColor_x_y[1]
+      yColors = potentialColor_x_y[2]
       hoveredColor = potentialColor
       let divColor = createDivColor(hoveredColor, pickedColor)
       divColor.style.height = '200px'
@@ -1550,21 +1562,93 @@ function createColorWidget(pickedColor) {
     const potentialColor = getImageDataHues(event, canvasHues, mouseDownHues, false, pickedColor)
     if (mouseDownHues && Colors.notEqual(potentialColor, pickedColor)) {
       pickedColor = potentialColor
-      drawCanvasColors(canvasColors, getCanvasWidth(canvasColors) / 2, getCanvasHeight(canvasColors) / 2, pickedColor, pickedColor)
+      const potentialColor_x_y = getImageDataColorsXY(canvasColors, xColors, yColors, pickedColor)
+      hoveredColor = potentialColor_x_y[0]
+      let divColor = createDivColor(hoveredColor, pickedColor)
+      divColor.style.height = '200px'
+      divColor.style.width = '100%'
+      divInnerRow.replaceChildren()
+      divInnerRow.appendChild(divColor)
+      divInnerRow.appendChild(divCanvasRow)
+      const children = divColor.children
+      for (let index = 0; index < children.length; index++) {
+        if (children[index].className === 'color-text') {
+          children[index].style.display = 'block'
+        }
+      }
+      divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
+
+      divInnerRow.addEventListener('mouseleave', () => {
+        const children = divColor.children
+        for (let index = 0; index < children.length; index++) {
+          if (children[index].className === 'color-text') {
+            children[index].style.display = 'none'
+          }
+        }
+        divColor.style.boxShadow = 'none'
+      })
     }
   })
   canvasHues.addEventListener('touchmove', (event) => {
     const potentialColor = getImageDataHues(event, canvasHues, false, touchDownHues, pickedColor)
     if (touchDownHues && Colors.notEqual(potentialColor, pickedColor)) {
       pickedColor = potentialColor
-      drawCanvasColors(canvasColors, getCanvasWidth(canvasColors) / 2, getCanvasHeight(canvasColors) / 2, pickedColor, pickedColor)
+      const potentialColor_x_y = getImageDataColorsXY(canvasColors, xColors, yColors, pickedColor)
+      hoveredColor = potentialColor_x_y[0]
+      let divColor = createDivColor(hoveredColor, pickedColor)
+      divColor.style.height = '200px'
+      divColor.style.width = '100%'
+      divInnerRow.replaceChildren()
+      divInnerRow.appendChild(divColor)
+      divInnerRow.appendChild(divCanvasRow)
+      const children = divColor.children
+      for (let index = 0; index < children.length; index++) {
+        if (children[index].className === 'color-text') {
+          children[index].style.display = 'block'
+        }
+      }
+      divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
+
+      divInnerRow.addEventListener('mouseleave', () => {
+        const children = divColor.children
+        for (let index = 0; index < children.length; index++) {
+          if (children[index].className === 'color-text') {
+            children[index].style.display = 'none'
+          }
+        }
+        divColor.style.boxShadow = 'none'
+      })
     }
   })
   canvasHues.addEventListener('click', (event) => {
     const potentialColor = getImageDataHues(event, canvasHues, true, false, pickedColor)
     if (Colors.notEqual(potentialColor, pickedColor)) {
       pickedColor = potentialColor
-      drawCanvasColors(canvasColors, getCanvasWidth(canvasColors) / 2, getCanvasHeight(canvasColors) / 2, pickedColor, pickedColor)
+      const potentialColor_x_y = getImageDataColorsXY(canvasColors, xColors, yColors, pickedColor)
+      hoveredColor = potentialColor_x_y[0]
+      let divColor = createDivColor(hoveredColor, pickedColor)
+      divColor.style.height = '200px'
+      divColor.style.width = '100%'
+      divInnerRow.replaceChildren()
+      divInnerRow.appendChild(divColor)
+      divInnerRow.appendChild(divCanvasRow)
+      const children = divColor.children
+      for (let index = 0; index < children.length; index++) {
+        if (children[index].className === 'color-text') {
+          children[index].style.display = 'block'
+        }
+      }
+      divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
+
+      divInnerRow.addEventListener('mouseleave', () => {
+        const children = divColor.children
+        for (let index = 0; index < children.length; index++) {
+          if (children[index].className === 'color-text') {
+            children[index].style.display = 'none'
+          }
+        }
+        divColor.style.boxShadow = 'none'
+      })
     }
   })
 
@@ -1682,10 +1766,20 @@ function getImageDataColors(event, canvas, mouseDown, touchDown, pickedColor) {
     const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
     drawCanvasColors(canvas, x, y, pickedColor, hoveredColor)
 
-    return hoveredColor
+    return [hoveredColor, x, y]
   }
 
-  return pickedColor
+  return [pickedColor, getCanvasWidth(canvas) / 2, getCanvasHeight(canvas) / 2]
+}
+
+function getImageDataColorsXY(canvas, x, y, pickedColor) {
+  const context = canvas.getContext('2d')
+  const dpr = getDPR()
+  const data = context.getImageData(x * dpr, y * dpr, 1, 1).data
+  const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
+  drawCanvasColors(canvas, x, y, pickedColor, hoveredColor)
+
+  return [hoveredColor, x, y]
 }
 
 function getImageDataHues(event, canvas, mouseDown, touchDown, pickedColor) {
