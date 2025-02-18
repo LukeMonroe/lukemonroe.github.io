@@ -1435,6 +1435,7 @@ function createColorWidget(pickedColor) {
   canvasColors.style.touchAction = 'none'
   canvasColors.style.height = '200px'
   canvasColors.style.width = '100%'
+  canvasColors.style.minWidth = '0px'
   canvasColors.height = 200
   canvasColors.width = 200
 
@@ -1442,6 +1443,7 @@ function createColorWidget(pickedColor) {
   canvasHues.style.touchAction = 'none'
   canvasHues.style.height = '200px'
   canvasHues.style.width = '20%'
+  canvasHues.style.minWidth = '0px'
   canvasHues.height = 200
   canvasHues.width = 200
 
