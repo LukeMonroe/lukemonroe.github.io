@@ -1423,7 +1423,7 @@ function createColorWidget(pickedColor) {
 
   let hoveredColor = Colors.copy(pickedColor)
   let divColor = createDivColor(hoveredColor, pickedColor)
-  divColor.style.height = '200px'
+  divColor.style.height = '400px'
   divColor.style.width = '100%'
 
   let mouseDownColors = false
@@ -1433,7 +1433,7 @@ function createColorWidget(pickedColor) {
 
   const canvasColors = document.createElement('canvas')
   canvasColors.style.touchAction = 'none'
-  canvasColors.style.height = '200px'
+  canvasColors.style.height = '400px'
   canvasColors.style.width = '100%'
   canvasColors.style.minWidth = '0px'
   canvasColors.height = 200
@@ -1441,7 +1441,7 @@ function createColorWidget(pickedColor) {
 
   const canvasHues = document.createElement('canvas')
   canvasHues.style.touchAction = 'none'
-  canvasHues.style.height = '200px'
+  canvasHues.style.height = '400px'
   canvasHues.style.width = '20%'
   canvasHues.style.minWidth = '0px'
   canvasHues.height = 200
@@ -1467,7 +1467,7 @@ function createColorWidget(pickedColor) {
       yColors = potentialColor_x_y[2]
       hoveredColor = potentialColor
       let divColor = createDivColor(hoveredColor, pickedColor)
-      divColor.style.height = '200px'
+      divColor.style.height = '400px'
       divColor.style.width = '100%'
       divInnerRow.replaceChildren()
       divInnerRow.appendChild(divColor)
@@ -1499,7 +1499,7 @@ function createColorWidget(pickedColor) {
       yColors = potentialColor_x_y[2]
       hoveredColor = potentialColor
       let divColor = createDivColor(hoveredColor, pickedColor)
-      divColor.style.height = '200px'
+      divColor.style.height = '400px'
       divColor.style.width = '100%'
       divInnerRow.replaceChildren()
       divInnerRow.appendChild(divColor)
@@ -1531,7 +1531,7 @@ function createColorWidget(pickedColor) {
       yColors = potentialColor_x_y[2]
       hoveredColor = potentialColor
       let divColor = createDivColor(hoveredColor, pickedColor)
-      divColor.style.height = '200px'
+      divColor.style.height = '400px'
       divColor.style.width = '100%'
       divInnerRow.replaceChildren()
       divInnerRow.appendChild(divColor)
@@ -1570,7 +1570,7 @@ function createColorWidget(pickedColor) {
       const potentialColor_x_y = getImageDataColorsXY(canvasColors, xColors, yColors, pickedColor)
       hoveredColor = potentialColor_x_y[0]
       let divColor = createDivColor(hoveredColor, pickedColor)
-      divColor.style.height = '200px'
+      divColor.style.height = '400px'
       divColor.style.width = '100%'
       divInnerRow.replaceChildren()
       divInnerRow.appendChild(divColor)
@@ -1604,7 +1604,7 @@ function createColorWidget(pickedColor) {
       const potentialColor_x_y = getImageDataColorsXY(canvasColors, xColors, yColors, pickedColor)
       hoveredColor = potentialColor_x_y[0]
       let divColor = createDivColor(hoveredColor, pickedColor)
-      divColor.style.height = '200px'
+      divColor.style.height = '400px'
       divColor.style.width = '100%'
       divInnerRow.replaceChildren()
       divInnerRow.appendChild(divColor)
@@ -1638,7 +1638,7 @@ function createColorWidget(pickedColor) {
       const potentialColor_x_y = getImageDataColorsXY(canvasColors, xColors, yColors, pickedColor)
       hoveredColor = potentialColor_x_y[0]
       let divColor = createDivColor(hoveredColor, pickedColor)
-      divColor.style.height = '200px'
+      divColor.style.height = '400px'
       divColor.style.width = '100%'
       divInnerRow.replaceChildren()
       divInnerRow.appendChild(divColor)
@@ -1690,6 +1690,7 @@ function createColorWidget(pickedColor) {
     yColors = xyColors[1]
     xHues = xyHues[0]
     yHues = xyHues[1]
+    findImageDataHues(canvasHues, pickedColor)
   }, 10)
 
   divInnerRow.appendChild(divColor)
@@ -1779,16 +1780,16 @@ function drawCanvasHues(canvas, x, y, pickedColor, hoveredColor) {
 
   const colorGradient = context.createLinearGradient(0, 0, 0, getCanvasHeight(canvas))
   colorGradient.addColorStop(0.01, Colors.createHSL('0', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.10, Colors.createHSL('36', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.20, Colors.createHSL('72', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.30, Colors.createHSL('108', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.40, Colors.createHSL('144', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.50, Colors.createHSL('180', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.60, Colors.createHSL('216', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.70, Colors.createHSL('252', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.80, Colors.createHSL('288', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.90, Colors.createHSL('324', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.99, Colors.createHSL('360', '100', '50').formattedHex)
+  colorGradient.addColorStop(0.10, Colors.createHSL('35', '100', '50').formattedHex)
+  colorGradient.addColorStop(0.20, Colors.createHSL('71', '100', '50').formattedHex)
+  colorGradient.addColorStop(0.30, Colors.createHSL('107', '100', '50').formattedHex)
+  colorGradient.addColorStop(0.40, Colors.createHSL('143', '100', '50').formattedHex)
+  colorGradient.addColorStop(0.50, Colors.createHSL('179', '100', '50').formattedHex)
+  colorGradient.addColorStop(0.60, Colors.createHSL('215', '100', '50').formattedHex)
+  colorGradient.addColorStop(0.70, Colors.createHSL('251', '100', '50').formattedHex)
+  colorGradient.addColorStop(0.80, Colors.createHSL('287', '100', '50').formattedHex)
+  colorGradient.addColorStop(0.90, Colors.createHSL('323', '100', '50').formattedHex)
+  colorGradient.addColorStop(0.99, Colors.createHSL('359', '100', '50').formattedHex)
   context.fillStyle = colorGradient
   context.fillRect(0, 0, getCanvasWidth(canvas), getCanvasHeight(canvas))
 
@@ -1887,6 +1888,23 @@ function findImageDataColors(canvas, pickedColor) {
         break
       }
     }
+  }
+
+  return pickedColor
+}
+
+function findImageDataHues(canvas, pickedColor) {
+  const context = canvas.getContext('2d')
+  const dpr = getDPR()
+  const x = canvas.width / 2
+
+  for (let y = 0; y <= canvas.height; y++) {
+      const data = context.getImageData(x, y, 1, 1).data
+      const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
+      if (hoveredColor.hsl.h === pickedColor.hsl.h) {
+        drawCanvasHues(canvas, x / dpr, y / dpr, pickedColor, hoveredColor)
+        return hoveredColor
+      }
   }
 
   return pickedColor
