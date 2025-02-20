@@ -37,7 +37,7 @@ class Colors {
     s = Number(s.trim())
     l = Number(l.trim())
 
-    const hsl = h >= 0 && h <= 360 && s >= 0 && s <= 100 && l >= 0 && l <= 100
+    const hsl = h >= 0 && h <= 359 && s >= 0 && s <= 100 && l >= 0 && l <= 100
 
     return hsl ? Colors.buildHSL(h, s, l) : null
   }
@@ -77,7 +77,7 @@ class Colors {
   }
 
   static random() {
-    const h = Math.round(Math.random() * 360)
+    const h = Math.round(Math.random() * 359)
     const s = Math.round(Math.random() * 100)
     const l = Math.round(Math.random() * 100)
 
@@ -88,12 +88,12 @@ class Colors {
     let gMin = grayscaleMin >= 0 ? grayscaleMin : 0
     let gMax = grayscaleMax <= 255 ? grayscaleMax : 255
 
-    let h = Math.round(Math.random() * 360)
+    let h = Math.round(Math.random() * 359)
     let s = Math.round(Math.random() * 100)
     let l = Math.round(Math.random() * 100)
     let color = Colors.buildHSL(h, s, l)
     while (color.grayscale < gMin || color.grayscale > gMax) {
-      h = Math.round(Math.random() * 360)
+      h = Math.round(Math.random() * 359)
       s = Math.round(Math.random() * 100)
       l = Math.round(Math.random() * 100)
       color = Colors.buildHSL(h, s, l)
@@ -187,7 +187,7 @@ class Colors {
     }
 
     h = Math.round(h)
-    h = h < 0 ? 360 + h : h
+    h = h < 0 ? 359 + h : h
     s = Math.round(s * 100)
     l = Math.round(l * 100)
 
@@ -196,8 +196,8 @@ class Colors {
 
   static hue(color, value) {
     let h = Number(color.hsl.h) + Number(value)
-    h %= 360
-    h = h < 0 ? 360 + h : h
+    h %= 359
+    h = h < 0 ? 359 + h : h
 
     return Colors.buildHSL(h, color.hsl.s, color.hsl.l)
   }
