@@ -1673,7 +1673,6 @@ function createColorWidget(pickedColor) {
     yHues = xyHues[1]
   })
   window.addEventListener('resize', () => {
-    console.log(xColors, yColors, xHues, yHues)
     const xyColors = resizeCanvasColors(canvasColors, pickedColor, xColors, yColors)
     const xyHues = resizeCanvasHues(canvasHues, pickedColor, xHues, yHues)
     xColors = xyColors[0]
