@@ -1413,14 +1413,13 @@ function buildLightnessRow(row, value, colorPicked) {
 
 function createColorWidget(pickedColor) {
   const divInnerRow = createDivInnerRow()
-  divInnerRow.style.gap = '10px'
+  divInnerRow.style.gap = '0px'
   divInnerRow.style.border = '2px solid var(--color)'
 
   const divCanvasRow = createDiv()
   divCanvasRow.style.display = 'flex'
   divCanvasRow.style.justifyContent = 'center'
   divCanvasRow.style.alignItems = 'center'
-  divCanvasRow.style.gap = '10px'
   divCanvasRow.style.width = '100%'
 
   let hoveredColor = Colors.copy(pickedColor)
