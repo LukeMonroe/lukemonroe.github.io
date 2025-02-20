@@ -52,12 +52,24 @@ class Colors {
     return hsv ? Colors.buildHSV(h, s, v) : null
   }
 
+  static createCMYK(c, m, y, k) {
+    c = Number(c.trim())
+    m = Number(m.trim())
+    y = Number(y.trim())
+    k = Number(k.trim())
+
+    const cmyk = c >= 0 && c <= 100 && m >= 0 && m <= 100 && y >= 0 && y <= 100 && k >= 0 && k <= 100
+
+    return cmyk ? Colors.buildCMYK(c, m, y, k) : null
+  }
+
   static buildHex(hex) {
     const rgb = Colors.hexToRGB(hex)
     const hsl = Colors.rgbToHSL(rgb)
     const hsv = Colors.rgbToHSV(rgb)
+    const cmyk = Colors.rgbToCMYK(rgb)
 
-    return Colors.build(hex, rgb, hsl, hsv)
+    return Colors.build(hex, rgb, hsl, hsv, cmyk)
   }
 
   static buildRGB(r, g, b) {
@@ -65,8 +77,9 @@ class Colors {
     const hsl = Colors.rgbToHSL(rgb)
     const hex = Colors.rgbToHex(rgb)
     const hsv = Colors.rgbToHSV(rgb)
+    const cmyk = Colors.rgbToCMYK(rgb)
 
-    return Colors.build(hex, rgb, hsl, hsv)
+    return Colors.build(hex, rgb, hsl, hsv, cmyk)
   }
 
   static buildHSL(h, s, l) {
@@ -74,8 +87,9 @@ class Colors {
     const rgb = Colors.hslToRGB(hsl)
     const hex = Colors.rgbToHex(rgb)
     const hsv = Colors.rgbToHSV(rgb)
+    const cmyk = Colors.rgbToCMYK(rgb)
 
-    return Colors.build(hex, rgb, hsl, hsv)
+    return Colors.build(hex, rgb, hsl, hsv, cmyk)
   }
 
   static buildHSV(h, s, v) {
@@ -83,20 +97,32 @@ class Colors {
     const rgb = Colors.hsvToRGB(hsv)
     const hex = Colors.rgbToHex(rgb)
     const hsl = Colors.rgbToHSL(rgb)
+    const cmyk = Colors.rgbToCMYK(rgb)
 
-    return Colors.build(hex, rgb, hsl, hsv)
+    return Colors.build(hex, rgb, hsl, hsv, cmyk)
   }
 
-  static build(hex, rgb, hsl, hsv) {
+  static buildCMYK(c, m, y, k) {
+    const cmyk = { c, m, y, k }
+    const rgb = Colors.hsvToRGB(hsv)
+    const hex = Colors.rgbToHex(rgb)
+    const hsl = Colors.rgbToHSL(rgb)
+    const hsv = Colors.rgbToHSV(rgb)
+
+    return Colors.build(hex, rgb, hsl, hsv, cmyk)
+  }
+
+  static build(hex, rgb, hsl, hsv, cmyk) {
     const grayscale = Math.round((0.2126 * rgb.r) + (0.7152 * rgb.g) + (0.0722 * rgb.b))
 
     const formattedHex = hex
     const formattedRGB = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`
     const formattedHSL = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`
     const formattedHSV = `hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)`
+    const formattedCMYK = `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`
     const formattedText = grayscale > 127 ? '#000000' : '#FFFFFF'
 
-    return { hex, rgb, hsl, hsv, grayscale, formattedHex, formattedRGB, formattedHSL, formattedHSV, formattedText }
+    return { hex, rgb, hsl, hsv, cmyk, grayscale, formattedHex, formattedRGB, formattedHSL, formattedHSV, formattedCMYK, formattedText }
   }
 
   static random() {
@@ -279,6 +305,32 @@ class Colors {
     v = Math.round(v * 100)
 
     return { h, s, v }
+  }
+
+  static cmykToRGB(cmyk) {
+    const r = Math.round((1 - cmyk.c) * (1 - cmyk.k) * 255)
+    const g = Math.round((1 - cmyk.m) * (1 - cmyk.k) * 255)
+    const b = Math.round((1 - cmyk.y) * (1 - cmyk.k) * 255)
+
+    return { r, g, b }
+  }
+
+  static rgbToCMYK(rgb) {
+    const r = Number(rgb.r) / 255
+    const g = Number(rgb.g) / 255
+    const b = Number(rgb.b) / 255
+
+    let k = 1 - Math.max(r, g, b)
+    let c = (1 - r - k) / (1 - k)
+    let m = (1 - g - k) / (1 - k)
+    let y = (1 - b - k) / (1 - k)
+
+    c = Math.round(c * 100)
+    m = Math.round(m * 100)
+    y = Math.round(y * 100)
+    k = Math.round(k * 100)
+
+    return { c, m, y, k }
   }
 
   static hue(color, value) {

@@ -804,6 +804,7 @@ function createDivColor(color, colorPicked, fullscreen = false, color02 = null, 
   divColor.appendChild(createDivColorText(color.formattedRGB))
   divColor.appendChild(createDivColorText(color.formattedHSL))
   divColor.appendChild(createDivColorText(color.formattedHSV))
+  divColor.appendChild(createDivColorText(color.formattedCMYK))
   divColor.appendChild(createDivColorText(`grayscale: ${color.grayscale}`))
   divColor.appendChild(likeColor)
   if (colorPicked !== null && Colors.equal(color, colorPicked)) {
