@@ -1349,7 +1349,7 @@ function createBoxColumn(color01, color02, side) {
   boxColumn.appendChild(hexBoxRow)
   boxColumn.appendChild(rgbBoxRow)
   boxColumn.appendChild(hslBoxRow)
-  boxColumn.appendChild(createColorWidget(color01))
+  boxColumn.appendChild(createColorWidget(baseColor))
   if (window.EyeDropper) {
     const buttonRow = createDivInputRow()
     buttonRow.appendChild(createButtonEyedropper(color01, color02))
