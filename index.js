@@ -1273,7 +1273,7 @@ function createBoxColumn(color01, color02, side) {
   hslBoxRow.appendChild(lBox)
 
   const colorPicker = new ColorPicker()
-  const colorWidget = colorPicker.createColorWidget(baseColor, loadTool)
+  const colorWidget = colorPicker.createColorWidgetButton(baseColor, loadTool)
 
   const boxColumn = createDivInputColumn()
   boxColumn.appendChild(hexBoxRow)
