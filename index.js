@@ -1,6 +1,6 @@
 import { ColorPickerThemes } from './color-picker-themes.js'
 import { Colors } from './colors.js'
-import { createColorWidget } from './color-picker.js'
+import { ColorPicker } from './color-picker.js'
 import { createDivColorIconHeart, getLikedColors, isColorLiked } from './favorites.js'
 import { getBackgroundImage } from './images.js'
 import { createDivTooltip } from './tooltips.js'
@@ -1272,11 +1272,14 @@ function createBoxColumn(color01, color02, side) {
   hslBoxRow.appendChild(sBox)
   hslBoxRow.appendChild(lBox)
 
+  const colorPicker = new ColorPicker()
+  const colorWidget = colorPicker.createColorWidget(baseColor, loadTool)
+
   const boxColumn = createDivInputColumn()
   boxColumn.appendChild(hexBoxRow)
   boxColumn.appendChild(rgbBoxRow)
   boxColumn.appendChild(hslBoxRow)
-  boxColumn.appendChild(createColorWidget(baseColor, loadTool))
+  boxColumn.appendChild(colorWidget)
   if (window.EyeDropper) {
     const buttonRow = createDivInputRow()
     buttonRow.appendChild(createButtonEyedropper(color01, color02))
