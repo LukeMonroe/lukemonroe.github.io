@@ -7,6 +7,8 @@ class ColorPicker {
   canvasColors = document.createElement('canvas')
   canvasHues = document.createElement('canvas')
 
+  callable = null
+
   pickedColor = Colors.random()
   hoveredColor = Colors.random()
 
@@ -49,7 +51,7 @@ class ColorPicker {
     return divColorText
   }
 
-  createDivColorIconFullscreen(divColorWidgetWindow, color, divColor, callable) {
+  createDivColorIconFullscreen(divColorWidgetWindow, color, divColor) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
     divColorIcon.style.backgroundImage = getBackgroundImage(color, 'fullscreen')
@@ -58,8 +60,10 @@ class ColorPicker {
     createDivTooltip(divColorIcon, 'fullscreen')
     divColorIcon.addEventListener('click', () => {
       if (divColor.className === 'color') {
-        const divColor = this.createDivColor(divColorWidgetWindow, color, callable)
+        const divColor = this.createDivColor(divColorWidgetWindow, color)
         divColor.className = 'color-fullscreen'
+        divColor.style.height = '100%'
+        divColor.style.width = '100%'
         document.body.appendChild(divColor)
         document.body.style.overflow = 'hidden'
       } else {
@@ -77,7 +81,7 @@ class ColorPicker {
     return divColorIcon
   }
 
-  createDivColorIconCheckmark(divColorWidgetWindow, color, divColor, callable) {
+  createDivColorIconCheckmark(divColorWidgetWindow, color, divColor) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
     divColorIcon.style.backgroundImage = getBackgroundImage(color, 'checkmark')
@@ -90,17 +94,19 @@ class ColorPicker {
         document.body.removeChild(divColor)
       }
       document.body.style.overflow = 'auto'
-      callable(color)
+      this.callable(color)
     })
 
     return divColorIcon
   }
 
-  createDivColor(divColorWidgetWindow, color, callable) {
+  createDivColor(divColorWidgetWindow, color) {
     const divColor = document.createElement('div')
     divColor.className = 'color'
     divColor.style.backgroundColor = color.formattedHSL
     divColor.style.color = color.formattedText
+    divColor.style.height = '400px'
+    divColor.style.width = '100%'
     divColor.appendChild(this.createDivColorText(color.formattedHex))
     divColor.appendChild(this.createDivColorText(color.formattedRGB))
     divColor.appendChild(this.createDivColorText(color.formattedHSL))
@@ -108,8 +114,8 @@ class ColorPicker {
     divColor.appendChild(this.createDivColorText(color.formattedCMYK))
     divColor.appendChild(this.createDivColorText(`grayscale: ${color.grayscale}`))
     divColor.appendChild(createDivColorIconHeart(color))
-    divColor.appendChild(this.createDivColorIconFullscreen(divColorWidgetWindow, color, divColor, callable))
-    divColor.appendChild(this.createDivColorIconCheckmark(divColorWidgetWindow, color, divColor, callable))
+    divColor.appendChild(this.createDivColorIconFullscreen(divColorWidgetWindow, color, divColor))
+    divColor.appendChild(this.createDivColorIconCheckmark(divColorWidgetWindow, color, divColor))
     const children = divColor.children
     for (let index = 0; index < children.length; index++) {
       children[index].style.display = 'block'
@@ -118,18 +124,7 @@ class ColorPicker {
     return divColor
   }
 
-  updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable) {
-    const divColor = this.createDivColor(divColorWidgetWindow, this.hoveredColor, callable)
-    divColor.style.height = '400px'
-    divColor.style.width = '100%'
-    divInnerRow.replaceChildren()
-    divInnerRow.appendChild(divColor)
-    divInnerRow.appendChild(divCanvasRow)
-  }
-
-  createColorWidget(pickedColor, callable) {
-    this.pickedColor = pickedColor
-
+  createColorWidget() {
     this.canvasColors.style.touchAction = 'none'
     this.canvasColors.style.height = '400px'
     this.canvasColors.style.width = '100%'
@@ -166,52 +161,57 @@ class ColorPicker {
       document.body.style.overflow = 'auto'
     })
 
-    const divColor = this.createDivColor(divColorWidgetWindow, this.pickedColor, callable)
-    divColor.style.height = '400px'
-    divColor.style.width = '100%'
-
-    divInnerRow.appendChild(divColor)
-    divInnerRow.appendChild(divCanvasRow)
-
     this.canvasColors.addEventListener('mousedown', () => { this.mouseDownColors = true })
     this.canvasColors.addEventListener('mouseup', () => { this.mouseDownColors = false })
+    this.canvasColors.addEventListener('touchstart', () => { this.touchDownColors = true })
+    this.canvasColors.addEventListener('touchend', () => { this.touchDownColors = false })
+
+    this.canvasHues.addEventListener('mousedown', () => { this.mouseDownHues = true })
+    this.canvasHues.addEventListener('mouseup', () => { this.mouseDownHues = false })
+    this.canvasHues.addEventListener('touchstart', () => { this.touchDownHues = true })
+    this.canvasHues.addEventListener('touchend', () => { this.touchDownHues = false })
+
     this.canvasColors.addEventListener('mousemove', (event) => {
       if (this.mouseDownColors) {
         this.getImageDataColors(event)
-        this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
+        divInnerRow.replaceChildren()
+        divInnerRow.appendChild(this.createDivColor(divColorWidgetWindow, this.hoveredColor))
+        divInnerRow.appendChild(divCanvasRow)
       }
     })
-    this.canvasColors.addEventListener('touchstart', () => { this.touchDownColors = true })
-    this.canvasColors.addEventListener('touchend', () => { this.touchDownColors = false })
     this.canvasColors.addEventListener('touchmove', (event) => {
       if (this.touchDownColors) {
         this.getImageDataColors(event)
-        this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
+        divInnerRow.replaceChildren()
+        divInnerRow.appendChild(this.createDivColor(divColorWidgetWindow, this.hoveredColor))
+        divInnerRow.appendChild(divCanvasRow)
       }
     })
     this.canvasColors.addEventListener('click', (event) => {
       this.mouseDownColors = true
       this.getImageDataColors(event)
-      this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
+      divInnerRow.replaceChildren()
+      divInnerRow.appendChild(this.createDivColor(divColorWidgetWindow, this.hoveredColor))
+      divInnerRow.appendChild(divCanvasRow)
       this.mouseDownColors = false
     })
 
-    this.canvasHues.addEventListener('touchstart', () => { this.touchDownHues = true })
-    this.canvasHues.addEventListener('touchend', () => { this.touchDownHues = false })
     this.canvasHues.addEventListener('mousemove', (event) => {
       if (this.mouseDownHues) {
         this.getImageDataHues(event)
         this.getImageDataColorsXY()
-        this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
+        divInnerRow.replaceChildren()
+        divInnerRow.appendChild(this.createDivColor(divColorWidgetWindow, this.hoveredColor))
+        divInnerRow.appendChild(divCanvasRow)
       }
     })
-    this.canvasHues.addEventListener('mousedown', () => { this.mouseDownHues = true })
-    this.canvasHues.addEventListener('mouseup', () => { this.mouseDownHues = false })
     this.canvasHues.addEventListener('touchmove', (event) => {
       if (this.touchDownHues) {
         this.getImageDataHues(event)
         this.getImageDataColorsXY()
-        this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
+        divInnerRow.replaceChildren()
+        divInnerRow.appendChild(this.createDivColor(divColorWidgetWindow, this.hoveredColor))
+        divInnerRow.appendChild(divCanvasRow)
       }
     })
     this.canvasHues.addEventListener('click', (event) => {
@@ -219,18 +219,24 @@ class ColorPicker {
       this.mouseDownColors = true
       this.getImageDataHues(event)
       this.getImageDataColorsXY()
-      this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
+      divInnerRow.replaceChildren()
+      divInnerRow.appendChild(this.createDivColor(divColorWidgetWindow, this.hoveredColor))
+      divInnerRow.appendChild(divCanvasRow)
       this.mouseDownColors = false
       this.mouseDownHues = false
     })
 
+    divInnerRow.appendChild(this.createDivColor(divColorWidgetWindow, this.pickedColor))
+    divInnerRow.appendChild(divCanvasRow)
     document.body.appendChild(divColorWidgetWindow)
     document.body.style.overflow = 'hidden'
     this.resizeCanvasHues(true)
     this.resizeCanvasColors(true)
     this.findImageDataHues()
     this.findImageDataColors()
-    this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
+    divInnerRow.replaceChildren()
+    divInnerRow.appendChild(this.createDivColor(divColorWidgetWindow, this.hoveredColor))
+    divInnerRow.appendChild(divCanvasRow)
 
     window.addEventListener('resize', () => {
       this.resizeCanvasColors()
@@ -241,11 +247,14 @@ class ColorPicker {
   }
 
   createColorWidgetButton(pickedColor, callable) {
+    this.pickedColor = pickedColor
+    this.callable = callable
+
     const buttonColorWidget = document.createElement('button')
     buttonColorWidget.className = 'theme'
     buttonColorWidget.innerText = 'Color Widget'
     buttonColorWidget.addEventListener('click', () => {
-      this.createColorWidget(pickedColor, callable)
+      this.createColorWidget()
     })
 
     return buttonColorWidget
