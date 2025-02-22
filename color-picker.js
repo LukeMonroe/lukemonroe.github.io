@@ -4,6 +4,9 @@ import { getBackgroundImage } from './images.js'
 import { createDivTooltip } from './tooltips.js'
 
 class ColorPicker {
+  canvasColors = document.createElement('canvas')
+  canvasHues = document.createElement('canvas')
+
   pickedColor = Colors.random()
   hoveredColor = Colors.random()
 
@@ -127,29 +130,27 @@ class ColorPicker {
   createColorWidget(pickedColor, callable) {
     this.pickedColor = pickedColor
 
-    const canvasColors = document.createElement('canvas')
-    canvasColors.style.touchAction = 'none'
-    canvasColors.style.height = '400px'
-    canvasColors.style.width = '100%'
-    canvasColors.style.minWidth = '0px'
-    canvasColors.height = 200
-    canvasColors.width = 200
+    this.canvasColors.style.touchAction = 'none'
+    this.canvasColors.style.height = '400px'
+    this.canvasColors.style.width = '100%'
+    this.canvasColors.style.minWidth = '0px'
+    this.canvasColors.height = 200
+    this.canvasColors.width = 200
 
-    const canvasHues = document.createElement('canvas')
-    canvasHues.style.touchAction = 'none'
-    canvasHues.style.height = '400px'
-    canvasHues.style.width = '20%'
-    canvasHues.style.minWidth = '0px'
-    canvasHues.height = 200
-    canvasHues.width = 200
+    this.canvasHues.style.touchAction = 'none'
+    this.canvasHues.style.height = '400px'
+    this.canvasHues.style.width = '20%'
+    this.canvasHues.style.minWidth = '0px'
+    this.canvasHues.height = 200
+    this.canvasHues.width = 200
 
     const divCanvasRow = document.createElement('div')
     divCanvasRow.style.display = 'flex'
     divCanvasRow.style.justifyContent = 'center'
     divCanvasRow.style.alignItems = 'center'
     divCanvasRow.style.width = '100%'
-    divCanvasRow.appendChild(canvasColors)
-    divCanvasRow.appendChild(canvasHues)
+    divCanvasRow.appendChild(this.canvasColors)
+    divCanvasRow.appendChild(this.canvasHues)
 
     const divInnerRow = document.createElement('div')
     divInnerRow.className = 'inner-row'
@@ -172,52 +173,52 @@ class ColorPicker {
     divInnerRow.appendChild(divColor)
     divInnerRow.appendChild(divCanvasRow)
 
-    canvasColors.addEventListener('mousedown', () => { this.mouseDownColors = true })
-    canvasColors.addEventListener('mouseup', () => { this.mouseDownColors = false })
-    canvasColors.addEventListener('mousemove', (event) => {
+    this.canvasColors.addEventListener('mousedown', () => { this.mouseDownColors = true })
+    this.canvasColors.addEventListener('mouseup', () => { this.mouseDownColors = false })
+    this.canvasColors.addEventListener('mousemove', (event) => {
       if (this.mouseDownColors) {
-        this.getImageDataColors(event, canvasColors)
+        this.getImageDataColors(event)
         this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
       }
     })
-    canvasColors.addEventListener('touchstart', () => { this.touchDownColors = true })
-    canvasColors.addEventListener('touchend', () => { this.touchDownColors = false })
-    canvasColors.addEventListener('touchmove', (event) => {
+    this.canvasColors.addEventListener('touchstart', () => { this.touchDownColors = true })
+    this.canvasColors.addEventListener('touchend', () => { this.touchDownColors = false })
+    this.canvasColors.addEventListener('touchmove', (event) => {
       if (this.touchDownColors) {
-        this.getImageDataColors(event, canvasColors)
+        this.getImageDataColors(event)
         this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
       }
     })
-    canvasColors.addEventListener('click', (event) => {
+    this.canvasColors.addEventListener('click', (event) => {
       this.mouseDownColors = true
-      this.getImageDataColors(event, canvasColors)
+      this.getImageDataColors(event)
       this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
       this.mouseDownColors = false
     })
 
-    canvasHues.addEventListener('touchstart', () => { this.touchDownHues = true })
-    canvasHues.addEventListener('touchend', () => { this.touchDownHues = false })
-    canvasHues.addEventListener('mousemove', (event) => {
+    this.canvasHues.addEventListener('touchstart', () => { this.touchDownHues = true })
+    this.canvasHues.addEventListener('touchend', () => { this.touchDownHues = false })
+    this.canvasHues.addEventListener('mousemove', (event) => {
       if (this.mouseDownHues) {
-        this.getImageDataHues(event, canvasHues)
-        this.getImageDataColorsXY(canvasColors)
+        this.getImageDataHues(event)
+        this.getImageDataColorsXY()
         this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
       }
     })
-    canvasHues.addEventListener('mousedown', () => { this.mouseDownHues = true })
-    canvasHues.addEventListener('mouseup', () => { this.mouseDownHues = false })
-    canvasHues.addEventListener('touchmove', (event) => {
+    this.canvasHues.addEventListener('mousedown', () => { this.mouseDownHues = true })
+    this.canvasHues.addEventListener('mouseup', () => { this.mouseDownHues = false })
+    this.canvasHues.addEventListener('touchmove', (event) => {
       if (this.touchDownHues) {
-        this.getImageDataHues(event, canvasHues)
-        this.getImageDataColorsXY(canvasColors)
+        this.getImageDataHues(event)
+        this.getImageDataColorsXY()
         this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
       }
     })
-    canvasHues.addEventListener('click', (event) => {
+    this.canvasHues.addEventListener('click', (event) => {
       this.mouseDownHues = true
       this.mouseDownColors = true
-      this.getImageDataHues(event, canvasHues)
-      this.getImageDataColorsXY(canvasColors)
+      this.getImageDataHues(event)
+      this.getImageDataColorsXY()
       this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
       this.mouseDownColors = false
       this.mouseDownHues = false
@@ -225,15 +226,15 @@ class ColorPicker {
 
     document.body.appendChild(divColorWidgetWindow)
     document.body.style.overflow = 'hidden'
-    this.resizeCanvasHues(canvasHues, true)
-    this.resizeCanvasColors(canvasColors, true)
-    this.findImageDataHues(canvasHues)
-    this.findImageDataColors(canvasColors)
+    this.resizeCanvasHues(true)
+    this.resizeCanvasColors(true)
+    this.findImageDataHues()
+    this.findImageDataColors()
     this.updateColorWidget(divColorWidgetWindow, divInnerRow, divCanvasRow, callable)
 
     window.addEventListener('resize', () => {
-      this.resizeCanvasColors(canvasColors)
-      this.resizeCanvasHues(canvasHues)
+      this.resizeCanvasColors()
+      this.resizeCanvasHues()
     })
 
     return divColorWidgetWindow
@@ -262,72 +263,72 @@ class ColorPicker {
     return window.devicePixelRatio
   }
 
-  resizeCanvasColors(canvas, initial = false) {
-    const context = canvas.getContext('2d')
-    const height = this.getCanvasHeight(canvas)
-    const width = this.getCanvasWidth(canvas)
+  resizeCanvasColors(initial = false) {
+    const context = this.canvasColors.getContext('2d')
+    const height = this.getCanvasHeight(this.canvasColors)
+    const width = this.getCanvasWidth(this.canvasColors)
     const dpr = this.getDPR()
 
-    const xPct = Math.round((this.xColors / (canvas.width / dpr)) * 100) / 100
-    const yPct = Math.round((this.yColors / (canvas.height / dpr)) * 100) / 100
+    const xPct = Math.round((this.xColors / (this.canvasColors.width / dpr)) * 100) / 100
+    const yPct = Math.round((this.yColors / (this.canvasColors.height / dpr)) * 100) / 100
 
-    canvas.height = height * dpr
-    canvas.width = width * dpr
+    this.canvasColors.height = height * dpr
+    this.canvasColors.width = width * dpr
     context.scale(dpr, dpr)
 
     const x1 = initial ? this.xColors : xPct * width
     const y1 = initial ? this.yColors : yPct * height
     this.xColors = x1
     this.yColors = y1
-    this.drawCanvasColors(canvas)
+    this.drawCanvasColors(this.canvasColors)
   }
 
-  resizeCanvasHues(canvas, initial = false) {
-    const context = canvas.getContext('2d')
-    const height = this.getCanvasHeight(canvas)
-    const width = this.getCanvasWidth(canvas)
+  resizeCanvasHues(initial = false) {
+    const context = this.canvasHues.getContext('2d')
+    const height = this.getCanvasHeight(this.canvasHues)
+    const width = this.getCanvasWidth(this.canvasHues)
     const dpr = this.getDPR()
 
-    const xPct = Math.round((this.xHues / (canvas.width / dpr)) * 100) / 100
-    const yPct = Math.round((this.yHues / (canvas.height / dpr)) * 100) / 100
+    const xPct = Math.round((this.xHues / (this.canvasHues.width / dpr)) * 100) / 100
+    const yPct = Math.round((this.yHues / (this.canvasHues.height / dpr)) * 100) / 100
 
-    canvas.height = height * dpr
-    canvas.width = width * dpr
+    this.canvasHues.height = height * dpr
+    this.canvasHues.width = width * dpr
     context.scale(dpr, dpr)
 
     const x1 = initial ? this.xHues : xPct * width
     const y1 = initial ? this.yHues : yPct * height
     this.xHues = x1
     this.yHues = y1
-    this.drawCanvasHues(canvas)
+    this.drawCanvasHues(this.canvasHues)
   }
 
-  drawCanvasColors(canvas) {
-    const context = canvas.getContext('2d')
-    context.clearRect(0, 0, this.getCanvasWidth(canvas), this.getCanvasHeight(canvas))
+  drawCanvasColors() {
+    const context = this.canvasColors.getContext('2d')
+    context.clearRect(0, 0, this.getCanvasWidth(this.canvasColors), this.getCanvasHeight(this.canvasColors))
 
-    const colorGradient = context.createLinearGradient(0, 0, this.getCanvasWidth(canvas), 0)
+    const colorGradient = context.createLinearGradient(0, 0, this.getCanvasWidth(this.canvasColors), 0)
     colorGradient.addColorStop(0.01, '#ffffff')
     colorGradient.addColorStop(0.99, Colors.createHSL(`${this.pickedColor.hsl.h}`, '100', '50').formattedHex)
     context.fillStyle = colorGradient
-    context.fillRect(0, 0, this.getCanvasWidth(canvas), this.getCanvasHeight(canvas))
+    context.fillRect(0, 0, this.getCanvasWidth(this.canvasColors), this.getCanvasHeight(this.canvasColors))
 
-    const blackGradient = context.createLinearGradient(0, 0, 0, this.getCanvasHeight(canvas))
+    const blackGradient = context.createLinearGradient(0, 0, 0, this.getCanvasHeight(this.canvasColors))
     blackGradient.addColorStop(0.01, '#00000000')
     blackGradient.addColorStop(0.99, '#000000')
     context.fillStyle = blackGradient
-    context.fillRect(0, 0, this.getCanvasWidth(canvas), this.getCanvasHeight(canvas))
+    context.fillRect(0, 0, this.getCanvasWidth(this.canvasColors), this.getCanvasHeight(this.canvasColors))
 
     context.lineWidth = 2
     context.strokeStyle = this.hoveredColor.formattedText
     context.strokeRect(this.xColors - 6, this.yColors - 6, 12, 12)
   }
 
-  drawCanvasHues(canvas) {
-    const context = canvas.getContext('2d')
-    context.clearRect(0, 0, this.getCanvasWidth(canvas), this.getCanvasHeight(canvas))
+  drawCanvasHues() {
+    const context = this.canvasHues.getContext('2d')
+    context.clearRect(0, 0, this.getCanvasWidth(this.canvasHues), this.getCanvasHeight(this.canvasHues))
 
-    const colorGradient = context.createLinearGradient(0, 0, 0, this.getCanvasHeight(canvas))
+    const colorGradient = context.createLinearGradient(0, 0, 0, this.getCanvasHeight(this.canvasHues))
     colorGradient.addColorStop(0.01, Colors.createHSL('0', '100', '50').formattedHex)
     colorGradient.addColorStop(0.10, Colors.createHSL('35', '100', '50').formattedHex)
     colorGradient.addColorStop(0.20, Colors.createHSL('71', '100', '50').formattedHex)
@@ -340,58 +341,58 @@ class ColorPicker {
     colorGradient.addColorStop(0.90, Colors.createHSL('323', '100', '50').formattedHex)
     colorGradient.addColorStop(0.99, Colors.createHSL('359', '100', '50').formattedHex)
     context.fillStyle = colorGradient
-    context.fillRect(0, 0, this.getCanvasWidth(canvas), this.getCanvasHeight(canvas))
+    context.fillRect(0, 0, this.getCanvasWidth(this.canvasHues), this.getCanvasHeight(this.canvasHues))
 
     context.lineWidth = 2
     context.strokeStyle = this.pickedColor.formattedText
-    context.strokeRect(2, this.yHues - 6, this.getCanvasWidth(canvas) - 4, 12)
+    context.strokeRect(2, this.yHues - 6, this.getCanvasWidth(this.canvasHues) - 4, 12)
   }
 
-  getImageDataColors(event, canvas) {
+  getImageDataColors(event) {
     if (this.mouseDownColors || this.touchDownColors) {
-      const context = canvas.getContext('2d')
+      const context = this.canvasColors.getContext('2d')
       const dpr = this.getDPR()
-      const bounding = canvas.getBoundingClientRect()
+      const bounding = this.canvasColors.getBoundingClientRect()
       const x = (this.mouseDownColors ? event.clientX : event.touches[0].clientX) - bounding.left
       const y = (this.mouseDownColors ? event.clientY : event.touches[0].clientY) - bounding.top
       const data = context.getImageData(x * dpr, y * dpr, 1, 1).data
       this.hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
       this.xColors = x
       this.yColors = y
-      this.drawCanvasColors(canvas)
+      this.drawCanvasColors(this.canvasColors)
     }
   }
 
-  getImageDataColorsXY(canvas) {
-    this.drawCanvasColors(canvas)
-    const context = canvas.getContext('2d')
+  getImageDataColorsXY() {
+    this.drawCanvasColors(this.canvasColors)
+    const context = this.canvasColors.getContext('2d')
     const dpr = this.getDPR()
     const data = context.getImageData(this.xColors * dpr, this.yColors * dpr, 1, 1).data
     this.hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
   }
 
-  getImageDataHues(event, canvas) {
+  getImageDataHues(event) {
     if (this.mouseDownHues || this.touchDownHues) {
-      const context = canvas.getContext('2d')
+      const context = this.canvasHues.getContext('2d')
       const dpr = this.getDPR()
-      const bounding = canvas.getBoundingClientRect()
+      const bounding = this.canvasHues.getBoundingClientRect()
       const x = (this.mouseDownHues ? event.clientX : event.touches[0].clientX) - bounding.left
       const y = (this.mouseDownHues ? event.clientY : event.touches[0].clientY) - bounding.top
       const data = context.getImageData(x * dpr, y * dpr, 1, 1).data
       this.pickedColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
       this.xHues = x
       this.yHues = y
-      this.drawCanvasHues(canvas)
+      this.drawCanvasHues(this.canvasHues)
     }
   }
 
-  findImageDataColors(canvas) {
-    const context = canvas.getContext('2d')
+  findImageDataColors() {
+    const context = this.canvasColors.getContext('2d')
     const dpr = this.getDPR()
     let x = 0
-    let y = canvas.height / 2
+    let y = this.canvasColors.height / 2
 
-    for (x = 0; x <= canvas.width; x++) {
+    for (x = 0; x <= this.canvasColors.width; x++) {
       const data = context.getImageData(x, y, 1, 1).data
       const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
       if (hoveredColor.hsv.s === this.pickedColor.hsv.s) {
@@ -399,31 +400,31 @@ class ColorPicker {
       }
     }
 
-    for (y = 0; y <= canvas.height; y++) {
+    for (y = 0; y <= this.canvasColors.height; y++) {
       const data = context.getImageData(x, y, 1, 1).data
       const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
       if (hoveredColor.hsv.v === this.pickedColor.hsv.v) {
         this.hoveredColor = hoveredColor
         this.xColors = x / dpr
         this.yColors = y / dpr
-        this.drawCanvasColors(canvas)
+        this.drawCanvasColors(this.canvasColors)
         break
       }
     }
   }
 
-  findImageDataHues(canvas) {
-    const context = canvas.getContext('2d')
+  findImageDataHues() {
+    const context = this.canvasHues.getContext('2d')
     const dpr = this.getDPR()
-    const x = canvas.width / 2
+    const x = this.canvasHues.width / 2
 
-    for (let y = 0; y <= canvas.height; y++) {
+    for (let y = 0; y <= this.canvasHues.height; y++) {
       const data = context.getImageData(x, y, 1, 1).data
       const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
       if (hoveredColor.hsl.h === this.pickedColor.hsl.h) {
         this.xHues = x / dpr
         this.yHues = y / dpr
-        this.drawCanvasHues(canvas)
+        this.drawCanvasHues(this.canvasHues)
         break
       }
     }
