@@ -1,5 +1,9 @@
 import { ColorPickerThemes } from './color-picker-themes.js'
 import { Colors } from './colors.js'
+import { createColorWidget } from './color-picker.js'
+import { createDivColorIconHeart, getLikedColors, isColorLiked } from './favorites.js'
+import { getBackgroundImage } from './images.js'
+import { createDivTooltip } from './tooltips.js'
 
 const themes = new ColorPickerThemes()
 themes.setTheme()
@@ -21,7 +25,7 @@ let toolPicked = tool === null ? createColorPicker : tool === 'colorPicker' ? cr
 toolPicked()
 
 function createSideNavigation() {
-  const sideNavigation = createDiv()
+  const sideNavigation = document.createElement('div')
   sideNavigation.className = 'side-navigation'
   const aColors = createA('javascript:void(0);', 'Color Picker')
   aColors.addEventListener('click', () => {
@@ -353,28 +357,28 @@ function createLikedColors() {
 }
 
 function createDivInnerColumn() {
-  const column = createDiv()
+  const column = document.createElement('div')
   column.className = 'inner-column'
 
   return column
 }
 
 function createDivInnerRow() {
-  const row = createDiv()
+  const row = document.createElement('div')
   row.className = 'inner-row'
 
   return row
 }
 
 function createDivColorRow() {
-  const row = createDiv()
+  const row = document.createElement('div')
   row.className = 'color-row'
 
   return row
 }
 
 function createDivColorRowSmall() {
-  const row = createDiv()
+  const row = document.createElement('div')
   row.className = 'color-row-small'
 
   return row
@@ -388,7 +392,7 @@ function createGradientRowPicked(color01, color02, colorPicked01, colorPicked02,
 }
 
 function createDivMarker(color) {
-  const divMarker = createDiv()
+  const divMarker = document.createElement('div')
   divMarker.className = 'marker'
   divMarker.style.backgroundColor = color.formattedText
   divMarker.style.display = 'block'
@@ -397,7 +401,7 @@ function createDivMarker(color) {
 }
 
 function createDivColorGrid() {
-  const divColorGrid = createDiv()
+  const divColorGrid = document.createElement('div')
   divColorGrid.className = 'color-grid'
 
   const colors = getLikedColors()
@@ -415,7 +419,7 @@ function createDivColorGrid() {
 }
 
 function createDivGradientGrid() {
-  const divColorGrid = createDiv()
+  const divColorGrid = document.createElement('div')
   divColorGrid.className = 'color-grid'
 
   const gradients = getLikedGradients()
@@ -557,37 +561,6 @@ function setHistoryContrastTextColors(colors) {
   }
 }
 
-function getLikedColors() {
-  const colors = []
-  let index = 0
-  while (localStorage.getItem(`likedColor${index}`) !== null) {
-    colors.push(Colors.createHex(localStorage.getItem(`likedColor${index++}`)))
-  }
-
-  return colors
-}
-
-function isColorLiked(color) {
-  const colors = getLikedColors()
-  for (let index = 0; index < colors.length; index++) {
-    if (Colors.equal(colors[index], color, false)) {
-      return true
-    }
-  }
-
-  return false
-}
-
-function setLikedColors(colors) {
-  let pos = 0
-  for (let index = (colors.length > 100 ? colors.length - 100 : 0); index < colors.length; index++) {
-    localStorage.setItem(`likedColor${pos++}`, colors[index].formattedHex)
-  }
-  for (let index = (colors.length > 100 ? 100 : colors.length); index < 200; index++) {
-    localStorage.removeItem(`likedColor${index}`)
-  }
-}
-
 function getLikedGradients() {
   const gradients = []
   let index = 0
@@ -620,32 +593,15 @@ function setLikedGradients(gradients) {
   }
 }
 
-function createDivTooltip(divParent, innerText) {
-  const divTooltip = createDiv()
-  divTooltip.className = 'tooltip'
-  divTooltip.innerText = innerText
-
-  divParent.appendChild(divTooltip)
-  divParent.addEventListener('mouseenter', () => {
-    divTooltip.style.display = 'block'
-  })
-  divParent.addEventListener('mouseleave', () => {
-    divTooltip.style.display = 'none'
-  })
-  divParent.addEventListener('click', () => {
-    divTooltip.style.display = 'none'
-  })
-}
-
 function createDivColorText(innerText) {
-  const divColorText = createDiv()
+  const divColorText = document.createElement('div')
   divColorText.className = 'color-text'
   divColorText.innerText = innerText
   createDivTooltip(divColorText, 'copy')
   divColorText.addEventListener('click', () => {
     navigator.clipboard.writeText(divColorText.innerText)
 
-    const divCopied = createDiv()
+    const divCopied = document.createElement('div')
     divCopied.className = 'copied'
     divCopied.appendChild(createH4('Copied to clipboard'))
     document.body.appendChild(divCopied)
@@ -663,37 +619,8 @@ function createDivColorText(innerText) {
   return divColorText
 }
 
-function createDivColorIconHeart(color) {
-  const divColorIcon = createDiv()
-  divColorIcon.className = 'color-icon'
-  divColorIcon.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
-  divColorIcon.style.top = '10px'
-  divColorIcon.style.left = '10px'
-  createDivTooltip(divColorIcon, 'favorite')
-  divColorIcon.addEventListener('click', () => {
-    let colors = getLikedColors()
-    let colorIndex = null
-    for (let index = 0; index < colors.length; index++) {
-      if (Colors.equal(colors[index], color, false)) {
-        colorIndex = index
-        break
-      }
-    }
-    if (colorIndex === null) {
-      divColorIcon.style.backgroundImage = getBackgroundImage(color, 'heart-filled')
-      colors.push(color)
-    } else {
-      divColorIcon.style.backgroundImage = getBackgroundImage(color, 'heart-empty')
-      colors.splice(colorIndex, 1)
-    }
-    setLikedColors(colors)
-  })
-
-  return divColorIcon
-}
-
 function createDivColorIconOpenFullscreen(color01, color02, type, value, position) {
-  const divColorIcon = createDiv()
+  const divColorIcon = document.createElement('div')
   divColorIcon.className = 'color-icon'
   divColorIcon.style.backgroundImage = getBackgroundImage(color02 === null ? color01 : color02, 'fullscreen')
   divColorIcon.style.top = '10px'
@@ -712,7 +639,7 @@ function createDivColorIconOpenFullscreen(color01, color02, type, value, positio
 }
 
 function createDivColorIconCloseFullscreen(color, divColor) {
-  const divColorIcon = createDiv()
+  const divColorIcon = document.createElement('div')
   divColorIcon.className = 'color-icon'
   divColorIcon.style.backgroundImage = getBackgroundImage(color, 'fullscreen')
   divColorIcon.style.top = '10px'
@@ -732,7 +659,7 @@ function createDivColorIconCloseFullscreen(color, divColor) {
 
 function createDivColorIconCheckmark(color01, color02, side) {
   const baseColor = side === null ? color01 : side === 'left' ? color01 : color02
-  const divColorIcon = createDiv()
+  const divColorIcon = document.createElement('div')
   divColorIcon.className = 'color-icon'
   divColorIcon.style.backgroundImage = getBackgroundImage((side === null || color02 === null) ? color01 : side === 'left' ? color01 : color02, 'checkmark')
   divColorIcon.style.bottom = '10px'
@@ -746,7 +673,7 @@ function createDivColorIconCheckmark(color01, color02, side) {
 }
 
 function createDivColorIconCornerTriangle(color, divColor01, divColor02, divGradient) {
-  const divColorIcon = createDiv()
+  const divColorIcon = document.createElement('div')
   divColorIcon.className = 'color-icon'
   divColorIcon.style.backgroundImage = getBackgroundImage(color, 'corner-triangle')
   divColorIcon.style.bottom = '10px'
@@ -762,7 +689,7 @@ function createDivColorIconCornerTriangle(color, divColor01, divColor02, divGrad
 }
 
 function createDivGradientIconHeart(gradient) {
-  const divColorIcon = createDiv()
+  const divColorIcon = document.createElement('div')
   divColorIcon.className = 'color-icon'
   divColorIcon.style.backgroundImage = isGradientLiked(gradient) ? getBackgroundImage(gradient[0], 'heart-filled') : getBackgroundImage(gradient[0], 'heart-empty')
   divColorIcon.style.top = '10px'
@@ -791,7 +718,7 @@ function createDivGradientIconHeart(gradient) {
 }
 
 function createDivColor(color, colorPicked, fullscreen = false, color02 = null, side = null) {
-  const divColor = createDiv()
+  const divColor = document.createElement('div')
   divColor.className = fullscreen ? 'color-fullscreen' : 'color'
   divColor.style.backgroundColor = color.formattedHSL
   divColor.style.color = color.formattedText
@@ -861,7 +788,7 @@ function createDivColor(color, colorPicked, fullscreen = false, color02 = null, 
 }
 
 function createDivGradient(color01, color02, divColor01, divColor02, type, value, position) {
-  const divGradient = createDiv()
+  const divGradient = document.createElement('div')
   divGradient.className = 'color'
   divGradient.style.backgroundColor = color01.formattedHSL
   divGradient.style.color = color01.formattedText
@@ -905,7 +832,7 @@ function createDivGradient(color01, color02, divColor01, divColor02, type, value
 }
 
 function createDivGradientFullscreen(color01, color02, type, value, position) {
-  const divGradient = createDiv()
+  const divGradient = document.createElement('div')
   divGradient.className = 'color-fullscreen'
   divGradient.style.backgroundColor = color01.formattedHSL
   divGradient.style.color = color01.formattedText
@@ -934,14 +861,14 @@ function createDivGradientFullscreen(color01, color02, type, value, position) {
 }
 
 function createDivInputColumn() {
-  const divBoxColumn = createDiv()
+  const divBoxColumn = document.createElement('div')
   divBoxColumn.className = 'input-column'
 
   return divBoxColumn
 }
 
 function createDivInputRow() {
-  const divBoxRow = createDiv()
+  const divBoxRow = document.createElement('div')
   divBoxRow.className = 'input-row'
 
   return divBoxRow
@@ -970,7 +897,7 @@ function createInputRangeSlider(min, max, step, text, value, row, updateFunction
     updateFunction(row, inputRangeSlider.value, colorPicked)
   })
 
-  const divSlider = createDiv()
+  const divSlider = document.createElement('div')
   divSlider.className = 'slider'
   divSlider.appendChild(h4Slider)
   divSlider.appendChild(inputRangeSlider)
@@ -1010,12 +937,12 @@ function createDoubleInputRangeSliders(min01, max01, step01, text01, value01, mi
     updateFunction(row, inputRangeSlider01.value, inputRangeSlider02.value, colorPicked)
   })
 
-  const divSlider01 = createDiv()
+  const divSlider01 = document.createElement('div')
   divSlider01.className = 'slider'
   divSlider01.appendChild(h4Slider01)
   divSlider01.appendChild(inputRangeSlider01)
 
-  const divSlider02 = createDiv()
+  const divSlider02 = document.createElement('div')
   divSlider02.className = 'slider'
   divSlider02.appendChild(h4Slider02)
   divSlider02.appendChild(inputRangeSlider02)
@@ -1084,17 +1011,17 @@ function createDoubleInputRangeSlidersGradient(min01, max01, step01, text01, val
     }
   })
 
-  const divSlider01 = createDiv()
+  const divSlider01 = document.createElement('div')
   divSlider01.className = 'slider'
   divSlider01.appendChild(h4Slider01)
   divSlider01.appendChild(inputRangeSlider01)
 
-  const divSlider02 = createDiv()
+  const divSlider02 = document.createElement('div')
   divSlider02.className = 'slider'
   divSlider02.appendChild(h4Slider02)
   divSlider02.appendChild(inputRangeSlider02)
 
-  const divSlider03 = createDiv()
+  const divSlider03 = document.createElement('div')
   divSlider03.className = 'slider'
   divSlider03.appendChild(h4Slider03)
   divSlider03.appendChild(inputRangeSlider03)
@@ -1349,7 +1276,7 @@ function createBoxColumn(color01, color02, side) {
   boxColumn.appendChild(hexBoxRow)
   boxColumn.appendChild(rgbBoxRow)
   boxColumn.appendChild(hslBoxRow)
-  boxColumn.appendChild(createColorWidget(baseColor))
+  boxColumn.appendChild(createColorWidget(baseColor, loadTool))
   if (window.EyeDropper) {
     const buttonRow = createDivInputRow()
     buttonRow.appendChild(createButtonEyedropper(color01, color02))
@@ -1387,10 +1314,6 @@ function createH4(innerText) {
   return h4
 }
 
-function createDiv() {
-  return document.createElement('div')
-}
-
 function createA(href, innerText) {
   const a = document.createElement('a')
   a.href = href
@@ -1409,380 +1332,6 @@ function buildSaturationRow(row, value, colorPicked) {
 
 function buildLightnessRow(row, value, colorPicked) {
   buildColorRow(row, Colors.lightnesses(colorPicked, value), colorPicked)
-}
-
-function updateColorWidget(pickedColor, hoveredColor, divInnerRow, divCanvasRow) {
-  const divColor = createDivColor(hoveredColor, pickedColor)
-  divColor.style.height = '400px'
-  divColor.style.width = '100%'
-  divInnerRow.replaceChildren()
-  divInnerRow.appendChild(divColor)
-  divInnerRow.appendChild(divCanvasRow)
-  const children = divColor.children
-  for (let index = 0; index < children.length; index++) {
-    if (children[index].className === 'color-text') {
-      children[index].style.display = 'block'
-    }
-  }
-  divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
-
-  divInnerRow.addEventListener('mouseleave', () => {
-    const children = divColor.children
-    for (let index = 0; index < children.length; index++) {
-      if (children[index].className === 'color-text') {
-        children[index].style.display = 'none'
-      }
-    }
-    divColor.style.boxShadow = 'none'
-  })
-}
-
-function createColorWidget(pickedColor) {
-  const divColor = createDivColor(pickedColor, pickedColor)
-  divColor.style.height = '400px'
-  divColor.style.width = '100%'
-
-  const canvasColors = document.createElement('canvas')
-  canvasColors.style.touchAction = 'none'
-  canvasColors.style.height = '400px'
-  canvasColors.style.width = '100%'
-  canvasColors.style.minWidth = '0px'
-  canvasColors.height = 200
-  canvasColors.width = 200
-
-  const canvasHues = document.createElement('canvas')
-  canvasHues.style.touchAction = 'none'
-  canvasHues.style.height = '400px'
-  canvasHues.style.width = '20%'
-  canvasHues.style.minWidth = '0px'
-  canvasHues.height = 200
-  canvasHues.width = 200
-
-  const divCanvasRow = createDiv()
-  divCanvasRow.style.display = 'flex'
-  divCanvasRow.style.justifyContent = 'center'
-  divCanvasRow.style.alignItems = 'center'
-  divCanvasRow.style.width = '100%'
-  divCanvasRow.appendChild(canvasColors)
-  divCanvasRow.appendChild(canvasHues)
-
-  const divInnerRow = createDivInnerRow()
-  divInnerRow.style.gap = '0px'
-  divInnerRow.style.border = '2px solid var(--color)'
-  divInnerRow.appendChild(divColor)
-  divInnerRow.appendChild(divCanvasRow)
-
-  let hoveredColor = Colors.copy(pickedColor)
-
-  let mouseDownColors = false
-  let touchDownColors = false
-  let mouseDownHues = false
-  let touchDownHues = false
-
-  let xColors = getCanvasWidth(canvasColors) / 2
-  let yColors = getCanvasHeight(canvasColors) / 2
-  let xHues = getCanvasWidth(canvasHues) / 2
-  let yHues = getCanvasHeight(canvasHues) / 2
-
-  canvasColors.addEventListener('mousedown', () => { mouseDownColors = true })
-  canvasColors.addEventListener('mouseup', () => { mouseDownColors = false })
-  canvasColors.addEventListener('mousemove', (event) => {
-    const potentialColorXY = getImageDataColors(event, canvasColors, mouseDownColors, false, pickedColor)
-    const potentialColor = potentialColorXY[0]
-    if (mouseDownColors && Colors.notEqual(potentialColor, hoveredColor)) {
-      xColors = potentialColorXY[1]
-      yColors = potentialColorXY[2]
-      hoveredColor = potentialColor
-      updateColorWidget(pickedColor, hoveredColor, divInnerRow, divCanvasRow)
-    }
-  })
-  canvasColors.addEventListener('touchstart', () => { touchDownColors = true })
-  canvasColors.addEventListener('touchend', () => { touchDownColors = false })
-  canvasColors.addEventListener('touchmove', (event) => {
-    const potentialColorXY = getImageDataColors(event, canvasColors, false, touchDownColors, pickedColor)
-    const potentialColor = potentialColorXY[0]
-    if (touchDownColors && Colors.notEqual(potentialColor, hoveredColor)) {
-      xColors = potentialColorXY[1]
-      yColors = potentialColorXY[2]
-      hoveredColor = potentialColor
-      updateColorWidget(pickedColor, hoveredColor, divInnerRow, divCanvasRow)
-    }
-  })
-  canvasColors.addEventListener('click', (event) => {
-    const potentialColorXY = getImageDataColors(event, canvasColors, true, false, pickedColor)
-    const potentialColor = potentialColorXY[0]
-    xColors = potentialColorXY[1]
-    yColors = potentialColorXY[2]
-    hoveredColor = potentialColor
-    updateColorWidget(pickedColor, hoveredColor, divInnerRow, divCanvasRow)
-  })
-
-  canvasHues.addEventListener('touchstart', () => { touchDownHues = true })
-  canvasHues.addEventListener('touchend', () => { touchDownHues = false })
-  canvasHues.addEventListener('mousemove', (event) => {
-    const potentialHueXY = getImageDataHues(event, canvasHues, mouseDownHues, false, pickedColor)
-    if (mouseDownHues) {
-      pickedColor = potentialHueXY[0]
-      xHues = potentialHueXY[1]
-      yHues = potentialHueXY[2]
-      const potentialColorXY = getImageDataColorsXY(canvasColors, xColors, yColors, pickedColor)
-      hoveredColor = potentialColorXY[0]
-      xColors = potentialColorXY[1]
-      yColors = potentialColorXY[2]
-      updateColorWidget(pickedColor, hoveredColor, divInnerRow, divCanvasRow)
-    }
-  })
-  canvasHues.addEventListener('mousedown', () => { mouseDownHues = true })
-  canvasHues.addEventListener('mouseup', () => { mouseDownHues = false })
-  canvasHues.addEventListener('touchmove', (event) => {
-    const potentialHueXY = getImageDataHues(event, canvasHues, false, touchDownHues, pickedColor)
-    if (touchDownHues) {
-      pickedColor = potentialHueXY[0]
-      xHues = potentialHueXY[1]
-      yHues = potentialHueXY[2]
-      const potentialColorXY = getImageDataColorsXY(canvasColors, xColors, yColors, pickedColor)
-      hoveredColor = potentialColorXY[0]
-      xColors = potentialColorXY[1]
-      yColors = potentialColorXY[2]
-      updateColorWidget(pickedColor, hoveredColor, divInnerRow, divCanvasRow)
-    }
-  })
-  canvasHues.addEventListener('click', (event) => {
-    const potentialHueXY = getImageDataHues(event, canvasHues, true, false, pickedColor)
-    pickedColor = potentialHueXY[0]
-    xHues = potentialHueXY[1]
-    yHues = potentialHueXY[2]
-    const potentialColorXY = getImageDataColorsXY(canvasColors, xColors, yColors, pickedColor)
-    hoveredColor = potentialColorXY[0]
-    xColors = potentialColorXY[1]
-    yColors = potentialColorXY[2]
-    updateColorWidget(pickedColor, hoveredColor, divInnerRow, divCanvasRow)
-  })
-
-  const divColorWidgetWindow = createDiv()
-  divColorWidgetWindow.className = 'color-fullscreen'
-  divColorWidgetWindow.appendChild(divInnerRow)
-  divColorWidgetWindow.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
-  divColorWidgetWindow.addEventListener('dblclick', () => {
-    document.body.removeChild(divColorWidgetWindow)
-    document.body.style.overflow = 'auto'
-  })
-
-  const buttonColorWidget = document.createElement('button')
-  buttonColorWidget.className = 'theme'
-  buttonColorWidget.innerText = 'Color Widget'
-  buttonColorWidget.addEventListener('click', () => {
-    document.body.appendChild(divColorWidgetWindow)
-    document.body.style.overflow = 'hidden'
-    resizeCanvasColors(canvasColors, pickedColor, getCanvasWidth(canvasColors) / 2, getCanvasHeight(canvasColors) / 2, true)
-    resizeCanvasHues(canvasHues, pickedColor, getCanvasWidth(canvasHues) / 2, getCanvasHeight(canvasHues) / 2, true)
-    const potentialHueXY = findImageDataHues(canvasHues, pickedColor)
-    hoveredColor = potentialHueXY[0]
-    xHues = potentialHueXY[1]
-    yHues = potentialHueXY[2]
-    const potentialColorXY = findImageDataColors(canvasColors, pickedColor)
-    hoveredColor = potentialColorXY[0]
-    xColors = potentialColorXY[1]
-    yColors = potentialColorXY[2]
-    updateColorWidget(pickedColor, hoveredColor, divInnerRow, divCanvasRow)
-  })
-
-  window.addEventListener('resize', () => {
-    resizeCanvasColors(canvasColors, pickedColor, xColors, yColors)
-    const xyHues = resizeCanvasHues(canvasHues, pickedColor, xHues, yHues)
-    xHues = xyHues[0]
-    yHues = xyHues[1]
-  })
-
-  return buttonColorWidget
-}
-
-function getCanvasHeight(canvas) {
-  return canvas.getBoundingClientRect().height
-}
-
-function getCanvasWidth(canvas) {
-  return canvas.getBoundingClientRect().width
-}
-
-function getDPR() {
-  return window.devicePixelRatio
-}
-
-function resizeCanvasColors(canvas, pickedColor, x, y, initial = false) {
-  const context = canvas.getContext('2d')
-  const height = getCanvasHeight(canvas)
-  const width = getCanvasWidth(canvas)
-  const dpr = getDPR()
-
-  const xPct = Math.round((x / (canvas.width / dpr)) * 100) / 100
-  const yPct = Math.round((y / (canvas.height / dpr)) * 100) / 100
-
-  canvas.height = height * dpr
-  canvas.width = width * dpr
-  context.scale(dpr, dpr)
-
-  const x1 = initial ? x : xPct * width
-  const y1 = initial ? y : yPct * height
-
-  drawCanvasColors(canvas, x1, y1, pickedColor, pickedColor)
-
-  return [x1, y1]
-}
-
-function resizeCanvasHues(canvas, pickedColor, x, y, initial = false) {
-  const context = canvas.getContext('2d')
-  const height = getCanvasHeight(canvas)
-  const width = getCanvasWidth(canvas)
-  const dpr = getDPR()
-
-  const xPct = Math.round((x / (canvas.width / dpr)) * 100) / 100
-  const yPct = Math.round((y / (canvas.height / dpr)) * 100) / 100
-
-  canvas.height = height * dpr
-  canvas.width = width * dpr
-  context.scale(dpr, dpr)
-
-  const x1 = initial ? x : xPct * width
-  const y1 = initial ? y : yPct * height
-
-  drawCanvasHues(canvas, x1, y1, pickedColor, pickedColor)
-
-  return [x1, y1]
-}
-
-function drawCanvasColors(canvas, x, y, pickedColor, hoveredColor) {
-  const context = canvas.getContext('2d')
-  context.clearRect(0, 0, getCanvasWidth(canvas), getCanvasHeight(canvas))
-
-  const colorGradient = context.createLinearGradient(0, 0, getCanvasWidth(canvas), 0)
-  colorGradient.addColorStop(0.01, '#ffffff')
-  colorGradient.addColorStop(0.99, Colors.createHSL(`${pickedColor.hsl.h}`, '100', '50').formattedHex)
-  context.fillStyle = colorGradient
-  context.fillRect(0, 0, getCanvasWidth(canvas), getCanvasHeight(canvas))
-
-  const blackGradient = context.createLinearGradient(0, 0, 0, getCanvasHeight(canvas))
-  blackGradient.addColorStop(0.01, '#00000000')
-  blackGradient.addColorStop(0.99, '#000000')
-  context.fillStyle = blackGradient
-  context.fillRect(0, 0, getCanvasWidth(canvas), getCanvasHeight(canvas))
-
-  context.lineWidth = 2
-  context.strokeStyle = hoveredColor.formattedText
-  context.strokeRect(x - 6, y - 6, 12, 12)
-}
-
-function drawCanvasHues(canvas, x, y, pickedColor, hoveredColor) {
-  const context = canvas.getContext('2d')
-  context.clearRect(0, 0, getCanvasWidth(canvas), getCanvasHeight(canvas))
-
-  const colorGradient = context.createLinearGradient(0, 0, 0, getCanvasHeight(canvas))
-  colorGradient.addColorStop(0.01, Colors.createHSL('0', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.10, Colors.createHSL('35', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.20, Colors.createHSL('71', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.30, Colors.createHSL('107', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.40, Colors.createHSL('143', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.50, Colors.createHSL('179', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.60, Colors.createHSL('215', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.70, Colors.createHSL('251', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.80, Colors.createHSL('287', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.90, Colors.createHSL('323', '100', '50').formattedHex)
-  colorGradient.addColorStop(0.99, Colors.createHSL('359', '100', '50').formattedHex)
-  context.fillStyle = colorGradient
-  context.fillRect(0, 0, getCanvasWidth(canvas), getCanvasHeight(canvas))
-
-  context.lineWidth = 2
-  context.strokeStyle = hoveredColor.formattedText
-  context.strokeRect(2, y - 6, getCanvasWidth(canvas) - 4, 12)
-}
-
-function getImageDataColors(event, canvas, mouseDown, touchDown, pickedColor) {
-  if (mouseDown || touchDown) {
-    const context = canvas.getContext('2d')
-
-    const dpr = getDPR()
-    const bounding = canvas.getBoundingClientRect()
-    const x = (mouseDown ? event.clientX : event.touches[0].clientX) - bounding.left
-    const y = (mouseDown ? event.clientY : event.touches[0].clientY) - bounding.top
-    const data = context.getImageData(x * dpr, y * dpr, 1, 1).data
-    const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
-    drawCanvasColors(canvas, x, y, pickedColor, hoveredColor)
-
-    return [hoveredColor, x, y]
-  }
-
-  return [pickedColor, getCanvasWidth(canvas) / 2, getCanvasHeight(canvas) / 2]
-}
-
-function getImageDataColorsXY(canvas, x, y, pickedColor) {
-  drawCanvasColors(canvas, x, y, pickedColor, pickedColor)
-  const context = canvas.getContext('2d')
-  const dpr = getDPR()
-  const data = context.getImageData(x * dpr, y * dpr, 1, 1).data
-  const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
-
-  return [hoveredColor, x, y]
-}
-
-function getImageDataHues(event, canvas, mouseDown, touchDown, pickedColor) {
-  if (mouseDown || touchDown) {
-    const context = canvas.getContext('2d')
-
-    const dpr = getDPR()
-    const bounding = canvas.getBoundingClientRect()
-    const x = (mouseDown ? event.clientX : event.touches[0].clientX) - bounding.left
-    const y = (mouseDown ? event.clientY : event.touches[0].clientY) - bounding.top
-    const data = context.getImageData(x * dpr, y * dpr, 1, 1).data
-    const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
-    drawCanvasHues(canvas, x, y, pickedColor, hoveredColor)
-
-    return [hoveredColor, x, y]
-  }
-
-  return [pickedColor, getCanvasWidth(canvas) / 2, getCanvasHeight(canvas) / 2]
-}
-
-function findImageDataColors(canvas, pickedColor) {
-  const context = canvas.getContext('2d')
-  const dpr = getDPR()
-  let x = 0
-  let y = canvas.height / 2
-
-  for (x = 0; x <= canvas.width; x++) {
-    const data = context.getImageData(x, y, 1, 1).data
-    const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
-    if (hoveredColor.hsv.s === pickedColor.hsv.s) {
-      break
-    }
-  }
-
-  for (y = 0; y <= canvas.height; y++) {
-    const data = context.getImageData(x, y, 1, 1).data
-    const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
-    if (hoveredColor.hsv.v === pickedColor.hsv.v) {
-      drawCanvasColors(canvas, x / dpr, y / dpr, pickedColor, hoveredColor)
-      return [hoveredColor, x / dpr, y / dpr]
-    }
-  }
-
-  return [pickedColor, getCanvasWidth(canvas) / 2, getCanvasHeight(canvas) / 2]
-}
-
-function findImageDataHues(canvas, pickedColor) {
-  const context = canvas.getContext('2d')
-  const dpr = getDPR()
-  const x = canvas.width / 2
-
-  for (let y = 0; y <= canvas.height; y++) {
-    const data = context.getImageData(x, y, 1, 1).data
-    const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
-    if (hoveredColor.hsl.h === pickedColor.hsl.h) {
-      drawCanvasHues(canvas, x / dpr, y / dpr, pickedColor, hoveredColor)
-      return [hoveredColor, x / dpr, y / dpr]
-    }
-  }
-
-  return [pickedColor, getCanvasWidth(canvas) / 2, getCanvasHeight(canvas) / 2]
 }
 
 function complementaryRow(colorPicked) {
@@ -1861,21 +1410,4 @@ function buildColorGradientRow(row, colors, colorPicked01, colorPicked02, type, 
   })
 
   return row
-}
-
-function getBackgroundImage(color, name) {
-  let backgroundImage = 'blank.png'
-  if (name === 'checkmark') {
-    backgroundImage = color.grayscale > 127 ? 'checkmark-black.png' : 'checkmark-white.png'
-  } else if (name === 'corner-triangle') {
-    backgroundImage = color.grayscale > 127 ? 'corner-triangle-black.png' : 'corner-triangle-white.png'
-  } else if (name === 'fullscreen') {
-    backgroundImage = color.grayscale > 127 ? 'fullscreen-black.png' : 'fullscreen-white.png'
-  } else if (name === 'heart-empty') {
-    backgroundImage = color.grayscale > 127 ? 'heart-empty-black.png' : 'heart-empty-white.png'
-  } else if (name === 'heart-filled') {
-    backgroundImage = color.grayscale > 127 ? 'heart-filled-black.png' : 'heart-filled-white.png'
-  }
-
-  return `url(images/${backgroundImage})`
 }
