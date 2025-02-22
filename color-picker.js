@@ -59,7 +59,7 @@ class ColorPicker {
     divColorIcon.style.right = '10px'
     createDivTooltip(divColorIcon, 'fullscreen')
     divColorIcon.addEventListener('click', () => {
-      if (divColor.className === 'color') {
+      if (divColor.className === 'cp-color') {
         const divColor = this.createDivColor(divColorWidgetWindow, color)
         divColor.className = 'color-fullscreen'
         divColor.style.height = '100%'
@@ -102,11 +102,9 @@ class ColorPicker {
 
   createDivColor(divColorWidgetWindow, color) {
     const divColor = document.createElement('div')
-    divColor.className = 'color'
+    divColor.className = 'cp-color'
     divColor.style.backgroundColor = color.formattedHSL
     divColor.style.color = color.formattedText
-    divColor.style.height = '400px'
-    divColor.style.width = '100%'
     divColor.appendChild(this.createDivColorText(color.formattedHex))
     divColor.appendChild(this.createDivColorText(color.formattedRGB))
     divColor.appendChild(this.createDivColorText(color.formattedHSL))
