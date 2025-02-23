@@ -175,10 +175,12 @@ class ColorPicker {
     this.divColorWidgetWindow.className = 'color-fullscreen'
     this.divColorWidgetWindow.appendChild(divInnerRow)
     this.divColorWidgetWindow.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
-    this.divColorWidgetWindow.addEventListener('dblclick', () => {
-      document.body.removeChild(this.divColorWidgetWindow)
-      document.body.style.overflow = 'auto'
-      this.divColorWidgetWindow = null
+    this.divColorWidgetWindow.addEventListener('click', (event) => {
+      if (!divInnerRow.contains(event.target)) {
+        document.body.removeChild(this.divColorWidgetWindow)
+        document.body.style.overflow = 'auto'
+        this.divColorWidgetWindow = null
+      }
     })
 
     this.canvasColors.addEventListener('mousedown', () => { this.mouseDownColors = true })
