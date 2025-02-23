@@ -246,8 +246,16 @@ class ColorPicker {
     this.updateDivColor(this.hoveredColor)
 
     window.addEventListener('resize', () => {
-      this.resizeCanvasColors()
-      this.resizeCanvasHues()
+      if (this.divColorWidgetWindow !== null) {
+        this.resizeCanvasColors()
+        this.resizeCanvasHues()
+      }
+    })
+    window.addEventListener('orientationchange', () => {
+      if (this.divColorWidgetWindow !== null) {
+        this.resizeCanvasColors()
+        this.resizeCanvasHues()
+      }
     })
   }
 
