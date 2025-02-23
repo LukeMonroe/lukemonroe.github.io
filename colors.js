@@ -320,10 +320,15 @@ class Colors {
     const g = Number(rgb.g) / 255
     const b = Number(rgb.b) / 255
 
+    let c = 0
+    let m = 0
+    let y = 0
     let k = 1 - Math.max(r, g, b)
-    let c = (1 - r - k) / (1 - k)
-    let m = (1 - g - k) / (1 - k)
-    let y = (1 - b - k) / (1 - k)
+    if (k < 1) {
+      c = (1 - r - k) / (1 - k)
+      m = (1 - g - k) / (1 - k)
+      y = (1 - b - k) / (1 - k)
+    }
 
     c = Math.round(c * 100)
     m = Math.round(m * 100)
