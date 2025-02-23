@@ -64,7 +64,6 @@ class ColorPicker {
         this.createDivColorFullscreen(color)
       } else {
         document.body.removeChild(this.divColorFullscreen)
-        document.body.style.overflow = 'auto'
         this.divColorFullscreen = null
       }
     })
@@ -132,7 +131,6 @@ class ColorPicker {
     this.divColorFullscreen.appendChild(this.createDivColorIconCheckmark(color))
     this.divColorFullscreen.addEventListener('dblclick', () => {
       document.body.removeChild(this.divColorFullscreen)
-      document.body.style.overflow = 'auto'
       this.divColorFullscreen = null
     })
     const children = this.divColorFullscreen.children
@@ -141,7 +139,6 @@ class ColorPicker {
     }
 
     document.body.appendChild(this.divColorFullscreen)
-    document.body.style.overflow = 'hidden'
   }
 
   createColorWidget() {
@@ -187,51 +184,24 @@ class ColorPicker {
     this.canvasColors.addEventListener('mouseup', () => { this.mouseDownColors = false })
     this.canvasColors.addEventListener('touchstart', () => { this.touchDownColors = true })
     this.canvasColors.addEventListener('touchend', () => { this.touchDownColors = false })
+    this.canvasColors.addEventListener('mousemove', (event) => { this.getImageDataColors(event) })
+    this.canvasColors.addEventListener('touchmove', (event) => { this.getImageDataColors(event) })
+    this.canvasColors.addEventListener('click', (event) => {
+      this.mouseDownColors = true
+      this.getImageDataColors(event)
+      this.mouseDownColors = false
+    })
 
     this.canvasHues.addEventListener('mousedown', () => { this.mouseDownHues = true })
     this.canvasHues.addEventListener('mouseup', () => { this.mouseDownHues = false })
     this.canvasHues.addEventListener('touchstart', () => { this.touchDownHues = true })
     this.canvasHues.addEventListener('touchend', () => { this.touchDownHues = false })
-
-    this.canvasColors.addEventListener('mousemove', (event) => {
-      if (this.mouseDownColors) {
-        this.getImageDataColors(event)
-        this.updateDivColor(this.hoveredColor)
-      }
-    })
-    this.canvasColors.addEventListener('touchmove', (event) => {
-      if (this.touchDownColors) {
-        this.getImageDataColors(event)
-        this.updateDivColor(this.hoveredColor)
-      }
-    })
-    this.canvasColors.addEventListener('click', (event) => {
-      this.mouseDownColors = true
-      this.getImageDataColors(event)
-      this.updateDivColor(this.hoveredColor)
-      this.mouseDownColors = false
-    })
-
-    this.canvasHues.addEventListener('mousemove', (event) => {
-      if (this.mouseDownHues) {
-        this.getImageDataHues(event)
-        this.getImageDataColorsXY()
-        this.updateDivColor(this.hoveredColor)
-      }
-    })
-    this.canvasHues.addEventListener('touchmove', (event) => {
-      if (this.touchDownHues) {
-        this.getImageDataHues(event)
-        this.getImageDataColorsXY()
-        this.updateDivColor(this.hoveredColor)
-      }
-    })
+    this.canvasHues.addEventListener('mousemove', (event) => { this.getImageDataHues(event) })
+    this.canvasHues.addEventListener('touchmove', (event) => { this.getImageDataHues(event) })
     this.canvasHues.addEventListener('click', (event) => {
       this.mouseDownHues = true
       this.mouseDownColors = true
       this.getImageDataHues(event)
-      this.getImageDataColorsXY()
-      this.updateDivColor(this.hoveredColor)
       this.mouseDownColors = false
       this.mouseDownHues = false
     })
@@ -398,29 +368,27 @@ class ColorPicker {
       this.xColors = x
       this.yColors = y
       this.drawCanvasColors(this.canvasColors)
+      this.updateDivColor(this.hoveredColor)
     }
-  }
-
-  getImageDataColorsXY() {
-    this.drawCanvasColors(this.canvasColors)
-    const context = this.canvasColors.getContext('2d')
-    const dpr = this.getDPR()
-    const data = context.getImageData(this.xColors * dpr, this.yColors * dpr, 1, 1).data
-    this.hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
   }
 
   getImageDataHues(event) {
     if (this.mouseDownHues || this.touchDownHues) {
-      const context = this.canvasHues.getContext('2d')
+      const contextHues = this.canvasHues.getContext('2d')
       const dpr = this.getDPR()
       const bounding = this.canvasHues.getBoundingClientRect()
       const x = (this.mouseDownHues ? event.clientX : event.touches[0].clientX) - bounding.left
       const y = (this.mouseDownHues ? event.clientY : event.touches[0].clientY) - bounding.top
-      const data = context.getImageData(x * dpr, y * dpr, 1, 1).data
-      this.pickedColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
+      const dataHues = contextHues.getImageData(x * dpr, y * dpr, 1, 1).data
+      this.pickedColor = Colors.createRGB(`${dataHues[0]}`, `${dataHues[1]}`, `${dataHues[2]}`)
       this.xHues = x
       this.yHues = y
       this.drawCanvasHues(this.canvasHues)
+      this.drawCanvasColors(this.canvasColors)
+      const contextColors = this.canvasColors.getContext('2d')
+      const dataColors = contextColors.getImageData(this.xColors * dpr, this.yColors * dpr, 1, 1).data
+      this.hoveredColor = Colors.createRGB(`${dataColors[0]}`, `${dataColors[1]}`, `${dataColors[2]}`)
+      this.updateDivColor(this.hoveredColor)
     }
   }
 
