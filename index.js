@@ -8,6 +8,7 @@ import { createDivTooltip } from './tooltips.js'
 const themes = new ColorPickerThemes()
 themes.setTheme()
 
+const colorPicker = new ColorPicker()
 const sideNavigation = createSideNavigation()
 
 document.addEventListener('dblclick', event => { event.preventDefault() })
@@ -733,6 +734,7 @@ function createDivColor(color, colorPicked, fullscreen = false, color02 = null, 
   divColor.appendChild(createDivColorText(color.formattedCMYK))
   divColor.appendChild(createDivColorText(`grayscale: ${color.grayscale}`))
   divColor.appendChild(likeColor)
+  divColor.appendChild(colorPicker.createColorWidgetIcon(color, loadTool))
   if (colorPicked !== null && Colors.equal(color, colorPicked)) {
     divColor.appendChild(divMarker)
   }
@@ -1272,14 +1274,11 @@ function createBoxColumn(color01, color02, side) {
   hslBoxRow.appendChild(sBox)
   hslBoxRow.appendChild(lBox)
 
-  const colorPicker = new ColorPicker()
-  const colorWidget = colorPicker.createColorWidgetButton(baseColor, loadTool)
-
   const boxColumn = createDivInputColumn()
   boxColumn.appendChild(hexBoxRow)
   boxColumn.appendChild(rgbBoxRow)
   boxColumn.appendChild(hslBoxRow)
-  boxColumn.appendChild(colorWidget)
+  boxColumn.appendChild(colorPicker.createColorWidgetButton(baseColor, loadTool))
   if (window.EyeDropper) {
     const buttonRow = createDivInputRow()
     buttonRow.appendChild(createButtonEyedropper(color01, color02))

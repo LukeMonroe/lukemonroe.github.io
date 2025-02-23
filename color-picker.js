@@ -261,6 +261,40 @@ class ColorPicker {
     return buttonColorWidget
   }
 
+  createColorWidgetIcon(pickedColor, callable) {
+    const divColorIcon = document.createElement('div')
+    divColorIcon.className = 'color-icon'
+    divColorIcon.style.backgroundImage = getBackgroundImage(pickedColor, 'corner-triangle')
+    divColorIcon.style.bottom = '10px'
+    divColorIcon.style.left = '10px'
+    createDivTooltip(divColorIcon, 'color picker')
+    divColorIcon.addEventListener('click', () => {
+      this.divColorWidgetWindow = document.createElement('div')
+      this.divColor = document.createElement('div')
+      this.divColorFullscreen = null
+      this.canvasHues = document.createElement('canvas')
+      this.canvasColors = document.createElement('canvas')
+      this.pickedColor = pickedColor
+      this.hoveredHue = Colors.copy(pickedColor)
+      this.hoveredColor = Colors.copy(pickedColor)
+      this.callable = callable
+
+      this.mouseDownColors = false
+      this.touchDownColors = false
+      this.mouseDownHues = false
+      this.touchDownHues = false
+
+      this.xColors = 0
+      this.yColors = 0
+      this.xHues = 0
+      this.yHues = 0
+
+      this.createColorWidget()
+    })
+
+    return divColorIcon
+  }
+
   getCanvasHeight(canvas) {
     return canvas.getBoundingClientRect().height
   }
