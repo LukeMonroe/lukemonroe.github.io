@@ -109,7 +109,17 @@ class Colors {
   }
 
   static build(hex, rgb, hsl, hsv, cmyk) {
-    const grayscale = Math.round((0.2126 * rgb.r) + (0.7152 * rgb.g) + (0.0722 * rgb.b))
+    let r = rgb.r / 255
+    let g = rgb.g / 255
+    let b = rgb.b / 255
+
+    r = r <= 0.03928 ? r / 12.92 : Math.pow(((r + 0.055) / 1.055), 2.4)
+    g = g <= 0.03928 ? g / 12.92 : Math.pow(((g + 0.055) / 1.055), 2.4)
+    b = b <= 0.03928 ? b / 12.92 : Math.pow(((b + 0.055) / 1.055), 2.4)
+
+    const relative = (0.2126 * r) + (0.7152 * g) + (0.0722 * b)
+    const grayscale = Number(Number(relative * 100).toFixed(2))
+    const contrast = Number(Number((relative + 0.05) / (0 + 0.05)).toFixed(2))
 
     const formattedHex = hex
     const formattedRGB = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`
@@ -119,9 +129,9 @@ class Colors {
     // const formattedHSL = `hsl(${Number(hsl.h).toFixed(2)}\u00b0, ${Number(hsl.s).toFixed(2)}%, ${Number(hsl.l).toFixed(2)}%)`
     // const formattedHSV = `hsv(${Number(hsv.h).toFixed(2)}\u00b0, ${Number(hsv.s).toFixed(2)}%, ${Number(hsv.v).toFixed(2)}%)`
     // const formattedCMYK = `cmyk(${Number(cmyk.c).toFixed(2)}%, ${Number(cmyk.m).toFixed(2)}%, ${Number(cmyk.y).toFixed(2)}%, ${Number(cmyk.k).toFixed(2)}%)`
-    const formattedText = grayscale > 127 ? '#000000' : '#FFFFFF'
+    const formattedText = grayscale > 50 ? '#000000' : '#FFFFFF'
 
-    return { hex, rgb, hsl, hsv, cmyk, grayscale, formattedHex, formattedRGB, formattedHSL, formattedHSV, formattedCMYK, formattedText }
+    return { hex, rgb, hsl, hsv, cmyk, grayscale, contrast, formattedHex, formattedRGB, formattedHSL, formattedHSV, formattedCMYK, formattedText }
   }
 
   static random() {

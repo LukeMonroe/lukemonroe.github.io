@@ -733,6 +733,7 @@ function createDivColor(color, colorPicked, fullscreen = false, color02 = null, 
   divColor.appendChild(createDivColorText(color.formattedHSV))
   divColor.appendChild(createDivColorText(color.formattedCMYK))
   divColor.appendChild(createDivColorText(`grayscale: ${color.grayscale}`))
+  divColor.appendChild(createDivColorText(`contrast: ${color.contrast}:1`))
   divColor.appendChild(likeColor)
   divColor.appendChild(colorPicker.createColorWidgetIcon(color, loadTool))
   if (colorPicked !== null && Colors.equal(color, colorPicked)) {
