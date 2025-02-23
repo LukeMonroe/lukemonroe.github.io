@@ -95,7 +95,7 @@ class ColorPicker {
 
   updateDivColor(color) {
     this.divColor.className = 'cp-color'
-    this.divColor.style.backgroundColor = color.formattedHSL
+    this.divColor.style.backgroundColor = color.formattedHex
     this.divColor.style.color = color.formattedText
     this.divColor.replaceChildren()
     this.divColor.appendChild(this.createDivColorText(color.formattedHex))
@@ -116,7 +116,7 @@ class ColorPicker {
   createDivColorFullscreen(color) {
     this.divColorFullscreen = document.createElement('div')
     this.divColorFullscreen.className = 'color-fullscreen'
-    this.divColorFullscreen.style.backgroundColor = color.formattedHSL
+    this.divColorFullscreen.style.backgroundColor = color.formattedHex
     this.divColorFullscreen.style.color = color.formattedText
     this.divColorFullscreen.style.height = '100%'
     this.divColorFullscreen.style.width = '100%'
@@ -212,11 +212,7 @@ class ColorPicker {
     this.updateDivColor(this.hoveredHue)
     document.body.appendChild(this.divColorWidgetWindow)
     document.body.style.overflow = 'hidden'
-    this.resizeCanvasHues(true)
-    this.resizeCanvasColors(true)
-    this.findImageDataHues()
-    this.findImageDataColors()
-    this.updateDivColor(this.hoveredColor)
+    this.setupCanvases()
 
     window.addEventListener('resize', () => {
       if (this.divColorWidgetWindow !== null) {
@@ -266,7 +262,7 @@ class ColorPicker {
   createColorWidgetIcon(pickedColor, callable) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
-    divColorIcon.style.backgroundImage = getBackgroundImage(pickedColor, 'corner-triangle')
+    divColorIcon.style.backgroundImage = getBackgroundImage(Colors.copy(pickedColor), 'corner-triangle')
     divColorIcon.style.bottom = '10px'
     divColorIcon.style.left = '10px'
     createDivTooltip(divColorIcon, 'color picker')
@@ -276,7 +272,7 @@ class ColorPicker {
       this.divColorFullscreen = null
       this.canvasHues = document.createElement('canvas')
       this.canvasColors = document.createElement('canvas')
-      this.pickedColor = pickedColor
+      this.pickedColor = Colors.copy(pickedColor)
       this.hoveredHue = Colors.copy(pickedColor)
       this.hoveredColor = Colors.copy(pickedColor)
       this.callable = callable
@@ -387,16 +383,16 @@ class ColorPicker {
 
     const colorGradient = context.createLinearGradient(0, 0, 0, this.getCanvasHeight(this.canvasHues))
     colorGradient.addColorStop(0.01, Colors.createHSL('0', '100', '50').formattedHex)
-    colorGradient.addColorStop(0.10, Colors.createHSL('35', '100', '50').formattedHex)
-    colorGradient.addColorStop(0.20, Colors.createHSL('71', '100', '50').formattedHex)
-    colorGradient.addColorStop(0.30, Colors.createHSL('107', '100', '50').formattedHex)
-    colorGradient.addColorStop(0.40, Colors.createHSL('143', '100', '50').formattedHex)
-    colorGradient.addColorStop(0.50, Colors.createHSL('179', '100', '50').formattedHex)
-    colorGradient.addColorStop(0.60, Colors.createHSL('215', '100', '50').formattedHex)
-    colorGradient.addColorStop(0.70, Colors.createHSL('251', '100', '50').formattedHex)
-    colorGradient.addColorStop(0.80, Colors.createHSL('287', '100', '50').formattedHex)
-    colorGradient.addColorStop(0.90, Colors.createHSL('323', '100', '50').formattedHex)
-    colorGradient.addColorStop(0.99, Colors.createHSL('359', '100', '50').formattedHex)
+    colorGradient.addColorStop(0.10, Colors.createHSL('36', '100', '50').formattedHex)
+    colorGradient.addColorStop(0.20, Colors.createHSL('72', '100', '50').formattedHex)
+    colorGradient.addColorStop(0.30, Colors.createHSL('108', '100', '50').formattedHex)
+    colorGradient.addColorStop(0.40, Colors.createHSL('144', '100', '50').formattedHex)
+    colorGradient.addColorStop(0.50, Colors.createHSL('180', '100', '50').formattedHex)
+    colorGradient.addColorStop(0.60, Colors.createHSL('216', '100', '50').formattedHex)
+    colorGradient.addColorStop(0.70, Colors.createHSL('252', '100', '50').formattedHex)
+    colorGradient.addColorStop(0.80, Colors.createHSL('288', '100', '50').formattedHex)
+    colorGradient.addColorStop(0.90, Colors.createHSL('324', '100', '50').formattedHex)
+    colorGradient.addColorStop(0.99, Colors.createHSL('360', '100', '50').formattedHex)
     context.fillStyle = colorGradient
     context.fillRect(0, 0, this.getCanvasWidth(this.canvasHues), this.getCanvasHeight(this.canvasHues))
 
@@ -430,45 +426,64 @@ class ColorPicker {
     }
   }
 
-  findImageDataColors() {
-    const context = this.canvasColors.getContext('2d')
-    const dpr = this.getDPR()
-    let x = 0
-    let y = this.canvasColors.height / 2
+  setupCanvases() {
+    this.resizeCanvasHues(true)
+    this.resizeCanvasColors(true)
 
+    const contextHues = this.canvasHues.getContext('2d')
+    const contextColors = this.canvasColors.getContext('2d')
+    const dpr = this.getDPR()
+
+    let x = this.canvasHues.width / 2
+    let y = 0
+    for (let y = 0; y <= this.canvasHues.height; y++) {
+      const data = contextHues.getImageData(x, y, 1, 1).data
+      const hoveredHue = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
+      if (Math.round(hoveredHue.hsv.h) === Math.round(this.pickedColor.hsv.h)) {
+        this.xHues = x / dpr
+        this.yHues = y / dpr
+        this.drawCanvasHues()
+        break
+      }
+    }
+
+    x = 0
+    y = this.canvasColors.height / 2
     for (x = 0; x <= this.canvasColors.width; x++) {
-      const data = context.getImageData(x, y, 1, 1).data
+      const data = contextColors.getImageData(x, y, 1, 1).data
       const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
-      if (hoveredColor.hsv.s === this.pickedColor.hsv.s) {
+      if (Math.round(hoveredColor.hsv.s) === Math.round(this.pickedColor.hsv.s)) {
         break
       }
     }
 
     for (y = 0; y <= this.canvasColors.height; y++) {
-      const data = context.getImageData(x, y, 1, 1).data
+      const data = contextColors.getImageData(x, y, 1, 1).data
       const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
-      if (hoveredColor.hsv.v === this.pickedColor.hsv.v) {
-        this.hoveredColor = hoveredColor
+      if (Math.round(hoveredColor.hsv.v) === Math.round(this.pickedColor.hsv.v)) {
         this.xColors = x / dpr
         this.yColors = y / dpr
-        this.drawCanvasColors(this.canvasColors)
-        break
-      }
-    }
-  }
+        this.drawCanvasColors()
 
-  findImageDataHues() {
-    const context = this.canvasHues.getContext('2d')
-    const dpr = this.getDPR()
-    const x = this.canvasHues.width / 2
-
-    for (let y = 0; y <= this.canvasHues.height; y++) {
-      const data = context.getImageData(x, y, 1, 1).data
-      const hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
-      if (hoveredColor.hsl.h === this.pickedColor.hsl.h) {
-        this.xHues = x / dpr
-        this.yHues = y / dpr
-        this.drawCanvasHues(this.canvasHues)
+        let data = contextColors.getImageData(this.xColors * dpr, this.yColors * dpr, 1, 1).data
+        let hoveredColorActual = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
+        if (Colors.notEqual(hoveredColorActual, this.pickedColor)) {
+          for (let x1 = this.xColors - 8; x1 < this.xColors + 8; x1 += 0.1) {
+            for (let y1 = this.yColors - 8; y1 < this.yColors + 8; y1 += 0.1) {
+              data = contextColors.getImageData(x1 * dpr, y1 * dpr, 1, 1).data
+              hoveredColorActual = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
+              if (Colors.equal(hoveredColorActual, this.pickedColor)) {
+                this.xColors = x1
+                this.yColors = y1
+                this.drawCanvasColors()
+                break
+              }
+            }
+            if (Colors.equal(hoveredColorActual, this.pickedColor)) {
+              break
+            }
+          }
+        }
         break
       }
     }

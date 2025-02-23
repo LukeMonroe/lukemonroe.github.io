@@ -1,18 +1,14 @@
 class Colors {
-  static equal(color01, color02, strict = true) {
-    return strict ? color01.formattedHex === color02.formattedHex && color01.formattedRGB === color02.formattedRGB && color01.formattedHSL === color02.formattedHSL : color01.formattedHex === color02.formattedHex
+  static equal(color01, color02) {
+    return color01.hsl.h === color02.hsl.h && color01.hsl.s === color02.hsl.s && color01.hsl.l === color02.hsl.l
   }
 
-  static notEqual(color01, color02, strict = true) {
-    return !Colors.equal(color01, color02, strict)
-  }
-
-  static equalWithTolerance(color01, color02, tolerance = 2) {
-    return Math.abs(color01.hsl.h - color02.hsl.h) < tolerance && Math.abs(color01.hsl.s - color02.hsl.s) < tolerance && Math.abs(color01.hsl.l - color02.hsl.l) < tolerance
+  static notEqual(color01, color02) {
+    return !Colors.equal(color01, color02)
   }
 
   static copy(color) {
-    return Colors.buildRGB(color.rgb.r, color.rgb.g, color.rgb.b)
+    return Colors.buildHSL(color.hsl.h, color.hsl.s, color.hsl.l)
   }
 
   static createHex(hex) {
@@ -33,21 +29,21 @@ class Colors {
   }
 
   static createHSL(h, s, l) {
-    h = Number(h.trim())
+    h = Number(h.trim()) % 360
     s = Number(s.trim())
     l = Number(l.trim())
 
-    const hsl = h >= 0 && h <= 359 && s >= 0 && s <= 100 && l >= 0 && l <= 100
+    const hsl = h >= 0 && h < 360 && s >= 0 && s <= 100 && l >= 0 && l <= 100
 
     return hsl ? Colors.buildHSL(h, s, l) : null
   }
 
   static createHSV(h, s, v) {
-    h = Number(h.trim())
+    h = Number(h.trim()) % 360
     s = Number(s.trim())
     v = Number(v.trim())
 
-    const hsv = h >= 0 && h <= 359 && s >= 0 && s <= 100 && v >= 0 && v <= 100
+    const hsv = h >= 0 && h < 360 && s >= 0 && s <= 100 && v >= 0 && v <= 100
 
     return hsv ? Colors.buildHSV(h, s, v) : null
   }
@@ -83,9 +79,9 @@ class Colors {
   }
 
   static buildHSL(h, s, l) {
-    const hsl = { h, s, l }
-    const rgb = Colors.hslToRGB(hsl)
+    const rgb = Colors.hslToRGB({ h, s, l })
     const hex = Colors.rgbToHex(rgb)
+    const hsl = Colors.rgbToHSL(rgb)
     const hsv = Colors.rgbToHSV(rgb)
     const cmyk = Colors.rgbToCMYK(rgb)
 
@@ -93,21 +89,21 @@ class Colors {
   }
 
   static buildHSV(h, s, v) {
-    const hsv = { h, s, v }
-    const rgb = Colors.hsvToRGB(hsv)
+    const rgb = Colors.hsvToRGB({ h, s, v })
     const hex = Colors.rgbToHex(rgb)
     const hsl = Colors.rgbToHSL(rgb)
+    const hsv = Colors.rgbToHSV(rgb)
     const cmyk = Colors.rgbToCMYK(rgb)
 
     return Colors.build(hex, rgb, hsl, hsv, cmyk)
   }
 
   static buildCMYK(c, m, y, k) {
-    const cmyk = { c, m, y, k }
-    const rgb = Colors.hsvToRGB(hsv)
+    const rgb = Colors.cmykToRGB({ c, m, y, k })
     const hex = Colors.rgbToHex(rgb)
     const hsl = Colors.rgbToHSL(rgb)
     const hsv = Colors.rgbToHSV(rgb)
+    const cmyk = Colors.rgbToCMYK(rgb)
 
     return Colors.build(hex, rgb, hsl, hsv, cmyk)
   }
@@ -117,35 +113,38 @@ class Colors {
 
     const formattedHex = hex
     const formattedRGB = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`
-    const formattedHSL = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`
-    const formattedHSV = `hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)`
-    const formattedCMYK = `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`
+    const formattedHSL = `hsl(${Number(hsl.h).toFixed(0)}\u00b0, ${Number(hsl.s).toFixed(0)}%, ${Number(hsl.l).toFixed(0)}%)`
+    const formattedHSV = `hsv(${Number(hsv.h).toFixed(0)}\u00b0, ${Number(hsv.s).toFixed(0)}%, ${Number(hsv.v).toFixed(0)}%)`
+    const formattedCMYK = `cmyk(${Number(cmyk.c).toFixed(0)}%, ${Number(cmyk.m).toFixed(0)}%, ${Number(cmyk.y).toFixed(0)}%, ${Number(cmyk.k).toFixed(0)}%)`
+    // const formattedHSL = `hsl(${Number(hsl.h).toFixed(2)}\u00b0, ${Number(hsl.s).toFixed(2)}%, ${Number(hsl.l).toFixed(2)}%)`
+    // const formattedHSV = `hsv(${Number(hsv.h).toFixed(2)}\u00b0, ${Number(hsv.s).toFixed(2)}%, ${Number(hsv.v).toFixed(2)}%)`
+    // const formattedCMYK = `cmyk(${Number(cmyk.c).toFixed(2)}%, ${Number(cmyk.m).toFixed(2)}%, ${Number(cmyk.y).toFixed(2)}%, ${Number(cmyk.k).toFixed(2)}%)`
     const formattedText = grayscale > 127 ? '#000000' : '#FFFFFF'
 
     return { hex, rgb, hsl, hsv, cmyk, grayscale, formattedHex, formattedRGB, formattedHSL, formattedHSV, formattedCMYK, formattedText }
   }
 
   static random() {
-    const h = Math.round(Math.random() * 359)
-    const s = Math.round(Math.random() * 100)
-    const l = Math.round(Math.random() * 100)
+    const r = Math.round(Math.random() * 255)
+    const g = Math.round(Math.random() * 255)
+    const b = Math.round(Math.random() * 255)
 
-    return Colors.buildHSL(h, s, l)
+    return Colors.buildRGB(r, g, b)
   }
 
   static randomGrayscaleRange(grayscaleMin, grayscaleMax) {
     let gMin = grayscaleMin >= 0 ? grayscaleMin : 0
     let gMax = grayscaleMax <= 255 ? grayscaleMax : 255
 
-    let h = Math.round(Math.random() * 359)
-    let s = Math.round(Math.random() * 100)
-    let l = Math.round(Math.random() * 100)
-    let color = Colors.buildHSL(h, s, l)
+    let r = Math.round(Math.random() * 255)
+    let g = Math.round(Math.random() * 255)
+    let b = Math.round(Math.random() * 255)
+    let color = Colors.buildRGB(r, g, b)
     while (color.grayscale < gMin || color.grayscale > gMax) {
-      h = Math.round(Math.random() * 359)
-      s = Math.round(Math.random() * 100)
-      l = Math.round(Math.random() * 100)
-      color = Colors.buildHSL(h, s, l)
+      r = Math.round(Math.random() * 255)
+      g = Math.round(Math.random() * 255)
+      b = Math.round(Math.random() * 255)
+      color = Colors.buildRGB(r, g, b)
     }
 
     return color
@@ -235,10 +234,14 @@ class Colors {
       s = delta / (1 - Math.abs((2 * l) - 1))
     }
 
-    h = Math.round(h)
+    h = Math.round(h * 100) / 100
     h = h < 0 ? 360 + h : h
-    s = Math.round(s * 100)
-    l = Math.round(l * 100)
+    s = Math.round(s * 10000) / 100
+    l = Math.round(l * 10000) / 100
+
+    h = Number(Number(h).toFixed(2))
+    s = Number(Number(s).toFixed(2))
+    l = Number(Number(l).toFixed(2))
 
     return { h, s, l }
   }
@@ -246,7 +249,7 @@ class Colors {
   static hsvToRGB(hsv) {
     const h = Number(hsv.h)
     const s = Number(hsv.s / 100)
-    const v = Number(hsv.l / 100)
+    const v = Number(hsv.v / 100)
 
     const c = v * s
     const x = c * (1 - Math.abs(((h / 60) % 2) - 1))
@@ -299,10 +302,14 @@ class Colors {
       }
     }
 
-    h = Math.round(h)
+    h = Math.round(h * 100) / 100
     h = h < 0 ? 360 + h : h
-    s = Math.round(s * 100)
-    v = Math.round(v * 100)
+    s = Math.round(s * 10000) / 100
+    v = Math.round(v * 10000) / 100
+
+    h = Number(Number(h).toFixed(2))
+    s = Number(Number(s).toFixed(2))
+    v = Number(Number(v).toFixed(2))
 
     return { h, s, v }
   }
@@ -330,18 +337,23 @@ class Colors {
       y = (1 - b - k) / (1 - k)
     }
 
-    c = Math.round(c * 100)
-    m = Math.round(m * 100)
-    y = Math.round(y * 100)
-    k = Math.round(k * 100)
+    c = Math.round(c * 10000) / 100
+    m = Math.round(m * 10000) / 100
+    y = Math.round(y * 10000) / 100
+    k = Math.round(k * 10000) / 100
+
+    c = Number(Number(c).toFixed(2))
+    m = Number(Number(m).toFixed(2))
+    y = Number(Number(y).toFixed(2))
+    k = Number(Number(k).toFixed(2))
 
     return { c, m, y, k }
   }
 
   static hue(color, value) {
     let h = Number(color.hsl.h) + Number(value)
-    h %= 359
-    h = h < 0 ? 359 + h : h
+    h %= 360
+    h = h < 0 ? 360 + h : h
 
     return Colors.buildHSL(h, color.hsl.s, color.hsl.l)
   }

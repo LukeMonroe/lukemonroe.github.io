@@ -13,7 +13,7 @@ function createDivColorIconHeart(color) {
     let colors = getLikedColors()
     let colorIndex = null
     for (let index = 0; index < colors.length; index++) {
-      if (Colors.equal(colors[index], color, false)) {
+      if (Colors.equal(colors[index], color)) {
         colorIndex = index
         break
       }
@@ -44,7 +44,7 @@ function getLikedColors() {
 function isColorLiked(color) {
   const colors = getLikedColors()
   for (let index = 0; index < colors.length; index++) {
-    if (Colors.equal(colors[index], color, false)) {
+    if (Colors.equal(colors[index], color)) {
       return true
     }
   }

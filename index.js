@@ -90,7 +90,7 @@ function createColorPicker() {
     setHistoryColors(colors)
   }
   const color = colors[colors.length - 1]
-  document.documentElement.style.setProperty('--thumb-color', color.formattedHSL)
+  document.documentElement.style.setProperty('--thumb-color', color.formattedHex)
 
   const hueRow = createDivColorRow()
   const hueSliders = createDoubleInputRangeSliders(1, 90, 1, 'Separation', 12, 1, 360, 1, 'Degrees', 180, hueRow, buildHueRow, color)
@@ -175,7 +175,7 @@ function createGradientPicker() {
     setHistorGradients(gradients)
   }
   const gradient = gradients[gradients.length - 1]
-  document.documentElement.style.setProperty('--thumb-color', gradient[0].formattedHSL)
+  document.documentElement.style.setProperty('--thumb-color', gradient[0].formattedHex)
 
   const colorRow = createDivInnerRow()
   const gradientSliders = createDoubleInputRangeSlidersGradient(0, 360, 1, 'Degrees', 0, 0, 100, 1, 'Percent', 0, colorRow, createGradientRowPicked, gradient[0], gradient[1], '300px')
@@ -245,7 +245,7 @@ function createContrastPicker() {
     setHistoryContrastColors(colors)
   }
   const color = colors[colors.length - 1]
-  document.documentElement.style.setProperty('--thumb-color', color.formattedHSL)
+  document.documentElement.style.setProperty('--thumb-color', color.formattedHex)
 
   const textColors = getHistoryContrastTextColors()
   if (textColors.length === 0) {
@@ -450,7 +450,7 @@ function getHistoryColors() {
 function isHistoryColor(color) {
   const colors = getHistoryColors()
   for (let index = 0; index < colors.length; index++) {
-    if (Colors.equal(colors[index], color, false)) {
+    if (Colors.equal(colors[index], color)) {
       return true
     }
   }
@@ -482,7 +482,7 @@ function getHistoryGradients() {
 function isHistoryGradient(gradient) {
   const gradients = getHistoryGradients()
   for (let index = 0; index < gradients.length; index++) {
-    if (Colors.equal(gradients[index][0], gradient[0], false) && Colors.equal(gradients[index][1], gradient[1], false)) {
+    if (Colors.equal(gradients[index][0], gradient[0]) && Colors.equal(gradients[index][1], gradient[1])) {
       return true
     }
   }
@@ -513,7 +513,7 @@ function getHistoryContrastColors() {
 function isHistoryContrastColor(color) {
   const colors = getHistoryContrastColors()
   for (let index = 0; index < colors.length; index++) {
-    if (Colors.equal(colors[index], color, false)) {
+    if (Colors.equal(colors[index], color)) {
       return true
     }
   }
@@ -544,7 +544,7 @@ function getHistoryContrastTextColors() {
 function isHistoryContrastTextColor(color) {
   const colors = getHistoryContrastTextColors()
   for (let index = 0; index < colors.length; index++) {
-    if (Colors.equal(colors[index], color, false)) {
+    if (Colors.equal(colors[index], color)) {
       return true
     }
   }
@@ -576,7 +576,7 @@ function getLikedGradients() {
 function isGradientLiked(gradient) {
   const gradients = getLikedGradients()
   for (let index = 0; index < gradients.length; index++) {
-    if (Colors.equal(gradients[index][0], gradient[0], false) && Colors.equal(gradients[index][1], gradient[1], false)) {
+    if (Colors.equal(gradients[index][0], gradient[0]) && Colors.equal(gradients[index][1], gradient[1])) {
       return true
     }
   }
@@ -700,7 +700,7 @@ function createDivGradientIconHeart(gradient) {
     let gradients = getLikedGradients()
     let gradientIndex = null
     for (let index = 0; index < gradients.length; index++) {
-      if (Colors.equal(gradients[index][0], gradient[0], false) && Colors.equal(gradients[index][1], gradient[1], false)) {
+      if (Colors.equal(gradients[index][0], gradient[0]) && Colors.equal(gradients[index][1], gradient[1])) {
         gradientIndex = index
         break
       }
@@ -721,7 +721,7 @@ function createDivGradientIconHeart(gradient) {
 function createDivColor(color, colorPicked, fullscreen = false, color02 = null, side = null) {
   const divColor = document.createElement('div')
   divColor.className = fullscreen ? 'color-fullscreen' : 'color'
-  divColor.style.backgroundColor = color.formattedHSL
+  divColor.style.backgroundColor = color.formattedHex
   divColor.style.color = color.formattedText
 
   const divMarker = createDivMarker(color)
@@ -792,7 +792,7 @@ function createDivColor(color, colorPicked, fullscreen = false, color02 = null, 
 function createDivGradient(color01, color02, divColor01, divColor02, type, value, position) {
   const divGradient = document.createElement('div')
   divGradient.className = 'color'
-  divGradient.style.backgroundColor = color01.formattedHSL
+  divGradient.style.backgroundColor = color01.formattedHex
   divGradient.style.color = color01.formattedText
   divGradient.style.background = color01.formattedHex
   divGradient.style.background = `${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
@@ -836,7 +836,7 @@ function createDivGradient(color01, color02, divColor01, divColor02, type, value
 function createDivGradientFullscreen(color01, color02, type, value, position) {
   const divGradient = document.createElement('div')
   divGradient.className = 'color-fullscreen'
-  divGradient.style.backgroundColor = color01.formattedHSL
+  divGradient.style.backgroundColor = color01.formattedHex
   divGradient.style.color = color01.formattedText
   divGradient.style.background = color01.formattedHex
   divGradient.style.background = `${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex}`
