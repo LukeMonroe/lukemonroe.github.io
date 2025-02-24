@@ -618,9 +618,16 @@ function createDivColorIconCloseFullscreen(color, divColor) {
 }
 
 function createDivColorIconCheckmark(color) {
+  let baseColor = color
+  if (Array.isArray(color)) {
+    baseColor = color[0]
+    if (color[0] === null) {
+      baseColor = color[1]
+    }
+  }
   const divColorIcon = document.createElement('div')
   divColorIcon.className = 'color-icon'
-  divColorIcon.style.backgroundImage = getBackgroundImage(color, 'checkmark')
+  divColorIcon.style.backgroundImage = getBackgroundImage(baseColor, 'checkmark')
   divColorIcon.style.bottom = '10px'
   divColorIcon.style.right = '10px'
   createDivTooltip(divColorIcon, 'load')
@@ -703,15 +710,15 @@ function createDivColor(color, colorPicked, fullscreen = false, color02 = null, 
     divColor.appendChild(createDivColorIconOpenFullscreen(color, null, null, null, null))
     if (color02 !== null && side !== null) {
       if (side === 'left') {
-        const load = createDivColorIconCheckmark(color)
+        const load = createDivColorIconCheckmark([color, null])
         load.style.right = '40px'
         divColor.appendChild(load)
-        divColor.appendChild(createDivColorIconCheckmark(colorPicked))
+        divColor.appendChild(createDivColorIconCheckmark([null, colorPicked]))
       } else {
-        const load = createDivColorIconCheckmark(color)
+        const load = createDivColorIconCheckmark([null, color])
         load.style.right = '40px'
         divColor.appendChild(load)
-        divColor.appendChild(createDivColorIconCheckmark(color02))
+        divColor.appendChild(createDivColorIconCheckmark([color02, null]))
       }
     } else {
       divColor.appendChild(createDivColorIconCheckmark(color))
@@ -760,7 +767,7 @@ function createDivGradient(color01, color02, divColor01, divColor02, type, value
 
   const show = createDivColorIconCornerTriangle(color01, divColor01, divColor02, divGradient)
   const openFullscreen = createDivColorIconOpenFullscreen(color01, color02, type, value, position)
-  const load = createDivColorIconCheckmark(color01)
+  const load = createDivColorIconCheckmark([color01, color02])
   const likeGradient = createDivGradientIconHeart([color01, color02])
 
   divGradient.appendChild(show)
@@ -1045,7 +1052,17 @@ function loadTool(color) {
       setHistoryContrastColors(colors)
     } else {
       const gradients = getHistoryGradients()
-      gradients.push([color, gradients[gradients.length - 1][1]])
+      if (Array.isArray(color)) {
+        if (color[0] !== null && color[1] !== null) {
+          gradients.push(color)
+        } else if (color[0] === null) {
+          gradients.push([gradients[gradients.length - 1][0], color[1]])
+        } else {
+          gradients.push([color[0], gradients[gradients.length - 1][1]])
+        }
+      } else {
+        gradients.push([color, gradients[gradients.length - 1][1]])
+      }
       setHistorGradients(gradients)
     }
     toolPicked()
