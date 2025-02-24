@@ -168,9 +168,7 @@ class ColorPicker {
     divCanvasRow.appendChild(this.canvasHues)
 
     const divInnerRow = document.createElement('div')
-    divInnerRow.className = 'inner-row'
-    divInnerRow.style.gap = '0px'
-    divInnerRow.style.border = '2px solid var(--color)'
+    divInnerRow.className = 'cp-inner-row'
     divInnerRow.appendChild(this.divColor)
     divInnerRow.appendChild(divCanvasRow)
 

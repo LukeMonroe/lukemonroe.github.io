@@ -131,6 +131,16 @@ div.cp-color {
     width: 100%;
 }
 
+div.cp-inner-row {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    max-width: 1000px;
+    border: 2px solid var(--color);
+}
+
 div.color-fullscreen {
     position: fixed;
     display: flex;
@@ -371,6 +381,13 @@ button.theme-inverted:hover {
 
     div.cp-color {
         height: 200px;
+    }
+
+    div.cp-inner-row {
+        position: absolute;
+        flex-direction: column;
+        bottom: 0px;
+        right: 0px;
     }
 
     button.load {
