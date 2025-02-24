@@ -12,8 +12,8 @@ class Colors {
   }
 
   static createHex(hex) {
-    hex = hex.trim().replace('#', '').toUpperCase()
-    hex = hex.match(/^[A-F\d]{6}$/)
+    hex = hex.trim().replace('#', '').toLowerCase()
+    hex = hex.match(/^[a-f\d]{6}$/)
 
     return hex !== null ? Colors.buildHex(`#${hex[0]}`) : null
   }
@@ -119,9 +119,10 @@ class Colors {
 
     const relative = (0.2126 * r) + (0.7152 * g) + (0.0722 * b)
     const grayscale = Number(Number(relative * 100).toFixed(2))
-    const contrast = Number(Number((relative + 0.05) / (0 + 0.05)).toFixed(2))
+    const crWhite = Number(Number((1 + 0.05) / (relative + 0.05)).toFixed(2))
+    const crBlack = Number(Number((relative + 0.05) / (0 + 0.05)).toFixed(2))
 
-    const formattedHex = hex
+    const formattedHex = hex.toLowerCase()
     const formattedRGB = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`
     const formattedHSL = `hsl(${Number(hsl.h).toFixed(0)}\u00b0, ${Number(hsl.s).toFixed(0)}%, ${Number(hsl.l).toFixed(0)}%)`
     const formattedHSV = `hsv(${Number(hsv.h).toFixed(0)}\u00b0, ${Number(hsv.s).toFixed(0)}%, ${Number(hsv.v).toFixed(0)}%)`
@@ -129,9 +130,12 @@ class Colors {
     // const formattedHSL = `hsl(${Number(hsl.h).toFixed(2)}\u00b0, ${Number(hsl.s).toFixed(2)}%, ${Number(hsl.l).toFixed(2)}%)`
     // const formattedHSV = `hsv(${Number(hsv.h).toFixed(2)}\u00b0, ${Number(hsv.s).toFixed(2)}%, ${Number(hsv.v).toFixed(2)}%)`
     // const formattedCMYK = `cmyk(${Number(cmyk.c).toFixed(2)}%, ${Number(cmyk.m).toFixed(2)}%, ${Number(cmyk.y).toFixed(2)}%, ${Number(cmyk.k).toFixed(2)}%)`
-    const formattedText = grayscale > 50 ? '#000000' : '#FFFFFF'
+    const formattedGrayscale =`grayscale: ${grayscale}%`
+    const formattedCRWhite = `white: (${crWhite}:1)${crWhite < 4.5 ? '' : crWhite >= 7 ? ' (WCAG AAA)' : ' (WCAG AA)'}`
+    const formattedCRBlack = `black: (${crBlack}:1)${crBlack < 4.5 ? '' : crBlack >= 7 ? ' (WCAG AAA)' : ' (WCAG AA)'}`
+    const formattedText = crWhite > crBlack ? '#ffffff' : '#000000'
 
-    return { hex, rgb, hsl, hsv, cmyk, grayscale, contrast, formattedHex, formattedRGB, formattedHSL, formattedHSV, formattedCMYK, formattedText }
+    return { hex, rgb, hsl, hsv, cmyk, grayscale, crWhite, crBlack, formattedHex, formattedRGB, formattedHSL, formattedHSV, formattedCMYK, formattedGrayscale, formattedCRWhite, formattedCRBlack, formattedText }
   }
 
   static random() {
@@ -140,24 +144,6 @@ class Colors {
     const b = Math.round(Math.random() * 255)
 
     return Colors.buildRGB(r, g, b)
-  }
-
-  static randomGrayscaleRange(grayscaleMin, grayscaleMax) {
-    let gMin = grayscaleMin >= 0 ? grayscaleMin : 0
-    let gMax = grayscaleMax <= 255 ? grayscaleMax : 255
-
-    let r = Math.round(Math.random() * 255)
-    let g = Math.round(Math.random() * 255)
-    let b = Math.round(Math.random() * 255)
-    let color = Colors.buildRGB(r, g, b)
-    while (color.grayscale < gMin || color.grayscale > gMax) {
-      r = Math.round(Math.random() * 255)
-      g = Math.round(Math.random() * 255)
-      b = Math.round(Math.random() * 255)
-      color = Colors.buildRGB(r, g, b)
-    }
-
-    return color
   }
 
   static hexToRGB(hex) {
@@ -173,9 +159,9 @@ class Colors {
     const g = Number(rgb.g)
     const b = Number(rgb.b)
 
-    let h = r.toString(16).toUpperCase()
-    let e = g.toString(16).toUpperCase()
-    let x = b.toString(16).toUpperCase()
+    let h = r.toString(16).toLowerCase()
+    let e = g.toString(16).toLowerCase()
+    let x = b.toString(16).toLowerCase()
 
     if (h.length !== 2) { h = `0${h}` }
     if (e.length !== 2) { e = `0${e}` }

@@ -86,7 +86,7 @@ function createColorPicker() {
 
   const colors = getHistoryColors()
   if (colors.length === 0) {
-    colors.push(Colors.randomGrayscaleRange(55, 200))
+    colors.push(Colors.random())
     setHistoryColors(colors)
   }
   const color = colors[colors.length - 1]
@@ -171,7 +171,7 @@ function createGradientPicker() {
 
   const gradients = getHistoryGradients()
   if (gradients.length === 0) {
-    gradients.push([Colors.randomGrayscaleRange(55, 200), Colors.randomGrayscaleRange(55, 200)])
+    gradients.push([Colors.random(), Colors.random()])
     setHistorGradients(gradients)
   }
   const gradient = gradients[gradients.length - 1]
@@ -241,7 +241,7 @@ function createContrastPicker() {
 
   const colors = getHistoryContrastColors()
   if (colors.length === 0) {
-    colors.push(Colors.randomGrayscaleRange(55, 200))
+    colors.push(Colors.random())
     setHistoryContrastColors(colors)
   }
   const color = colors[colors.length - 1]
@@ -249,11 +249,7 @@ function createContrastPicker() {
 
   const textColors = getHistoryContrastTextColors()
   if (textColors.length === 0) {
-    let randomColor = Colors.random()
-    while (Math.abs(color.grayscale - randomColor.grayscale) < 64) {
-      randomColor = Colors.random()
-    }
-    textColors.push(randomColor)
+    textColors.push(Colors.random())
     setHistoryContrastTextColors(textColors)
   }
   const textColor = textColors[textColors.length - 1]
@@ -282,45 +278,9 @@ function createContrastPicker() {
   header.appendChild(createButtonNavigation(sideNavigation))
   header.appendChild(createH1('Contrast Picker'))
 
-  const grayscaleDelta = Math.abs(color.grayscale - textColor.grayscale)
-  let rating = 1
-  let textRating = 'disgusting'
-  if (grayscaleDelta < 16) {
-    rating = 1
-    textRating = 'disgusting'
-  } else if (grayscaleDelta < 32) {
-    rating = 2
-    textRating = 'awful'
-  } else if (grayscaleDelta < 48) {
-    rating = 3
-    textRating = 'bad'
-  } else if (grayscaleDelta < 64) {
-    rating = 4
-    textRating = 'okay'
-  } else if (grayscaleDelta < 80) {
-    rating = 5
-    textRating = 'alright'
-  } else if (grayscaleDelta < 96) {
-    rating = 6
-    textRating = 'better'
-  } else if (grayscaleDelta < 112) {
-    rating = 7
-    textRating = 'good'
-  } else if (grayscaleDelta < 128) {
-    rating = 8
-    textRating = 'great'
-  } else if (grayscaleDelta < 128) {
-    rating = 9
-    textRating = 'best'
-  } else {
-    rating = 10
-    textRating = 'perfect'
-  }
-
   const outerColumn = document.getElementById('outer-column')
   outerColumn.replaceChildren()
   outerColumn.appendChild(colorRow)
-  outerColumn.appendChild(createH3(`Contrast Rating: ${textRating} (${rating}/10)`))
   outerColumn.appendChild(boxRow)
   outerColumn.appendChild(historyColumn)
 
@@ -732,8 +692,8 @@ function createDivColor(color, colorPicked, fullscreen = false, color02 = null, 
   divColor.appendChild(createDivColorText(color.formattedHSL))
   divColor.appendChild(createDivColorText(color.formattedHSV))
   divColor.appendChild(createDivColorText(color.formattedCMYK))
-  divColor.appendChild(createDivColorText(`grayscale: ${color.grayscale}`))
-  divColor.appendChild(createDivColorText(`contrast: ${color.contrast}:1`))
+  divColor.appendChild(createDivColorText(color.formattedCRWhite))
+  divColor.appendChild(createDivColorText(color.formattedCRBlack))
   divColor.appendChild(likeColor)
   divColor.appendChild(colorPicker.createColorWidgetIcon(color, loadTool))
   if (colorPicked !== null && Colors.equal(color, colorPicked)) {
