@@ -78,7 +78,7 @@ class ColorPicker {
     divColorIcon.style.backgroundImage = getBackgroundImage(color, 'checkmark')
     divColorIcon.style.bottom = '10px'
     divColorIcon.style.right = '10px'
-    createDivTooltip(divColorIcon, 'load color')
+    createDivTooltip(divColorIcon, 'load')
     divColorIcon.addEventListener('click', () => {
       document.body.removeChild(this.divColorWidgetWindow)
       if (this.divColorFullscreen !== null) {
