@@ -22,7 +22,7 @@ document.addEventListener('click', event => {
 document.body.appendChild(sideNavigation)
 
 let tool = localStorage.getItem('tool')
-let toolPicked = tool === null ? createColorPicker : tool === 'colorPicker' ? createColorPicker : tool === 'gradientPicker' ? createGradientPicker : tool === 'likedColors' ? createLikedColors : createContrastPicker
+let toolPicked = tool === null ? createColorPicker : tool === 'colorPicker' ? createColorPicker : tool === 'gradientPicker' ? createGradientPicker : createLikedColors
 toolPicked()
 
 function createSideNavigation() {
@@ -38,11 +38,6 @@ function createSideNavigation() {
     sideNavigation.style.width = '0px'
     createGradientPicker()
   })
-  const aContrastPicker = createA('javascript:void(0);', 'Contrast Picker')
-  aContrastPicker.addEventListener('click', () => {
-    sideNavigation.style.width = '0px'
-    createContrastPicker()
-  })
   const aLikedColors = createA('javascript:void(0);', 'Favorites')
   aLikedColors.addEventListener('click', () => {
     sideNavigation.style.width = '0px'
@@ -50,7 +45,6 @@ function createSideNavigation() {
   })
   sideNavigation.appendChild(aColors)
   sideNavigation.appendChild(aGradients)
-  sideNavigation.appendChild(aContrastPicker)
   sideNavigation.appendChild(aLikedColors)
   sideNavigation.appendChild(createButtonTheme())
 
@@ -172,7 +166,7 @@ function createGradientPicker() {
   const gradients = getHistoryGradients()
   if (gradients.length === 0) {
     gradients.push([Colors.random(), Colors.random()])
-    setHistorGradients(gradients)
+    setHistoryGradients(gradients)
   }
   const gradient = gradients[gradients.length - 1]
   document.documentElement.style.setProperty('--thumb-color', gradient[0].formattedHex)
@@ -229,61 +223,6 @@ function createGradientPicker() {
       }, 1000)
     }
   })
-  setTimeout(function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, 10)
-}
-
-function createContrastPicker() {
-  localStorage.setItem('tool', 'contrastPicker')
-  tool = localStorage.getItem('tool')
-  toolPicked = createContrastPicker
-
-  const colors = getHistoryContrastColors()
-  if (colors.length === 0) {
-    colors.push(Colors.random())
-    setHistoryContrastColors(colors)
-  }
-  const color = colors[colors.length - 1]
-  document.documentElement.style.setProperty('--thumb-color', color.formattedHex)
-
-  const textColors = getHistoryContrastTextColors()
-  if (textColors.length === 0) {
-    textColors.push(Colors.random())
-    setHistoryContrastTextColors(textColors)
-  }
-  const textColor = textColors[textColors.length - 1]
-
-  const divColorPicked = createDivColor(color, color)
-  divColorPicked.style.height = '300px'
-  divColorPicked.style.maxWidth = '600px'
-  divColorPicked.style.color = textColor.formattedHex
-
-  const colorRow = createDivInnerRow()
-  colorRow.appendChild(divColorPicked)
-
-  const boxRow = createDivInnerRow()
-  boxRow.appendChild(createBoxColumn(color))
-  boxRow.appendChild(createBoxColumn(textColor))
-
-  const historyColumn = createDivInnerColumn()
-  historyColumn.appendChild(createH2('History'))
-  historyColumn.appendChild(createH3('Colors'))
-  historyColumn.appendChild(buildColorRow1(createDivColorRowSmall(), getHistoryContrastColors(), color, 'left'))
-  historyColumn.appendChild(createH3('Text Colors'))
-  historyColumn.appendChild(buildColorRow1(createDivColorRowSmall(), getHistoryContrastTextColors(), textColor, 'right'))
-
-  const header = document.getElementById('header')
-  header.replaceChildren()
-  header.appendChild(createButtonNavigation(sideNavigation))
-  header.appendChild(createH1('Contrast Picker'))
-
-  const outerColumn = document.getElementById('outer-column')
-  outerColumn.replaceChildren()
-  outerColumn.appendChild(colorRow)
-  outerColumn.appendChild(boxRow)
-  outerColumn.appendChild(historyColumn)
-
   setTimeout(function () {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, 10)
@@ -449,75 +388,13 @@ function isHistoryGradient(gradient) {
   return false
 }
 
-function setHistorGradients(gradients) {
+function setHistoryGradients(gradients) {
   let pos = 0
   for (let index = (gradients.length > 8 ? gradients.length - 8 : 0); index < gradients.length; index++) {
     localStorage.setItem(`historyGradient${pos++}`, `${gradients[index][0].formattedHex}:${gradients[index][1].formattedHex}`)
   }
   for (let index = (gradients.length > 8 ? 8 : gradients.length); index < 16; index++) {
     localStorage.removeItem(`historyGradient${index}`)
-  }
-}
-
-function getHistoryContrastColors() {
-  const colors = []
-  let index = 0
-  while (localStorage.getItem(`historyContrastColor${index}`) !== null) {
-    colors.push(Colors.createHex(localStorage.getItem(`historyContrastColor${index++}`)))
-  }
-
-  return colors
-}
-
-function isHistoryContrastColor(color) {
-  const colors = getHistoryContrastColors()
-  for (let index = 0; index < colors.length; index++) {
-    if (Colors.equal(colors[index], color)) {
-      return true
-    }
-  }
-
-  return false
-}
-
-function setHistoryContrastColors(colors) {
-  let pos = 0
-  for (let index = (colors.length > 8 ? colors.length - 8 : 0); index < colors.length; index++) {
-    localStorage.setItem(`historyContrastColor${pos++}`, colors[index].formattedHex)
-  }
-  for (let index = (colors.length > 8 ? 8 : colors.length); index < 16; index++) {
-    localStorage.removeItem(`historyContrastColor${index}`)
-  }
-}
-
-function getHistoryContrastTextColors() {
-  const colors = []
-  let index = 0
-  while (localStorage.getItem(`historyContrastTextColor${index}`) !== null) {
-    colors.push(Colors.createHex(localStorage.getItem(`historyContrastTextColor${index++}`)))
-  }
-
-  return colors
-}
-
-function isHistoryContrastTextColor(color) {
-  const colors = getHistoryContrastTextColors()
-  for (let index = 0; index < colors.length; index++) {
-    if (Colors.equal(colors[index], color)) {
-      return true
-    }
-  }
-
-  return false
-}
-
-function setHistoryContrastTextColors(colors) {
-  let pos = 0
-  for (let index = (colors.length > 8 ? colors.length - 8 : 0); index < colors.length; index++) {
-    localStorage.setItem(`historyContrastTextColor${pos++}`, colors[index].formattedHex)
-  }
-  for (let index = (colors.length > 8 ? 8 : colors.length); index < 16; index++) {
-    localStorage.removeItem(`historyContrastTextColor${index}`)
   }
 }
 
@@ -1011,7 +888,7 @@ function createButtonSwitchColors(gradient) {
   buttonSwitchColors.addEventListener('click', () => {
     const gradients = getHistoryGradients()
     gradients.push([gradient[1], gradient[0]])
-    setHistorGradients(gradients)
+    setHistoryGradients(gradients)
     toolPicked()
   })
 
@@ -1046,10 +923,6 @@ function loadTool(color) {
       const colors = getHistoryColors()
       colors.push(color)
       setHistoryColors(colors)
-    } else if (tool === 'contrastPicker') {
-      const colors = getHistoryContrastColors()
-      colors.push(color)
-      setHistoryContrastColors(colors)
     } else {
       const gradients = getHistoryGradients()
       if (Array.isArray(color)) {
@@ -1063,7 +936,7 @@ function loadTool(color) {
       } else {
         gradients.push([color, gradients[gradients.length - 1][1]])
       }
-      setHistorGradients(gradients)
+      setHistoryGradients(gradients)
     }
     toolPicked()
   }
@@ -1191,15 +1064,6 @@ function buildColorRow(row, colors, colorPicked) {
   row.replaceChildren()
   colors.forEach(color => {
     row.appendChild(createDivColor(color, colorPicked))
-  })
-
-  return row
-}
-
-function buildColorRow1(row, colors, colorPicked, side) {
-  row.replaceChildren()
-  colors.forEach(color => {
-    row.appendChild(createDivColor(color, colorPicked, false, color, side))
   })
 
   return row
