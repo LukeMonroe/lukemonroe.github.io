@@ -356,7 +356,6 @@ function createDivMarker(color) {
   const divMarker = document.createElement('div')
   divMarker.className = 'marker'
   divMarker.style.backgroundColor = color.formattedText
-  divMarker.style.display = 'block'
 
   return divMarker
 }
