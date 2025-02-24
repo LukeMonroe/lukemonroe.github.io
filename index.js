@@ -950,7 +950,7 @@ function createBoxColumn(color) {
   divInputBoxHex.addEventListener('focusout', () => {
     const enteredColor = Colors.createHex(divInputBoxHex.value)
     if (enteredColor !== null && Colors.notEqual(enteredColor, color)) {
-      loadTool(color)
+      loadTool(enteredColor)
     } else {
       divInputBoxHex.value = color.formattedHex
     }
@@ -959,7 +959,7 @@ function createBoxColumn(color) {
     if (event.key === 'Enter') {
       const enteredColor = Colors.createHex(divInputBoxHex.value)
       if (enteredColor !== null && Colors.notEqual(enteredColor, color)) {
-        loadTool(color)
+        loadTool(enteredColor)
       } else {
         divInputBoxHex.value = color.formattedHex
       }
