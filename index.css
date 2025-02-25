@@ -73,7 +73,7 @@ div.inner-column {
     align-items: center;
     gap: 40px;
     width: 80%;
-    max-width: 1000px;
+    max-width: 1800px;
 }
 
 div.inner-row {
@@ -82,7 +82,7 @@ div.inner-row {
     align-items: center;
     gap: 20px;
     width: 80%;
-    max-width: 1000px;
+    max-width: 1800px;
 }
 
 div.color-row {
@@ -137,7 +137,7 @@ div.cp-inner-row {
     justify-content: center;
     align-items: center;
     width: 80%;
-    max-width: 1000px;
+    max-width: 1800px;
     border: 2px solid var(--color);
 }
 
