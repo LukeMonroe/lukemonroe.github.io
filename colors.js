@@ -130,7 +130,7 @@ class Colors {
     // const formattedHSL = `hsl(${Number(hsl.h).toFixed(2)}\u00b0, ${Number(hsl.s).toFixed(2)}%, ${Number(hsl.l).toFixed(2)}%)`
     // const formattedHSV = `hsv(${Number(hsv.h).toFixed(2)}\u00b0, ${Number(hsv.s).toFixed(2)}%, ${Number(hsv.v).toFixed(2)}%)`
     // const formattedCMYK = `cmyk(${Number(cmyk.c).toFixed(2)}%, ${Number(cmyk.m).toFixed(2)}%, ${Number(cmyk.y).toFixed(2)}%, ${Number(cmyk.k).toFixed(2)}%)`
-    const formattedGrayscale =`grayscale: ${grayscale}%`
+    const formattedGrayscale = `grayscale: ${grayscale}%`
     const formattedCRWhite = `white: (${crWhite}:1)${crWhite < 4.5 ? '' : crWhite >= 7 ? ' (WCAG AAA)' : ' (WCAG AA)'}`
     const formattedCRBlack = `black: (${crBlack}:1)${crBlack < 4.5 ? '' : crBlack >= 7 ? ' (WCAG AAA)' : ' (WCAG AA)'}`
     const formattedText = crWhite > crBlack ? '#ffffff' : '#000000'
@@ -448,10 +448,6 @@ class Colors {
       Colors.buildHSL(color.hsl.h, color.hsl.s, (Number(color.hsl.l) + Number(15)) % Number(100)),
       Colors.buildHSL(color.hsl.h, color.hsl.s, (Number(color.hsl.l) + Number(30)) % Number(100)),
     ]
-  }
-
-  static gradient(color01, color02) {
-    return [Colors.copy(color01), Colors.copy(color02)]
   }
 }
 

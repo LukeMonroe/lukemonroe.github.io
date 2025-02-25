@@ -2,11 +2,12 @@ import { Colors } from './colors.js'
 import { createDivColorIconHeart } from './favorites.js'
 import { getBackgroundImage } from './images.js'
 import { createDivTooltip } from './tooltips.js'
+import { createDivColorText } from './text.js'
+import { createDivColorIconFullscreen } from './fullscreen.js'
 
 class ColorPicker {
   divColorWidgetWindow = null
   divColor = null
-  divColorFullscreen = null
   canvasHues = null
   canvasColors = null
   callable = null
@@ -24,54 +25,6 @@ class ColorPicker {
   xHues = 0
   yHues = 0
 
-  createDivColorText(innerText) {
-    const divColorText = document.createElement('div')
-    divColorText.className = 'color-text'
-    divColorText.innerText = innerText
-    createDivTooltip(divColorText, 'copy')
-    divColorText.addEventListener('click', () => {
-      navigator.clipboard.writeText(divColorText.innerText)
-
-      const h4Copied = document.createElement('h4')
-      h4Copied.innerText = 'Copied to clipboard'
-
-      const divCopied = document.createElement('div')
-      divCopied.className = 'copied'
-      divCopied.appendChild(h4Copied)
-      document.body.appendChild(divCopied)
-      setTimeout(function () {
-        divCopied.style.opacity = '1'
-      }, 10)
-      setTimeout(function () {
-        divCopied.style.opacity = '0'
-      }, 3000)
-      setTimeout(function () {
-        document.body.removeChild(divCopied)
-      }, 3800)
-    })
-
-    return divColorText
-  }
-
-  createDivColorIconFullscreen(color) {
-    const divColorIcon = document.createElement('div')
-    divColorIcon.className = 'color-icon'
-    divColorIcon.style.backgroundImage = getBackgroundImage(color, 'fullscreen')
-    divColorIcon.style.top = '10px'
-    divColorIcon.style.right = '10px'
-    createDivTooltip(divColorIcon, 'fullscreen')
-    divColorIcon.addEventListener('click', () => {
-      if (this.divColorFullscreen === null) {
-        this.createDivColorFullscreen(color)
-      } else {
-        document.body.removeChild(this.divColorFullscreen)
-        this.divColorFullscreen = null
-      }
-    })
-
-    return divColorIcon
-  }
-
   createDivColorIconCheckmark(color) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
@@ -81,13 +34,37 @@ class ColorPicker {
     createDivTooltip(divColorIcon, 'load')
     divColorIcon.addEventListener('click', () => {
       document.body.removeChild(this.divColorWidgetWindow)
-      if (this.divColorFullscreen !== null) {
-        document.body.removeChild(this.divColorFullscreen)
-      }
       this.divColorWidgetWindow = null
-      this.divColorFullscreen = null
       document.body.style.overflow = 'auto'
       this.callable(color)
+    })
+
+    return divColorIcon
+  }
+
+  createDivColorIconEyedropper(color) {
+    const divColorIcon = document.createElement('div')
+    divColorIcon.className = 'color-icon'
+    divColorIcon.style.backgroundImage = getBackgroundImage(color, 'corner-triangle')
+    divColorIcon.style.bottom = '10px'
+    divColorIcon.style.left = '10px'
+    createDivTooltip(divColorIcon, 'eyedropper')
+    divColorIcon.addEventListener('click', () => {
+      if (window.EyeDropper) {
+        const eyeDropper = new EyeDropper()
+        eyeDropper
+          .open()
+          .then(csr => {
+            const colorEyedropped = Colors.createHex(csr.sRGBHex)
+            if (colorEyedropped !== null && Colors.notEqual(colorEyedropped, this.colorPicked)) {
+              this.pickedColor = colorEyedropped
+              this.setupCanvases()
+            }
+          })
+          .catch(error => { })
+      } else {
+        alert('Eyedropper is only available on the desktop version of Chrome or Edge.')
+      }
     })
 
     return divColorIcon
@@ -98,50 +75,21 @@ class ColorPicker {
     this.divColor.style.backgroundColor = color.formattedHex
     this.divColor.style.color = color.formattedText
     this.divColor.replaceChildren()
-    this.divColor.appendChild(this.createDivColorText(color.formattedHex))
-    this.divColor.appendChild(this.createDivColorText(color.formattedRGB))
-    this.divColor.appendChild(this.createDivColorText(color.formattedHSL))
-    this.divColor.appendChild(this.createDivColorText(color.formattedHSV))
-    this.divColor.appendChild(this.createDivColorText(color.formattedCMYK))
-    this.divColor.appendChild(this.createDivColorText(color.formattedCRWhite))
-    this.divColor.appendChild(this.createDivColorText(color.formattedCRBlack))
+    this.divColor.appendChild(createDivColorText(color.formattedHex))
+    this.divColor.appendChild(createDivColorText(color.formattedRGB))
+    this.divColor.appendChild(createDivColorText(color.formattedHSL))
+    this.divColor.appendChild(createDivColorText(color.formattedHSV))
+    this.divColor.appendChild(createDivColorText(color.formattedCMYK))
+    this.divColor.appendChild(createDivColorText(color.formattedCRWhite))
+    this.divColor.appendChild(createDivColorText(color.formattedCRBlack))
     this.divColor.appendChild(createDivColorIconHeart(color))
-    this.divColor.appendChild(this.createDivColorIconFullscreen(color))
+    this.divColor.appendChild(createDivColorIconFullscreen(color))
     this.divColor.appendChild(this.createDivColorIconCheckmark(color))
+    this.divColor.appendChild(this.createDivColorIconEyedropper(color))
     const children = this.divColor.children
     for (let index = 0; index < children.length; index++) {
       children[index].style.display = 'block'
     }
-  }
-
-  createDivColorFullscreen(color) {
-    this.divColorFullscreen = document.createElement('div')
-    this.divColorFullscreen.className = 'color-fullscreen'
-    this.divColorFullscreen.style.backgroundColor = color.formattedHex
-    this.divColorFullscreen.style.color = color.formattedText
-    this.divColorFullscreen.style.height = '100%'
-    this.divColorFullscreen.style.width = '100%'
-    this.divColorFullscreen.replaceChildren()
-    this.divColorFullscreen.appendChild(this.createDivColorText(color.formattedHex))
-    this.divColorFullscreen.appendChild(this.createDivColorText(color.formattedRGB))
-    this.divColorFullscreen.appendChild(this.createDivColorText(color.formattedHSL))
-    this.divColorFullscreen.appendChild(this.createDivColorText(color.formattedHSV))
-    this.divColorFullscreen.appendChild(this.createDivColorText(color.formattedCMYK))
-    this.divColorFullscreen.appendChild(this.createDivColorText(color.formattedCRWhite))
-    this.divColorFullscreen.appendChild(this.createDivColorText(color.formattedCRBlack))
-    this.divColorFullscreen.appendChild(createDivColorIconHeart(color))
-    this.divColorFullscreen.appendChild(this.createDivColorIconFullscreen(color))
-    this.divColorFullscreen.appendChild(this.createDivColorIconCheckmark(color))
-    this.divColorFullscreen.addEventListener('dblclick', () => {
-      document.body.removeChild(this.divColorFullscreen)
-      this.divColorFullscreen = null
-    })
-    const children = this.divColorFullscreen.children
-    for (let index = 0; index < children.length; index++) {
-      children[index].style.display = 'block'
-    }
-
-    document.body.appendChild(this.divColorFullscreen)
   }
 
   createColorWidget() {
@@ -235,7 +183,6 @@ class ColorPicker {
     buttonColorWidget.addEventListener('click', () => {
       this.divColorWidgetWindow = document.createElement('div')
       this.divColor = document.createElement('div')
-      this.divColorFullscreen = null
       this.canvasHues = document.createElement('canvas')
       this.canvasColors = document.createElement('canvas')
       this.pickedColor = pickedColor
@@ -269,7 +216,6 @@ class ColorPicker {
     divColorIcon.addEventListener('click', () => {
       this.divColorWidgetWindow = document.createElement('div')
       this.divColor = document.createElement('div')
-      this.divColorFullscreen = null
       this.canvasHues = document.createElement('canvas')
       this.canvasColors = document.createElement('canvas')
       this.pickedColor = Colors.copy(pickedColor)
