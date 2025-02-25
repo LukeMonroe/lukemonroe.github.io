@@ -56,7 +56,7 @@ class ColorPicker {
           .open()
           .then(csr => {
             const colorEyedropped = Colors.createHex(csr.sRGBHex)
-            if (colorEyedropped !== null && Colors.notEqual(colorEyedropped, this.colorPicked)) {
+            if (colorEyedropped !== null && Colors.notEqual(colorEyedropped, this.pickedColor)) {
               this.pickedColor = colorEyedropped
               this.setupCanvases()
             }
