@@ -124,7 +124,7 @@ class ColorPickerPage {
     const historyColumn = document.createElement('div')
     historyColumn.className = 'inner-column'
     historyColumn.appendChild(createH2('History'))
-    historyColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), this.getHistoryColors()))
+    historyColumn.appendChild(this.buildColorRow(this.createDivColorRow(), this.getHistoryColors()))
 
     const header = document.getElementById('header')
     header.replaceChildren()

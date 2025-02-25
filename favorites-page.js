@@ -25,11 +25,13 @@ class FavoritesPage {
     localStorage.setItem('tool', 'favorites')
 
     const favoriteColorsColumn = document.createElement('div')
+    favoriteColorsColumn.style.maxWidth = 'none'
     favoriteColorsColumn.className = 'inner-column'
     favoriteColorsColumn.appendChild(createH2('Colors'))
     favoriteColorsColumn.appendChild(this.createDivColorGrid())
 
     const favoriteGradientsColumn = document.createElement('div')
+    favoriteGradientsColumn.style.maxWidth = 'none'
     favoriteGradientsColumn.className = 'inner-column'
     favoriteGradientsColumn.appendChild(createH2('Gradients'))
     favoriteGradientsColumn.appendChild(this.createDivGradientGrid())
@@ -148,7 +150,9 @@ class FavoritesPage {
     for (let index = 0; index < colors.length; index++) {
       const divColor = this.createDivColor(colors[index])
       divColor.style.flex = 'none'
-      divColor.style.width = '300px'
+      divColor.style.height = '400px'
+      divColor.style.width = '100%'
+      divColor.style.maxWidth = '400px'
       divColorGrid.appendChild(divColor)
     }
     if (colors.length === 0) {
@@ -178,13 +182,18 @@ class FavoritesPage {
     const divColor02 = this.createDivColor(gradient[1])
     const divGradient = this.createDivGradient(gradient, [divColor01, divColor02], type, value, position)
 
+    divColor01.style.height = '400px'
+    divGradient.style.height = '400px'
+    divColor02.style.height = '400px'
+
     divColor01.style.display = 'none'
     divGradient.style.display = 'flex'
     divColor02.style.display = 'none'
 
     const divGradientRow = this.createDivColorRowSmall()
     divGradientRow.style.flex = 'none'
-    divGradientRow.style.width = '300px'
+    divGradientRow.style.width = '100%'
+    divGradientRow.style.maxWidth = '400px'
     divGradientRow.replaceChildren()
     divGradientRow.appendChild(divColor01)
     divGradientRow.appendChild(divGradient)

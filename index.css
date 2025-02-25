@@ -104,7 +104,7 @@ div.color-grid {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 50px;
+    gap: 40px;
     width: 100%;
 }
 
@@ -373,7 +373,7 @@ button.theme-inverted:hover {
 
     div.color-row-small {
         flex-direction: column;
-        height: 300px;
+        height: 400px;
     }
 
     div.color {
