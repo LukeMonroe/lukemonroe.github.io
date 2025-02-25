@@ -59,6 +59,7 @@ class ColorPicker {
             if (colorEyedropped !== null && Colors.notEqual(colorEyedropped, this.pickedColor)) {
               this.pickedColor = colorEyedropped
               this.setupCanvases()
+              this.updateDivColor(colorEyedropped)
             }
           })
           .catch(error => { })
