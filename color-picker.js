@@ -158,10 +158,11 @@ class ColorPicker {
       this.mouseDownHues = false
     })
 
-    this.updateDivColor(this.hoveredHue)
+    this.updateDivColor(this.pickedColor)
     document.body.appendChild(this.divColorWidgetWindow)
     document.body.style.overflow = 'hidden'
     this.setupCanvases()
+    this.updateDivColor(this.pickedColor)
 
     window.addEventListener('resize', () => {
       if (this.divColorWidgetWindow !== null) {
