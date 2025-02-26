@@ -45,7 +45,7 @@ class ColorPicker {
   createDivColorIconEyedropper(color) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
-    divColorIcon.style.backgroundImage = getBackgroundImage(color, 'corner-triangle')
+    divColorIcon.style.backgroundImage = getBackgroundImage(color, 'eyedropper')
     divColorIcon.style.bottom = '10px'
     divColorIcon.style.left = '10px'
     createDivTooltip(divColorIcon, 'eyedropper')
@@ -211,7 +211,7 @@ class ColorPicker {
   createColorWidgetIcon(pickedColor, callable) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
-    divColorIcon.style.backgroundImage = getBackgroundImage(Colors.copy(pickedColor), 'corner-triangle')
+    divColorIcon.style.backgroundImage = getBackgroundImage(Colors.copy(pickedColor), 'color-picker')
     divColorIcon.style.bottom = '10px'
     divColorIcon.style.left = '10px'
     createDivTooltip(divColorIcon, 'color picker')
