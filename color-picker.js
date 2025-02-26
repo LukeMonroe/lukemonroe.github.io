@@ -25,6 +25,31 @@ class ColorPicker {
   xHues = 0
   yHues = 0
 
+  createDivColorIconPlus(color) {
+    const divColorIcon = document.createElement('div')
+    divColorIcon.className = 'color-icon'
+    divColorIcon.style.backgroundImage = getBackgroundImage(color, 'plus')
+    divColorIcon.style.top = '50%'
+    divColorIcon.style.left = '50%'
+    divColorIcon.style.transform = 'translate(-50%, -50%)'
+    createDivTooltip(divColorIcon, 'more info')
+    divColorIcon.addEventListener('click', () => {
+      this.divColor.appendChild(createDivColorText(color.formattedHex))
+      this.divColor.appendChild(createDivColorText(color.formattedRGB))
+      this.divColor.appendChild(createDivColorText(color.formattedHSL))
+      this.divColor.appendChild(createDivColorText(color.formattedHSV))
+      this.divColor.appendChild(createDivColorText(color.formattedCMYK))
+      this.divColor.appendChild(createDivColorText(color.formattedCRWhite))
+      this.divColor.appendChild(createDivColorText(color.formattedCRBlack))
+      const children = this.divColor.children
+      for (let index = 0; index < children.length; index++) {
+        children[index].style.display = 'block'
+      }
+    })
+
+    return divColorIcon
+  }
+
   createDivColorIconCheckmark(color) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
@@ -87,6 +112,7 @@ class ColorPicker {
     this.divColor.appendChild(createDivColorIconFullscreen(color))
     this.divColor.appendChild(this.createDivColorIconCheckmark(color))
     this.divColor.appendChild(this.createDivColorIconEyedropper(color))
+    // this.divColor.appendChild(this.createDivColorIconPlus(color))
     const children = this.divColor.children
     for (let index = 0; index < children.length; index++) {
       children[index].style.display = 'block'
@@ -416,13 +442,13 @@ class ColorPicker {
         let data = contextColors.getImageData(this.xColors * dpr, this.yColors * dpr, 1, 1).data
         let hoveredColorActual = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
         if (Colors.notEqual(hoveredColorActual, this.pickedColor)) {
-          for (let x1 = this.xColors - 8; x1 < this.xColors + 8; x1 += 0.1) {
-            for (let y1 = this.yColors - 8; y1 < this.yColors + 8; y1 += 0.1) {
-              data = contextColors.getImageData(x1 * dpr, y1 * dpr, 1, 1).data
+          for (let xInner = this.xColors - 8; xInner < this.xColors + 8; xInner++) {
+            for (let yInner = this.yColors - 8; yInner < this.yColors + 8; yInner++) {
+              data = contextColors.getImageData(xInner * dpr, yInner * dpr, 1, 1).data
               hoveredColorActual = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
               if (Colors.equal(hoveredColorActual, this.pickedColor)) {
-                this.xColors = x1
-                this.yColors = y1
+                this.xColors = xInner
+                this.yColors = yInner
                 this.drawCanvasColors()
                 break
               }
