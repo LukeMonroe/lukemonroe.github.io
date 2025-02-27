@@ -1,6 +1,8 @@
 function getBackgroundImage(color, name) {
   let backgroundImage = 'blank.png'
-  if (name === 'checkmark') {
+  if (name === 'arrow') {
+    backgroundImage = color.formattedText === '#ffffff' ? 'arrow-white.png' : 'arrow-black.png'
+  } else if (name === 'checkmark') {
     backgroundImage = color.formattedText === '#ffffff' ? 'checkmark-white.png' : 'checkmark-black.png'
   } else if (name === 'corner-triangle') {
     backgroundImage = color.formattedText === '#ffffff' ? 'corner-triangle-white.png' : 'corner-triangle-black.png'
