@@ -218,8 +218,7 @@ div.slider {
     align-items: center;
     gap: 15px;
     width: 100%;
-    min-width: 300px;
-    max-width: 600px;
+    max-width: 800px;
 }
 
 div.input-column {
