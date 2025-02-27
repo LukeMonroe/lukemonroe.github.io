@@ -70,7 +70,7 @@ class ColorPicker {
   createDivColorIconEyedropper(color) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
-    divColorIcon.style.backgroundImage = getBackgroundImage(color, 'eye')
+    divColorIcon.style.backgroundImage = getBackgroundImage(color, 'raindrop')
     divColorIcon.style.bottom = '10px'
     divColorIcon.style.left = '10px'
     createDivTooltip(divColorIcon, 'eyedropper')

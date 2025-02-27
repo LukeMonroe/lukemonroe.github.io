@@ -24,6 +24,8 @@ function getBackgroundImage(color, name) {
     backgroundImage = color.formattedText === '#ffffff' ? 'information-white.png' : 'information-black.png'
   } else if (name === 'plus') {
     backgroundImage = color.formattedText === '#ffffff' ? 'plus-white.png' : 'plus-black.png'
+  } else if (name === 'raindrop') {
+    backgroundImage = color.formattedText === '#ffffff' ? 'raindrop-white.png' : 'raindrop-black.png'
   }
 
   return `url(images/${backgroundImage})`
