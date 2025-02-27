@@ -29,7 +29,7 @@ class ColorPickerPage {
   buildColorRow(row, colors) {
     row.replaceChildren()
     colors.forEach(color => {
-      row.appendChild(this.createDivColor(color))
+      row.appendChild(this.createDivColor(color, false))
     })
 
     return row
@@ -76,7 +76,7 @@ class ColorPickerPage {
     const lightnessRow = this.createDivColorRow()
     const lightnessSlider = this.createInputRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, "lig")
 
-    const divColorPicked = this.createDivColor(this.colorPicked)
+    const divColorPicked = this.createDivColor(this.colorPicked, true)
     divColorPicked.style.height = '400px'
     divColorPicked.style.maxWidth = '800px'
 
@@ -164,7 +164,7 @@ class ColorPickerPage {
     }
   }
 
-  createDivColor(color) {
+  createDivColor(color, picked) {
     const divMarker = document.createElement('div')
     divMarker.className = 'marker'
     divMarker.style.backgroundColor = color.formattedText
@@ -189,11 +189,13 @@ class ColorPickerPage {
       divColor.appendChild(divMarker)
     }
 
+    divColor.style.flex = picked ? 'auto' : '1 1 0'
     divColor.addEventListener('mouseenter', () => {
       const children = divColor.children
       for (let index = 0; index < children.length; index++) {
         children[index].style.display = 'block'
       }
+      divColor.style.flex = 'auto'
       divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
       divMarker.style.display = 'none'
       likeColor.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
@@ -203,6 +205,7 @@ class ColorPickerPage {
       for (let index = 0; index < children.length; index++) {
         children[index].style.display = 'none'
       }
+      divColor.style.flex = picked ? 'auto' : '1 1 0'
       divColor.style.boxShadow = 'none'
       divMarker.style.display = 'block'
     })
@@ -211,6 +214,7 @@ class ColorPickerPage {
       for (let index = 0; index < children.length; index++) {
         children[index].style.display = 'block'
       }
+      divColor.style.flex = 'auto'
       divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
       divMarker.style.display = 'none'
       likeColor.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
