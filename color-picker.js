@@ -237,7 +237,7 @@ class ColorPicker {
   createColorWidgetIcon(pickedColor, callable) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
-    divColorIcon.style.backgroundImage = getBackgroundImage(Colors.copy(pickedColor), 'color-picker')
+    divColorIcon.style.backgroundImage = getBackgroundImage(Colors.copy(pickedColor), 'hexagon')
     divColorIcon.style.bottom = '10px'
     divColorIcon.style.left = '10px'
     createDivTooltip(divColorIcon, 'color picker')
