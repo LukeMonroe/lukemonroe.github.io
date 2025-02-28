@@ -184,7 +184,7 @@ class ColorPickerPage {
     divColor.appendChild(likeColor)
     divColor.appendChild(createDivColorIconFullscreen(color))
     divColor.appendChild(this.createDivColorIconCheckmark(color))
-    divColor.appendChild(this.colorPicker.createColorWidgetIcon(color, (color) => { this.updatePage(color) }))
+    divColor.appendChild(this.colorPicker.createColorPickerIcon(color, (color) => { this.updatePage(color) }))
     if (Colors.equal(color, this.colorPicked)) {
       divColor.appendChild(divMarker)
     }
@@ -257,7 +257,7 @@ class ColorPickerPage {
     const divInputColumn = document.createElement('div')
     divInputColumn.className = 'input-column'
     divInputColumn.appendChild(hexBoxRow)
-    divInputColumn.appendChild(this.colorPicker.createColorWidgetButton(this.colorPicked, (color) => { this.updatePage(color) }))
+    divInputColumn.appendChild(this.colorPicker.createColorPickerButton(this.colorPicked, (color) => { this.updatePage(color) }))
 
     return divInputColumn
   }

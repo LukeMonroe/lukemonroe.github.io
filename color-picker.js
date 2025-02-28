@@ -178,7 +178,7 @@ class ColorPicker {
     })
   }
 
-  createColorWidgetButton(pickedColor, callable) {
+  createColorPickerButton(pickedColor, callable) {
     const buttonColorWidget = document.createElement('button')
     buttonColorWidget.className = 'theme'
     buttonColorWidget.innerText = 'Color Picker'
@@ -208,7 +208,7 @@ class ColorPicker {
     return buttonColorWidget
   }
 
-  createColorWidgetIcon(pickedColor, callable) {
+  createColorPickerIcon(pickedColor, callable) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
     divColorIcon.style.backgroundImage = getBackgroundImage(Colors.copy(pickedColor), 'hexagon')

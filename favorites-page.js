@@ -70,7 +70,7 @@ class FavoritesPage {
     divColor.appendChild(createDivColorText(color.formattedCRBlack))
     divColor.appendChild(likeColor)
     divColor.appendChild(createDivColorIconFullscreen(color))
-    divColor.appendChild(this.colorPicker.createColorWidgetIcon(color, (color) => { this.updatePage() }))
+    divColor.appendChild(this.colorPicker.createColorPickerIcon(color, (color) => { this.updatePage() }))
     divColor.appendChild(divMarker)
 
     divColor.addEventListener('mouseenter', () => {
