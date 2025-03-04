@@ -311,9 +311,9 @@ class Colors {
   }
 
   static cmykToRGB(cmyk) {
-    const r = Math.round((1 - cmyk.c) * (1 - cmyk.k) * 255)
-    const g = Math.round((1 - cmyk.m) * (1 - cmyk.k) * 255)
-    const b = Math.round((1 - cmyk.y) * (1 - cmyk.k) * 255)
+    const r = Math.round((1 - (Number(cmyk.c) / 100)) * (1 - (Number(cmyk.k) / 100)) * 255)
+    const g = Math.round((1 - (Number(cmyk.m) / 100)) * (1 - (Number(cmyk.k) / 100)) * 255)
+    const b = Math.round((1 - (Number(cmyk.y) / 100)) * (1 - (Number(cmyk.k) / 100)) * 255)
 
     return { r, g, b }
   }
@@ -389,13 +389,17 @@ class Colors {
   static saturations(color, value) {
     const colors = [Colors.copy(color)]
 
-    while (colors[colors.length - 1].hsl.s < 100) {
+    let saturation = Number(color.hsl.s)
+    while (saturation < 100) {
       colors.push(Colors.saturation(colors[colors.length - 1], value))
+      saturation += Number(value)
     }
 
     colors.reverse()
-    while (colors[colors.length - 1].hsl.s > 0) {
+    saturation = Number(color.hsl.s)
+    while (saturation > 0) {
       colors.push(Colors.saturation(colors[colors.length - 1], -value))
+      saturation -= Number(value)
     }
 
     return colors
@@ -404,13 +408,17 @@ class Colors {
   static lightnesses(color, value) {
     const colors = [Colors.copy(color)]
 
-    while (colors[colors.length - 1].hsl.l < 100) {
+    let lightness = Number(color.hsl.l)
+    while (lightness < 100) {
       colors.push(Colors.lightness(colors[colors.length - 1], value))
+      lightness += Number(value)
     }
 
     colors.reverse()
-    while (colors[colors.length - 1].hsl.l > 0) {
+    lightness = Number(color.hsl.l)
+    while (lightness > 0) {
       colors.push(Colors.lightness(colors[colors.length - 1], -value))
+      lightness -= Number(value)
     }
 
     return colors
