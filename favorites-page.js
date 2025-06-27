@@ -1,14 +1,15 @@
-import { ColorPicker } from './color-picker.js'
 import { createDivColorIconHeart, createDivGradientIconHeart, getLikedColors, isColorLiked, getLikedGradients } from './favorites.js'
 import { getBackgroundImage } from './images.js'
 import { createDivTooltip } from './tooltips.js'
 import { createH1, createH2, createH3, createDivColorText } from './text.js'
 import { createDivColorIconFullscreen, createDivGradientIconFullscreen } from './fullscreen.js'
-import { createButtonNavigation } from './navigation.js'
 
 class FavoritesPage {
-  buttonNavigation = createButtonNavigation()
-  colorPicker = new ColorPicker()
+
+  constructor(buttonNavigation, colorPicker) {
+    this.buttonNavigation = buttonNavigation
+    this.colorPicker = colorPicker
+  }
 
   createDivColorRowSmall() {
     const row = document.createElement('div')
@@ -38,7 +39,7 @@ class FavoritesPage {
 
     const header = document.getElementById('header')
     header.replaceChildren()
-    header.appendChild(createButtonNavigation())
+    header.appendChild(this.buttonNavigation)
     header.appendChild(createH1('Favorites'))
 
     const outerColumn = document.getElementById('outer-column')

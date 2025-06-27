@@ -1,15 +1,16 @@
 import { Colors } from './colors.js'
-import { ColorPicker } from './color-picker.js'
 import { createDivColorIconHeart, createDivGradientIconHeart, isColorLiked } from './favorites.js'
 import { getBackgroundImage } from './images.js'
 import { createDivTooltip } from './tooltips.js'
 import { createH1, createH2, createH4, createDivColorText } from './text.js'
 import { createDivColorIconFullscreen, createDivGradientIconFullscreen } from './fullscreen.js'
-import { createButtonNavigation } from './navigation.js'
 
 class GradientPickerPage {
-  buttonNavigation = createButtonNavigation()
-  colorPicker = new ColorPicker()
+
+  constructor(buttonNavigation, colorPicker) {
+    this.buttonNavigation = buttonNavigation
+    this.colorPicker = colorPicker
+  }
 
   createDivInnerColumn() {
     const column = document.createElement('div')
@@ -87,7 +88,7 @@ class GradientPickerPage {
 
     const header = document.getElementById('header')
     header.replaceChildren()
-    header.appendChild(createButtonNavigation())
+    header.appendChild(this.buttonNavigation)
     header.appendChild(createH1('Gradient Picker'))
 
     const outerColumn = document.getElementById('outer-column')

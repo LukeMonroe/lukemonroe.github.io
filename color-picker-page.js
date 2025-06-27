@@ -1,16 +1,17 @@
 import { Colors } from './colors.js'
-import { ColorPicker } from './color-picker.js'
 import { createDivColorIconHeart, isColorLiked } from './favorites.js'
 import { getBackgroundImage } from './images.js'
 import { createDivTooltip } from './tooltips.js'
 import { createH1, createH2, createH3, createH4, createDivColorText } from './text.js'
 import { createDivColorIconFullscreen } from './fullscreen.js'
-import { createButtonNavigation } from './navigation.js'
 
 class ColorPickerPage {
-  buttonNavigation = createButtonNavigation()
-  colorPicker = new ColorPicker()
-  colorPicked = null
+
+  constructor(buttonNavigation, colorPicker) {
+    this.buttonNavigation = buttonNavigation
+    this.colorPicker = colorPicker
+    this.colorPicked = null
+  }
 
   createDivColorRow() {
     const row = document.createElement('div')
