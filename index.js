@@ -2,21 +2,21 @@ import { ColorPickerPage } from './color-picker-page.js'
 import { GradientPickerPage } from './gradient-picker-page.js'
 import { FavoritesPage } from './favorites-page.js'
 import { ColorPicker } from './color-picker.js'
-import { ButtonNavigation } from './navigation.js'
+import { SideNavigation } from './navigation.js'
 
 document.addEventListener('dblclick', event => { event.preventDefault() })
 
-const buttonNavigation = new ButtonNavigation()
-const createButtonNavigation = buttonNavigation.createButtonNavigation()
+const sideNavigation = new SideNavigation()
+const buttonNavigation = sideNavigation.createButtonNavigation()
 const colorPicker = new ColorPicker()
 
-const colorPickerPage = new ColorPickerPage(createButtonNavigation, colorPicker)
-const gradientPickerPage = new GradientPickerPage(createButtonNavigation, colorPicker)
-const favoritesPage = new FavoritesPage(createButtonNavigation, colorPicker)
+const colorPickerPage = new ColorPickerPage(buttonNavigation, colorPicker)
+const gradientPickerPage = new GradientPickerPage(buttonNavigation, colorPicker)
+const favoritesPage = new FavoritesPage(buttonNavigation, colorPicker)
 
-buttonNavigation.colorPickerPage = colorPickerPage
-buttonNavigation.gradientPickerPage = gradientPickerPage
-buttonNavigation.favoritesPage = favoritesPage
+sideNavigation.colorPickerPage = colorPickerPage
+sideNavigation.gradientPickerPage = gradientPickerPage
+sideNavigation.favoritesPage = favoritesPage
 
 const tool = localStorage.getItem('tool')
 if (tool === null || tool === 'colorPicker') {
