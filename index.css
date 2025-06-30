@@ -185,7 +185,7 @@ div.tooltip {
     white-space: nowrap;
     overflow: hidden;
     cursor: pointer;
-    bottom: calc(100% + 10px);
+    top: calc(100% + 10px);
     left: 50%;
     z-index: 4;
     padding: 10px;
