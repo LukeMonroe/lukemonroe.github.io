@@ -187,7 +187,7 @@ class ColorPicker {
       this.divColor = document.createElement('div')
       this.canvasHues = document.createElement('canvas')
       this.canvasColors = document.createElement('canvas')
-      this.pickedColor = pickedColor
+      this.pickedColor = Colors.copy(pickedColor)
       this.hoveredHue = Colors.copy(pickedColor)
       this.hoveredColor = Colors.copy(pickedColor)
       this.callable = callable
@@ -315,12 +315,13 @@ class ColorPicker {
     this.yColors = this.yColors < 1 ? 1 : this.yColors
     this.yColors = this.yColors > this.getCanvasHeight(this.canvasColors) - 1 ? this.getCanvasHeight(this.canvasColors) - 1 : this.yColors
 
+    const data = context.getImageData(this.xColors * dpr, this.yColors * dpr, 1, 1).data
+    this.hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
+
     context.lineWidth = 2
     context.strokeStyle = this.hoveredColor.formattedText
     context.strokeRect(this.xColors - 6, this.yColors - 6, 12, 12)
 
-    const data = context.getImageData(this.xColors * dpr, this.yColors * dpr, 1, 1).data
-    this.hoveredColor = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
     this.updateDivColor(this.hoveredColor)
   }
 
@@ -347,12 +348,12 @@ class ColorPicker {
     this.yHues = this.yHues < 1 ? 1 : this.yHues
     this.yHues = this.yHues > this.getCanvasHeight(this.canvasHues) - 1 ? this.getCanvasHeight(this.canvasHues) - 1 : this.yHues
 
+    const data = context.getImageData((this.getCanvasWidth(this.canvasHues) / 2) * dpr, this.yHues * dpr, 1, 1).data
+    this.hoveredHue = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
+
     context.lineWidth = 2
     context.strokeStyle = this.hoveredHue.formattedText
     context.strokeRect(2, this.yHues - 6, this.getCanvasWidth(this.canvasHues) - 4, 12)
-
-    const data = context.getImageData((this.getCanvasWidth(this.canvasHues) / 2) * dpr, this.yHues * dpr, 1, 1).data
-    this.hoveredHue = Colors.createRGB(`${data[0]}`, `${data[1]}`, `${data[2]}`)
   }
 
   getImageDataColors(event) {
