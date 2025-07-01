@@ -1,4 +1,4 @@
-import { createDivColorIconHeart, createDivGradientIconHeart, getLikedColors, isColorLiked, getLikedGradients } from './favorites.js'
+import { createDivColorIconHeart, createDivGradientIconHeart, getLikedColors, isColorLiked, getLikedGradients, isGradientLiked } from './favorites.js'
 import { getBackgroundImage } from './images.js'
 import { createDivTooltip } from './tooltips.js'
 import { createH1, createH2, createH3, createDivColorText } from './text.js'
@@ -105,39 +105,44 @@ class FavoritesPage {
   }
 
   createDivGradient(gradient, divColors, type, value, position) {
+    const likeGradient = createDivGradientIconHeart(gradient)
     const divGradient = document.createElement('div')
     divGradient.className = 'color'
     divGradient.style.backgroundColor = gradient[0].formattedHex
     divGradient.style.color = gradient[0].formattedText
     divGradient.style.background = gradient[0].formattedHex
-    divGradient.style.background = `${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex}`
-    divGradient.style.background = `-moz-${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex}`
-    divGradient.style.background = `-webkit-${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex}`
-
-    const show = this.createDivColorIconCornerTriangle(gradient, divColors, divGradient)
-    const openFullscreen = createDivGradientIconFullscreen(gradient, type, value, position)
-    const likeGradient = createDivGradientIconHeart(gradient)
-
-    divGradient.appendChild(show)
-    divGradient.appendChild(openFullscreen)
+    divGradient.style.background = `${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex})`
+    divGradient.style.background = `-moz-${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex})`
+    divGradient.style.background = `-webkit-${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex})`
+    divGradient.appendChild(createDivColorText(`${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex})`))
+    divGradient.appendChild(createDivColorText(`-moz-${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex})`))
+    divGradient.appendChild(createDivColorText(`-webkit-${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex})`))
     divGradient.appendChild(likeGradient)
+    divGradient.appendChild(createDivGradientIconFullscreen(gradient, type, value, position))
+    divGradient.appendChild(this.createDivColorIconCornerTriangle(gradient, divColors, divGradient))
+
     divGradient.addEventListener('mouseenter', () => {
-      show.style.display = 'block'
-      openFullscreen.style.display = 'block'
-      likeGradient.style.display = 'block'
+      const children = divGradient.children
+      for (let index = 0; index < children.length; index++) {
+        children[index].style.display = 'block'
+      }
       divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
+      likeGradient.style.backgroundImage = isGradientLiked(gradient) ? getBackgroundImage(gradient[0], 'heart-filled') : getBackgroundImage(gradient[0], 'heart-empty')
     })
     divGradient.addEventListener('mouseleave', () => {
-      show.style.display = 'none'
-      openFullscreen.style.display = 'none'
-      likeGradient.style.display = 'none'
+      const children = divGradient.children
+      for (let index = 0; index < children.length; index++) {
+        children[index].style.display = 'none'
+      }
       divGradient.style.boxShadow = 'none'
     })
     divGradient.addEventListener('click', () => {
-      show.style.display = 'block'
-      openFullscreen.style.display = 'block'
-      likeGradient.style.display = 'block'
+      const children = divGradient.children
+      for (let index = 0; index < children.length; index++) {
+        children[index].style.display = 'block'
+      }
       divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
+      likeGradient.style.backgroundImage = isGradientLiked(gradient) ? getBackgroundImage(gradient[0], 'heart-filled') : getBackgroundImage(gradient[0], 'heart-empty')
     })
 
     return divGradient

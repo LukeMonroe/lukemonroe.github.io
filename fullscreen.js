@@ -80,9 +80,12 @@ function createDivGradientFullscreen(gradient, type, value, position) {
   divGradientFullscreen.style.height = '100%'
   divGradientFullscreen.style.width = '100%'
   divGradientFullscreen.style.background = gradient[0].formattedHex
-  divGradientFullscreen.style.background = `${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex}`
-  divGradientFullscreen.style.background = `-moz-${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex}`
-  divGradientFullscreen.style.background = `-webkit-${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex}`
+  divGradientFullscreen.style.background = `${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex})`
+  divGradientFullscreen.style.background = `-moz-${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex})`
+  divGradientFullscreen.style.background = `-webkit-${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex})`
+  divGradientFullscreen.appendChild(createDivColorText(`${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex})`))
+  divGradientFullscreen.appendChild(createDivColorText(`-moz-${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex})`))
+  divGradientFullscreen.appendChild(createDivColorText(`-webkit-${type}-gradient(${value}, ${gradient[0].formattedHex} ${position}, ${gradient[1].formattedHex})`))
   divGradientFullscreen.appendChild(createDivGradientIconHeart(gradient))
   divGradientFullscreen.appendChild(createDivGradientIconFullscreenExit(gradient, divGradientFullscreen))
   divGradientFullscreen.addEventListener('dblclick', () => {
