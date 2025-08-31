@@ -334,15 +334,25 @@ button.theme-inverted {
     padding: 10px 20px;
 }
 
-button.load:hover {
+button:hover {
     animation: jiggle 0.20s 1;
 }
 
-button.theme:hover {
-    animation: jiggle 0.20s 1;
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--background-color);
+    color: var(--color);
+    font-family: monospace;
+    border-radius: 0px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
 }
 
-button.theme-inverted:hover {
+select:hover {
     animation: jiggle 0.20s 1;
 }
 

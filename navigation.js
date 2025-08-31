@@ -49,15 +49,14 @@ class SideNavigation {
       }
     })
 
-    const buttonTheme = this.themes.createButtonTheme(true)
-    buttonTheme.style.position = 'absolute'
-    buttonTheme.style.bottom = '20px'
-    buttonTheme.style.left = '20px'
+    const selectTheme = this.themes.createSelectTheme(true)
+    selectTheme.style.width = '240px'
+    selectTheme.style.margin = '30px 0px 0px 30px'
 
+    sideNavigation.appendChild(selectTheme)
     sideNavigation.appendChild(aColors)
     sideNavigation.appendChild(aGradients)
     sideNavigation.appendChild(aFavorites)
-    sideNavigation.appendChild(buttonTheme)
     document.body.appendChild(sideNavigation)
 
     const buttonNavigation = document.createElement('button')

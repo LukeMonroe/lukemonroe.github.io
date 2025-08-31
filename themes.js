@@ -86,6 +86,22 @@ class Themes {
 
     return buttonTheme
   }
+
+  createSelectTheme(inverted = false) {
+    const selectTheme = document.createElement('select')
+
+    this.themes.keys().forEach(theme => {
+      const optionTheme = document.createElement('option')
+      optionTheme.textContent = this.formatTheme(theme)
+      selectTheme.appendChild(optionTheme)
+    })
+
+    selectTheme.addEventListener('change', () => {
+      this.changeTheme(selectTheme.value.toLowerCase())
+    })
+
+    return selectTheme
+  }
 }
 
 export { Themes }
