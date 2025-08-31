@@ -23,11 +23,10 @@ class Themes {
 
   backgroundColor = Colors.createHex('#f8f8ff')
   color = Colors.createHex('#000000')
-  linkColor = Colors.createHex('#d9bfd9')
-  visitedColor = Colors.lightness(this.linkColor, -20)
 
   getTheme() {
     const theme = localStorage.getItem(THEME)
+
     return this.themes.has(theme) ? theme : LIGHT
   }
 
@@ -46,45 +45,31 @@ class Themes {
   }
 
   changeTheme(theme) {
-    if (this.light(theme)) {
+    if (theme === LIGHT) {
       document.documentElement.style.setProperty('--background-color', this.backgroundColor.formattedHex)
       document.documentElement.style.setProperty('--color', this.color.formattedHex)
-      document.documentElement.style.setProperty('--link-color', this.linkColor.formattedHex)
-      document.documentElement.style.setProperty('--visited-color', this.visitedColor.formattedHex)
+    } else if (theme === DARK) {
+      document.documentElement.style.setProperty('--background-color', this.color.formattedHex)
+      document.documentElement.style.setProperty('--color', this.backgroundColor.formattedHex)
+    } else if (theme === OBSIDIAN) {
+      document.documentElement.style.setProperty('--background-color', Colors.createHex('#242424').formattedHex)
+      document.documentElement.style.setProperty('--color', Colors.createHex('#000000').formattedHex)
+    } else if (theme === MIDNIGHT) {
+      document.documentElement.style.setProperty('--background-color', Colors.createHex('#3d2438').formattedHex)
+      document.documentElement.style.setProperty('--color', Colors.createHex('#3c3b78').formattedHex)
+    } else if (theme === OCEAN) {
+      document.documentElement.style.setProperty('--background-color', Colors.createHex('#588b8d').formattedHex)
+      document.documentElement.style.setProperty('--color', Colors.createHex('#b2a385').formattedHex)
+    } else if (theme === FOREST) {
+      document.documentElement.style.setProperty('--background-color', Colors.createHex('#b2c897').formattedHex)
+      document.documentElement.style.setProperty('--color', Colors.createHex('#2a4625').formattedHex)
+    } else if (theme === SOLAR) {
+      document.documentElement.style.setProperty('--background-color', Colors.createHex('#5c000f').formattedHex)
+      document.documentElement.style.setProperty('--color', Colors.createHex('#ad4b00').formattedHex)
     } else {
       document.documentElement.style.setProperty('--background-color', this.color.formattedHex)
       document.documentElement.style.setProperty('--color', this.backgroundColor.formattedHex)
-      document.documentElement.style.setProperty('--link-color', Colors.lightness(this.linkColor, -40).formattedHex)
-      document.documentElement.style.setProperty('--visited-color', Colors.lightness(this.visitedColor, -40).formattedHex)
     }
-  }
-
-  light(theme) {
-    return theme === LIGHT
-  }
-
-  dark(theme) {
-    return theme === DARK
-  }
-
-  obsidian(theme) {
-    return theme === OBSIDIAN
-  }
-
-  midnight(theme) {
-    return theme === MIDNIGHT
-  }
-
-  ocean(theme) {
-    return theme === OCEAN
-  }
-
-  forest(theme) {
-    return theme === FOREST
-  }
-
-  solar(theme) {
-    return theme === SOLAR
   }
 
   formatTheme(theme) {

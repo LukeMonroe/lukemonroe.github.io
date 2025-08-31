@@ -1,4 +1,4 @@
-import { ColorPickerThemes } from './color-picker-themes.js'
+import { Themes } from './themes.js'
 
 class SideNavigation {
 
@@ -6,7 +6,7 @@ class SideNavigation {
     this.colorPickerPage = null
     this.gradientPickerPage = null
     this.favoritesPage = null
-    this.themes = new ColorPickerThemes()
+    this.themes = new Themes()
     this.themes.setTheme()
   }
 
