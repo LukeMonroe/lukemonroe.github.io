@@ -11,6 +11,8 @@ const MIDNIGHT = 'midnight'
 const OCEAN = 'ocean'
 const FOREST = 'forest'
 const SOLAR = 'solar'
+const GRAY = 'gray'
+const BROWN = 'brown'
 
 class Themes {
   themes = new Map([
@@ -41,22 +43,36 @@ class Themes {
     [SOLAR, new Map([
       [BACKGROUND_COLOR, Colors.createHex('#5c000f')],
       [COLOR, Colors.createHex('#ad4b00')]
+    ])],
+    [GRAY, new Map([
+      [BACKGROUND_COLOR, Colors.createHex('#636467')],
+      [COLOR, Colors.createHex('#f8f8ff')]
+    ])],
+    [BROWN, new Map([
+      [BACKGROUND_COLOR, Colors.createHex('#564338')],
+      [COLOR, Colors.createHex('#837286')]
     ])]
   ])
 
   getTheme() {
-    const theme = localStorage.getItem(THEME)
+    var theme = localStorage.getItem(THEME)
+    if (theme === null) {
+      theme = LIGHT
+    }
+    theme = theme.toLowerCase()
+    if (!this.themes.has(theme)) {
+      theme = LIGHT
+    }
 
-    return this.themes.has(theme) ? theme : LIGHT
+    return theme
   }
 
   setTheme() {
-    const theme = this.getTheme()
-    localStorage.setItem(THEME, theme)
-    this.changeTheme(theme)
+    this.changeTheme(this.getTheme())
   }
 
   changeTheme(theme) {
+    theme = theme.toLowerCase()
     if (!this.themes.has(theme)) {
       theme = LIGHT
     }
@@ -77,9 +93,10 @@ class Themes {
       optionTheme.textContent = this.formatTheme(theme)
       selectTheme.appendChild(optionTheme)
     })
+    selectTheme.value = this.formatTheme(this.getTheme())
 
     selectTheme.addEventListener('change', () => {
-      this.changeTheme(selectTheme.value.toLowerCase())
+      this.changeTheme(selectTheme.value)
     })
 
     return selectTheme
