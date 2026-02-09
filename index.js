@@ -2,6 +2,7 @@ import { ColorPickerPage } from './color-picker-page.js'
 import { GradientPickerPage } from './gradient-picker-page.js'
 import { FavoritesPage } from './favorites-page.js'
 import { ColorPicker } from './color-picker.js'
+import { ImagePicker } from './image-picker.js'
 import { SideNavigation } from './navigation.js'
 
 document.addEventListener('dblclick', event => { event.preventDefault() })
@@ -9,8 +10,9 @@ document.addEventListener('dblclick', event => { event.preventDefault() })
 const sideNavigation = new SideNavigation()
 const buttonNavigation = sideNavigation.createButtonNavigation()
 const colorPicker = new ColorPicker()
+const imagePicker = new ImagePicker()
 
-const colorPickerPage = new ColorPickerPage(buttonNavigation, colorPicker)
+const colorPickerPage = new ColorPickerPage(buttonNavigation, colorPicker, imagePicker)
 const gradientPickerPage = new GradientPickerPage(buttonNavigation, colorPicker)
 const favoritesPage = new FavoritesPage(buttonNavigation, colorPicker)
 

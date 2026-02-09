@@ -7,9 +7,10 @@ import { createDivColorIconFullscreen } from './fullscreen.js'
 
 class ColorPickerPage {
 
-  constructor(buttonNavigation, colorPicker) {
+  constructor(buttonNavigation, colorPicker, imagePicker) {
     this.buttonNavigation = buttonNavigation
     this.colorPicker = colorPicker
+    this.imagePicker = imagePicker
     this.colorPicked = null
   }
 
@@ -640,6 +641,7 @@ class ColorPickerPage {
     divInputColumn.appendChild(hsvBoxRow)
     divInputColumn.appendChild(cmykBoxRow)
     divInputColumn.appendChild(this.colorPicker.createColorPickerButton(this.colorPicked, (color) => { this.updatePage(color) }))
+    divInputColumn.appendChild(this.imagePicker.createImagePickerButton(this.colorPicked, (color) => { this.updatePage(color) }))
 
     return divInputColumn
   }
