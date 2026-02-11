@@ -92,6 +92,13 @@ div.color-row {
     width: 100%;
 }
 
+div.color-row-new {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+}
+
 div.color-row-small {
     display: flex;
     justify-content: center;
@@ -378,6 +385,12 @@ select:hover {
     div.color-row {
         flex-direction: column;
         height: 600px;
+    }
+
+    div.color-row-new {
+        flex-direction: column;
+        height: 300px;
+        width: 100%;
     }
 
     div.color-row-small {
