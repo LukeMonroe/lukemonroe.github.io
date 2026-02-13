@@ -3,8 +3,8 @@ import { Colors } from './colors.js'
 import { createDivGradientIconHeart, isGradientLiked } from './favorites.js'
 import { getBackgroundImage } from './images.js'
 import { createDivTooltip } from './tooltips.js'
-import { createH1, createDivColorText } from './text.js'
-import { createDivGradientIconFullscreen } from './fullscreen.js'
+import { createH1, createH2, createH3, createDivColorText } from './text.js'
+import { createDivGradientIconFullscreenNew } from './fullscreen.js'
 
 class GradientPickerPageNew extends ColorPickerPage {
 
@@ -18,47 +18,99 @@ class GradientPickerPageNew extends ColorPickerPage {
   buildColorRow(row, colors) {
     row.replaceChildren()
     colors.forEach(color => {
-      const divColor01 = this.createDivColor(color, false)
-      divColor01.style.display = 'none'
-
-      const divColor02 = this.createDivColor(Colors.hue(color, 90), false)
-      divColor02.style.display = 'none'
-
-      const divGradient = this.createDivGradient(color, Colors.hue(color, 90), divColor01, divColor02)
-      divGradient.style.display = 'flex'
-
-      const divColorRow = this.createDivColorRowNew()
-      divColorRow.style.flex = '1 1 0'
-      divColorRow.appendChild(divColor01)
-      divColorRow.appendChild(divColor02)
-      divColorRow.appendChild(divGradient)
-      divColorRow.addEventListener('mouseenter', () => {
-        divColorRow.style.flex = 'auto'
-      })
-      divColorRow.addEventListener('mouseleave', () => {
-        divColorRow.style.flex = '1 1 0'
-        divColor01.style.display = 'none'
-        divColor02.style.display = 'none'
-        divGradient.style.display = 'flex'
-      })
-      divColorRow.addEventListener('click', () => {
-        divColorRow.style.flex = 'auto'
-      })
-      row.appendChild(divColorRow)
+      row.appendChild(this.createDivGradient([color, Colors.hue(color, 45)], false))
     })
 
     return row
   }
 
   createPage() {
-    super.createPage(arguments)
-
     localStorage.setItem('tool', 'gradientPickerNew')
+
+    const colors = this.getHistoryColors()
+    if (colors.length === 0) {
+      colors.push(Colors.random())
+      this.setHistoryColors(colors)
+    }
+    this.colorPicked = colors[colors.length - 1]
+    document.documentElement.style.setProperty('--thumb-color', this.colorPicked.formattedHex)
+
+    const hueRow = this.createDivColorRow()
+    const hueSliders = this.createInputRangeSliders(1, 90, 1, 'Separation', 12, 1, 360, 1, 'Degrees', 180, hueRow)
+
+    const saturationRow = this.createDivColorRow()
+    const saturationSlider = this.createInputRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, "sat")
+
+    const lightnessRow = this.createDivColorRow()
+    const lightnessSlider = this.createInputRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, "lig")
+
+    const divColorPicked = this.createDivGradient([this.colorPicked, Colors.hue(this.colorPicked, 45)], true)
+    // divColorPicked.style.height = '400px'
+    // divColorPicked.style.maxWidth = '800px'
+    // Array.from(divColorPicked.children).forEach(child => { child.style.height = '400px' })
+
+    const colorRow = document.createElement('div')
+    colorRow.className = 'inner-row'
+    colorRow.appendChild(divColorPicked)
+    colorRow.appendChild(this.createBoxColumn())
+
+    const variationsColumn = document.createElement('div')
+    variationsColumn.className = 'inner-column'
+    variationsColumn.appendChild(createH2('Variations'))
+    variationsColumn.appendChild(createH3('Hue'))
+    hueSliders.forEach(hueSlider => {
+      variationsColumn.appendChild(hueSlider)
+    })
+    variationsColumn.appendChild(hueRow)
+    variationsColumn.appendChild(createH3('Saturation'))
+    variationsColumn.appendChild(saturationSlider)
+    variationsColumn.appendChild(saturationRow)
+    variationsColumn.appendChild(createH3('Lightness'))
+    variationsColumn.appendChild(lightnessSlider)
+    variationsColumn.appendChild(lightnessRow)
+
+    const harmoniesColumn = document.createElement('div')
+    harmoniesColumn.className = 'inner-column'
+    harmoniesColumn.appendChild(createH2('Harmonies'))
+    harmoniesColumn.appendChild(createH3('Complementary'))
+    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.complementary(this.colorPicked)))
+    harmoniesColumn.appendChild(createH3('Split Complementary'))
+    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.splitComplementary(this.colorPicked)))
+    harmoniesColumn.appendChild(createH3('Analogous'))
+    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.analogous(this.colorPicked)))
+    harmoniesColumn.appendChild(createH3('Triadic'))
+    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.triadic(this.colorPicked)))
+    harmoniesColumn.appendChild(createH3('Tetradic'))
+    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.tetradic(this.colorPicked)))
+    harmoniesColumn.appendChild(createH3('Square'))
+    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.square(this.colorPicked)))
+
+    const palettesColumn = document.createElement('div')
+    palettesColumn.className = 'inner-column'
+    palettesColumn.appendChild(createH2('Palettes'))
+    palettesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.paletteA(this.colorPicked)))
+
+    const historyColumn = document.createElement('div')
+    historyColumn.className = 'inner-column'
+    historyColumn.appendChild(createH2('History'))
+    historyColumn.appendChild(this.buildColorRow(this.createDivColorRow(), this.getHistoryColors()))
 
     const header = document.getElementById('header')
     header.replaceChildren()
     header.appendChild(this.buttonNavigation)
     header.appendChild(createH1('Gradient Picker New'))
+
+    const outerColumn = document.getElementById('outer-column')
+    outerColumn.replaceChildren()
+    outerColumn.appendChild(colorRow)
+    outerColumn.appendChild(variationsColumn)
+    outerColumn.appendChild(harmoniesColumn)
+    outerColumn.appendChild(palettesColumn)
+    outerColumn.appendChild(historyColumn)
+
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 10)
   }
 
   getHistoryColors() {
@@ -81,92 +133,102 @@ class GradientPickerPageNew extends ColorPickerPage {
     }
   }
 
-  createDivGradientIconCheckmark(gradient) {
+  createDivGradientIconCheckmark(colors) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
-    divColorIcon.style.backgroundImage = getBackgroundImage(gradient[1], 'checkmark')
+    divColorIcon.style.backgroundImage = getBackgroundImage(colors[1], 'checkmark')
     divColorIcon.style.bottom = '10px'
     divColorIcon.style.right = '10px'
     createDivTooltip(divColorIcon, 'load')
     divColorIcon.addEventListener('click', () => {
-      this.updatePage(gradient[0])
+      this.updatePage(colors[0])
     })
 
     return divColorIcon
   }
 
-  createDivColorIconCornerTriangle(gradient, divColors, divGradient) {
+  createDivColorIconCornerTriangle(color, divGradient, divColors) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
-    divColorIcon.style.backgroundImage = getBackgroundImage(gradient[0], 'corner-triangle')
+    divColorIcon.style.backgroundImage = getBackgroundImage(color, 'corner-triangle')
     divColorIcon.style.bottom = '10px'
     divColorIcon.style.left = '10px'
     createDivTooltip(divColorIcon, 'show colors')
     divColorIcon.addEventListener('click', () => {
-      divColors[0].style.display = 'flex'
       divGradient.style.display = 'none'
-      divColors[1].style.display = 'flex'
+      divColors.forEach(divColor => { divColor.style.display = 'flex' })
     })
 
     return divColorIcon
   }
 
-  createDivGradient(color01, color02, divColor01, divColor02) {
+  createDivGradient(colors, picked) {
     const divMarker = document.createElement('div')
     divMarker.className = 'marker'
-    divMarker.style.backgroundColor = color01.formattedText
+    divMarker.style.backgroundColor = colors[0].formattedText
 
     const type = 'linear'
     const value = '180deg'
     const position = '0%'
 
-    const likeGradient = createDivGradientIconHeart([color01, color02])
+    const divColors = colors.map(color => this.createDivColor(color, false))
+    divColors.forEach(divColor => { divColor.style.display = 'none' })
+
+    const likeGradient = createDivGradientIconHeart(colors)
     const divGradient = document.createElement('div')
     divGradient.className = 'color'
-    divGradient.style.backgroundColor = color01.formattedHex
-    divGradient.style.color = color01.formattedText
-    divGradient.style.background = `${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex})`
-    divGradient.appendChild(createDivColorText(`${type}-gradient(${value}, ${color01.formattedHex} ${position}, ${color02.formattedHex})`))
+    divGradient.style.display = 'flex'
+    divGradient.style.backgroundColor = colors[0].formattedHex
+    divGradient.style.background = `${type}-gradient(${value}, ${colors.map((color, index) => `${color.formattedHex} ${Math.round((index / (colors.length - 1)) * 100)}%`).join(', ')})`
+    divGradient.style.color = colors[0].formattedText
+    divGradient.style.flex = '1 1 0'
+    colors.forEach(color => { divGradient.appendChild(createDivColorText(color.formattedHex)) })
     divGradient.appendChild(likeGradient)
-    divGradient.appendChild(createDivGradientIconFullscreen([color01, color02], type, value, position))
-    divGradient.appendChild(this.createDivGradientIconCheckmark([color01, color02]))
-    divGradient.appendChild(this.createDivColorIconCornerTriangle([color01, color02], [divColor01, divColor02], divGradient))
-    if (Colors.equal(color01, this.colorPicked)) {
+    divGradient.appendChild(createDivGradientIconFullscreenNew(colors, type, value, position))
+    divGradient.appendChild(this.createDivGradientIconCheckmark(colors))
+    divGradient.appendChild(this.createDivColorIconCornerTriangle(colors[0], divGradient, divColors))
+    if (Colors.equal(colors[0], this.colorPicked)) {
       divGradient.appendChild(divMarker)
     }
 
-    divGradient.style.flex = '1 1 0'
     divGradient.addEventListener('mouseenter', () => {
-      const children = divGradient.children
-      for (let index = 0; index < children.length; index++) {
-        children[index].style.display = 'block'
-      }
+      Array.from(divGradient.children).forEach(child => { child.style.display = 'block' })
       divGradient.style.flex = 'auto'
       divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
       divMarker.style.display = 'none'
-      likeGradient.style.backgroundImage = isGradientLiked([color01, color02]) ? getBackgroundImage(color01, 'heart-filled') : getBackgroundImage(color01, 'heart-empty')
+      likeGradient.style.backgroundImage = isGradientLiked(colors) ? getBackgroundImage(colors[0], 'heart-filled') : getBackgroundImage(colors[0], 'heart-empty')
     })
     divGradient.addEventListener('mouseleave', () => {
-      const children = divGradient.children
-      for (let index = 0; index < children.length; index++) {
-        children[index].style.display = 'none'
-      }
+      Array.from(divGradient.children).forEach(child => { child.style.display = 'none' })
       divGradient.style.flex = '1 1 0'
       divGradient.style.boxShadow = 'none'
       divMarker.style.display = 'block'
     })
     divGradient.addEventListener('click', () => {
-      const children = divGradient.children
-      for (let index = 0; index < children.length; index++) {
-        children[index].style.display = 'block'
-      }
+      Array.from(divGradient.children).forEach(child => { child.style.display = 'block' })
       divGradient.style.flex = 'auto'
       divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
       divMarker.style.display = 'none'
-      likeGradient.style.backgroundImage = isGradientLiked([color01, color02]) ? getBackgroundImage(color01, 'heart-filled') : getBackgroundImage(color01, 'heart-empty')
+      likeGradient.style.backgroundImage = isGradientLiked(colors) ? getBackgroundImage(colors[0], 'heart-filled') : getBackgroundImage(colors[0], 'heart-empty')
     })
 
-    return divGradient
+    const divColorRowNew = this.createDivColorRowNew()
+    divColorRowNew.style.flex = picked ? 'auto' : '1 1 0'
+    divColorRowNew.appendChild(divGradient)
+    divColors.forEach(divColor => { divColorRowNew.appendChild(divColor) })
+    divColorRowNew.addEventListener('mouseenter', () => {
+      divColorRowNew.style.flex = 'auto'
+    })
+    divColorRowNew.addEventListener('mouseleave', () => {
+      divColorRowNew.style.flex = picked ? 'auto' : '1 1 0'
+      divGradient.style.display = 'flex'
+      divColors.forEach(divColor => { divColor.style.display = 'none' })
+    })
+    divColorRowNew.addEventListener('click', () => {
+      divColorRowNew.style.flex = 'auto'
+    })
+
+    return divColorRowNew
   }
 }
 

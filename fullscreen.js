@@ -113,4 +113,56 @@ function createDivGradientIconFullscreenExit(gradient, divGradientFullscreen) {
   return divGradientIcon
 }
 
-export { createDivColorIconFullscreen, createDivGradientIconFullscreen }
+function createDivGradientIconFullscreenNew(colors, type, value, position) {
+  const divGradientIcon = document.createElement('div')
+  divGradientIcon.className = 'color-icon'
+  divGradientIcon.style.backgroundImage = getBackgroundImage(colors[colors.length - 1], 'fullscreen')
+  divGradientIcon.style.top = '10px'
+  divGradientIcon.style.right = '10px'
+  createDivTooltip(divGradientIcon, 'fullscreen')
+  divGradientIcon.addEventListener('click', () => {
+    document.body.appendChild(createDivGradientFullscreenNew(colors, type, value, position))
+  })
+
+  return divGradientIcon
+}
+
+function createDivGradientFullscreenNew(colors, type, value, position) {
+  const divGradientFullscreen = document.createElement('div')
+  divGradientFullscreen.className = 'color-fullscreen'
+  divGradientFullscreen.style.backgroundColor = colors[0].formattedHex
+  divGradientFullscreen.style.background = `${type}-gradient(${value}, ${colors.map((color, index) => `${color.formattedHex} ${Math.round((index / (colors.length - 1)) * 100)}%`).join(', ')})`
+  divGradientFullscreen.style.color = colors[0].formattedText
+  divGradientFullscreen.style.height = '100%'
+  divGradientFullscreen.style.width = '100%'
+  for (let color of colors) {
+    divGradientFullscreen.appendChild(createDivColorText(color.formattedHex))
+  }
+  divGradientFullscreen.appendChild(createDivGradientIconHeart(colors))
+  divGradientFullscreen.appendChild(createDivGradientIconFullscreenExitNew(colors, divGradientFullscreen))
+  divGradientFullscreen.addEventListener('dblclick', () => {
+    document.body.removeChild(divGradientFullscreen)
+  })
+  const children = divGradientFullscreen.children
+  for (let index = 0; index < children.length; index++) {
+    children[index].style.display = 'block'
+  }
+
+  return divGradientFullscreen
+}
+
+function createDivGradientIconFullscreenExitNew(colors, divGradientFullscreen) {
+  const divGradientIcon = document.createElement('div')
+  divGradientIcon.className = 'color-icon'
+  divGradientIcon.style.backgroundImage = getBackgroundImage(colors[colors.length - 1], 'fullscreen')
+  divGradientIcon.style.top = '10px'
+  divGradientIcon.style.right = '10px'
+  createDivTooltip(divGradientIcon, 'fullscreen')
+  divGradientIcon.addEventListener('click', () => {
+    document.body.removeChild(divGradientFullscreen)
+  })
+
+  return divGradientIcon
+}
+
+export { createDivColorIconFullscreen, createDivGradientIconFullscreen, createDivGradientIconFullscreenNew }
