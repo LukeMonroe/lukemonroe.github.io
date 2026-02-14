@@ -3,7 +3,7 @@ import { Colors } from './colors.js'
 import { createDivGradientIconHeart, isGradientLiked } from './favorites.js'
 import { getBackgroundImage } from './images.js'
 import { createDivTooltip } from './tooltips.js'
-import { createH1, createH2, createH3, createDivColorText } from './text.js'
+import { createH1, createDivColorText } from './text.js'
 import { createDivGradientIconFullscreenNew } from './fullscreen.js'
 
 class GradientPickerPageNew extends ColorPickerPage {
@@ -25,92 +25,13 @@ class GradientPickerPageNew extends ColorPickerPage {
   }
 
   createPage() {
+    super.createPage()
     localStorage.setItem('tool', 'gradientPickerNew')
-
-    const colors = this.getHistoryColors()
-    if (colors.length === 0) {
-      colors.push(Colors.random())
-      this.setHistoryColors(colors)
-    }
-    this.colorPicked = colors[colors.length - 1]
-    document.documentElement.style.setProperty('--thumb-color', this.colorPicked.formattedHex)
-
-    const hueRow = this.createDivColorRow()
-    const hueSliders = this.createInputRangeSliders(1, 90, 1, 'Separation', 12, 1, 360, 1, 'Degrees', 180, hueRow)
-
-    const saturationRow = this.createDivColorRow()
-    const saturationSlider = this.createInputRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, "sat")
-
-    const lightnessRow = this.createDivColorRow()
-    const lightnessSlider = this.createInputRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, "lig")
-
-    const divColorPicked = this.createDivGradient([this.colorPicked, Colors.hue(this.colorPicked, 45)], true)
-    // divColorPicked.style.height = '400px'
-    // divColorPicked.style.maxWidth = '800px'
-    // Array.from(divColorPicked.children).forEach(child => { child.style.height = '400px' })
-
-    const colorRow = document.createElement('div')
-    colorRow.className = 'inner-row'
-    colorRow.appendChild(divColorPicked)
-    colorRow.appendChild(this.createDivInputColumn())
-
-    const variationsColumn = document.createElement('div')
-    variationsColumn.className = 'inner-column'
-    variationsColumn.appendChild(createH2('Variations'))
-    variationsColumn.appendChild(createH3('Hue'))
-    hueSliders.forEach(hueSlider => {
-      variationsColumn.appendChild(hueSlider)
-    })
-    variationsColumn.appendChild(hueRow)
-    variationsColumn.appendChild(createH3('Saturation'))
-    variationsColumn.appendChild(saturationSlider)
-    variationsColumn.appendChild(saturationRow)
-    variationsColumn.appendChild(createH3('Lightness'))
-    variationsColumn.appendChild(lightnessSlider)
-    variationsColumn.appendChild(lightnessRow)
-
-    const harmoniesColumn = document.createElement('div')
-    harmoniesColumn.className = 'inner-column'
-    harmoniesColumn.appendChild(createH2('Harmonies'))
-    harmoniesColumn.appendChild(createH3('Complementary'))
-    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.complementary(this.colorPicked)))
-    harmoniesColumn.appendChild(createH3('Split Complementary'))
-    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.splitComplementary(this.colorPicked)))
-    harmoniesColumn.appendChild(createH3('Analogous'))
-    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.analogous(this.colorPicked)))
-    harmoniesColumn.appendChild(createH3('Triadic'))
-    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.triadic(this.colorPicked)))
-    harmoniesColumn.appendChild(createH3('Tetradic'))
-    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.tetradic(this.colorPicked)))
-    harmoniesColumn.appendChild(createH3('Square'))
-    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.square(this.colorPicked)))
-
-    const palettesColumn = document.createElement('div')
-    palettesColumn.className = 'inner-column'
-    palettesColumn.appendChild(createH2('Palettes'))
-    palettesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.paletteA(this.colorPicked)))
-
-    const historyColumn = document.createElement('div')
-    historyColumn.className = 'inner-column'
-    historyColumn.appendChild(createH2('History'))
-    historyColumn.appendChild(this.buildColorRow(this.createDivColorRow(), this.getHistoryColors()))
 
     const header = document.getElementById('header')
     header.replaceChildren()
     header.appendChild(this.buttonNavigation)
     header.appendChild(createH1('Gradient Picker New'))
-
-    const outerColumn = document.getElementById('outer-column')
-    outerColumn.replaceChildren()
-    outerColumn.appendChild(colorRow)
-    outerColumn.appendChild(variationsColumn)
-    outerColumn.appendChild(harmoniesColumn)
-    outerColumn.appendChild(palettesColumn)
-    outerColumn.appendChild(historyColumn)
-
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }, 10)
   }
 
   getHistoryColors() {

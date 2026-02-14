@@ -12,6 +12,10 @@ class ColorPickerPage {
     this.colorPicker = colorPicker
     this.imagePicker = imagePicker
     this.colorPicked = null
+    this.hueSeparationSliderValue = 12
+    this.hueDegreeSliderValue = 180
+    this.saturationSliderValue = 8
+    this.lightnessSliderValue = 8
     this.buttonToggleInputsText = 'Show'
     this.mediaQueryLayoutVertical = window.matchMedia('(max-width: 600px)')
   }
@@ -71,14 +75,18 @@ class ColorPickerPage {
     this.colorPicked = colors[colors.length - 1]
     document.documentElement.style.setProperty('--thumb-color', this.colorPicked.formattedHex)
 
+    const hueArgs = () => { return [this.colorPicked, this.hueDegreeSliderValue, this.hueSeparationSliderValue] }
     const hueRow = this.createDivColorRow()
-    const hueSliders = this.createInputRangeSliders(1, 90, 1, 'Separation', 12, 1, 360, 1, 'Degrees', 180, hueRow)
+    const hueSeparationSlider = this.createInputRangeSlider('hueSeparationSliderValue', 'Separation', hueRow, Colors.hues, hueArgs, 1, 90, 1)
+    const hueDegreeSlider = this.createInputRangeSlider('hueDegreeSliderValue', 'Degrees', hueRow, Colors.hues, hueArgs, 1, 360, 1)
 
+    const saturationArgs = () => { return [this.colorPicked, this.saturationSliderValue] }
     const saturationRow = this.createDivColorRow()
-    const saturationSlider = this.createInputRangeSlider(1, 20, 1, 'Separation', 8, saturationRow, "sat")
+    const saturationSlider = this.createInputRangeSlider('saturationSliderValue', 'Separation', saturationRow, Colors.saturations, saturationArgs, 1, 20, 1)
 
+    const lightnessArgs = () => { return [this.colorPicked, this.lightnessSliderValue] }
     const lightnessRow = this.createDivColorRow()
-    const lightnessSlider = this.createInputRangeSlider(1, 20, 1, 'Separation', 8, lightnessRow, "lig")
+    const lightnessSlider = this.createInputRangeSlider('lightnessSliderValue', 'Separation', lightnessRow, Colors.lightnesses, lightnessArgs, 1, 20, 1)
 
     const divColorPicked = this.createDivColor(this.colorPicked, true)
     divColorPicked.style.height = '400px'
@@ -93,7 +101,8 @@ class ColorPickerPage {
     variationsColumn.className = 'inner-column'
     variationsColumn.appendChild(createH2('Variations'))
     variationsColumn.appendChild(createH3('Hue'))
-    hueSliders.forEach(hueSlider => { variationsColumn.appendChild(hueSlider) })
+    variationsColumn.appendChild(hueSeparationSlider)
+    variationsColumn.appendChild(hueDegreeSlider)
     variationsColumn.appendChild(hueRow)
     variationsColumn.appendChild(createH3('Saturation'))
     variationsColumn.appendChild(saturationSlider)
@@ -286,8 +295,8 @@ class ColorPickerPage {
     return divInputColumn
   }
 
-  createInputRangeSlider(min, max, step, text, value, row, slider) {
-    const h4Slider = createH4(`${text}: ${value}`)
+  createInputRangeSlider(property, label, row, callable, callableArgs, min, max, step) {
+    const h4Slider = createH4(`${label}: ${this[property]}`)
 
     const inputRangeSlider = document.createElement('input')
     inputRangeSlider.className = 'slider'
@@ -295,73 +304,20 @@ class ColorPickerPage {
     inputRangeSlider.min = min
     inputRangeSlider.max = max
     inputRangeSlider.step = step
-    inputRangeSlider.value = value
-    inputRangeSlider.addEventListener('input', () => {
-      h4Slider.innerText = `${text}: ${inputRangeSlider.value}`
-      if (slider === 'sat') {
-        this.buildColorRow(row, Colors.saturations(this.colorPicked, inputRangeSlider.value))
-      } else {
-        this.buildColorRow(row, Colors.lightnesses(this.colorPicked, inputRangeSlider.value))
-      }
+    inputRangeSlider.value = this[property]
+    inputRangeSlider.addEventListener('input', event => {
+      this[property] = inputRangeSlider.value
+      h4Slider.innerText = `${label}: ${this[property]}`
+      this.buildColorRow(row, callable(...callableArgs()))
     })
+    this.buildColorRow(row, callable(...callableArgs()))
 
     const divSlider = document.createElement('div')
     divSlider.className = 'slider'
     divSlider.appendChild(h4Slider)
     divSlider.appendChild(inputRangeSlider)
 
-    if (slider === 'sat') {
-      this.buildColorRow(row, Colors.saturations(this.colorPicked, inputRangeSlider.value))
-    } else {
-      this.buildColorRow(row, Colors.lightnesses(this.colorPicked, inputRangeSlider.value))
-    }
-
     return divSlider
-  }
-
-  createInputRangeSliders(min01, max01, step01, text01, value01, min02, max02, step02, text02, value02, row) {
-    const h4Slider01 = createH4(`${text01}: ${value01}`)
-    const h4Slider02 = createH4(`${text02}: ${value02}`)
-
-    const inputRangeSlider01 = document.createElement('input')
-    inputRangeSlider01.className = 'slider'
-    inputRangeSlider01.type = 'range'
-    inputRangeSlider01.min = min01
-    inputRangeSlider01.max = max01
-    inputRangeSlider01.step = step01
-    inputRangeSlider01.value = value01
-
-    const inputRangeSlider02 = document.createElement('input')
-    inputRangeSlider02.className = 'slider'
-    inputRangeSlider02.type = 'range'
-    inputRangeSlider02.min = min02
-    inputRangeSlider02.max = max02
-    inputRangeSlider02.step = step02
-    inputRangeSlider02.value = value02
-
-    inputRangeSlider01.addEventListener('input', () => {
-      h4Slider01.innerText = `${text01}: ${inputRangeSlider01.value}`
-      this.buildColorRow(row, Colors.hues(this.colorPicked, inputRangeSlider02.value, inputRangeSlider01.value))
-    })
-
-    inputRangeSlider02.addEventListener('input', () => {
-      h4Slider02.innerText = `${text02}: ${inputRangeSlider02.value}`
-      this.buildColorRow(row, Colors.hues(this.colorPicked, inputRangeSlider02.value, inputRangeSlider01.value))
-    })
-
-    const divSlider01 = document.createElement('div')
-    divSlider01.className = 'slider'
-    divSlider01.appendChild(h4Slider01)
-    divSlider01.appendChild(inputRangeSlider01)
-
-    const divSlider02 = document.createElement('div')
-    divSlider02.className = 'slider'
-    divSlider02.appendChild(h4Slider02)
-    divSlider02.appendChild(inputRangeSlider02)
-
-    this.buildColorRow(row, Colors.hues(this.colorPicked, inputRangeSlider02.value, inputRangeSlider01.value))
-
-    return [divSlider01, divSlider02]
   }
 }
 
