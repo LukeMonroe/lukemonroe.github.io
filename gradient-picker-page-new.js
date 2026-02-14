@@ -52,7 +52,7 @@ class GradientPickerPageNew extends ColorPickerPage {
     const colorRow = document.createElement('div')
     colorRow.className = 'inner-row'
     colorRow.appendChild(divColorPicked)
-    colorRow.appendChild(this.createBoxColumn())
+    colorRow.appendChild(this.createDivInputColumn())
 
     const variationsColumn = document.createElement('div')
     variationsColumn.className = 'inner-column'

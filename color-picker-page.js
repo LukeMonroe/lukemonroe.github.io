@@ -12,6 +12,7 @@ class ColorPickerPage {
     this.colorPicker = colorPicker
     this.imagePicker = imagePicker
     this.colorPicked = null
+    this.buttonToggleInputsText = 'Show'
   }
 
   createDivColorRow() {
@@ -51,24 +52,6 @@ class ColorPickerPage {
     return divColorIcon
   }
 
-  createButtonColorInputs(colorInputs) {
-    const buttonColorInputs = document.createElement('button')
-    buttonColorInputs.className = 'theme'
-    buttonColorInputs.innerText = 'Show'
-    buttonColorInputs.addEventListener('click', () => {
-      buttonColorInputs.innerText = buttonColorInputs.innerText === 'Hide' ? 'Show' : 'Hide'
-      for (let index = 0; index < colorInputs.length; index++) {
-        if (colorInputs[index].style.display === 'none') {
-          colorInputs[index].style.display = 'flex'
-        } else {
-          colorInputs[index].style.display = 'none'
-        }
-      }
-    })
-
-    return buttonColorInputs
-  }
-
   updatePage(color) {
     const colors = this.getHistoryColors()
     colors.push(color)
@@ -103,7 +86,7 @@ class ColorPickerPage {
     const colorRow = document.createElement('div')
     colorRow.className = 'inner-row'
     colorRow.appendChild(divColorPicked)
-    colorRow.appendChild(this.createBoxColumn())
+    colorRow.appendChild(this.createDivInputColumn())
 
     const variationsColumn = document.createElement('div')
     variationsColumn.className = 'inner-column'
@@ -243,408 +226,103 @@ class ColorPickerPage {
     return divColor
   }
 
-  createBoxColumn() {
-    const divInputBoxHex = document.createElement('input')
-    divInputBoxHex.className = 'box'
-    divInputBoxHex.type = 'text'
-    divInputBoxHex.maxLength = '7'
-    divInputBoxHex.style.width = '107px'
-    divInputBoxHex.value = this.colorPicked.formattedHex
-    divInputBoxHex.addEventListener('focusout', () => {
-      const enteredColor = Colors.createHex(divInputBoxHex.value)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxHex.value = this.colorPicked.formattedHex
-      }
-    })
-    divInputBoxHex.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createHex(divInputBoxHex.value)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxHex.value = this.colorPicked.formattedHex
-        }
-      }
-    })
+  createDivInputColumn() {
+    const updateHex = (value, divInputBox) => {
+      const color = Colors.createHex(divInputBox.value)
+      color !== null && Colors.notEqual(color, this.colorPicked) ? this.updatePage(color) : divInputBox.value = String(value)
+    }
 
-    const divInputBoxR = document.createElement('input')
-    divInputBoxR.className = 'box'
-    divInputBoxR.type = 'text'
-    divInputBoxR.maxLength = '3'
-    divInputBoxR.style.width = '50px'
-    divInputBoxR.value = this.colorPicked.rgb.r
-    divInputBoxR.addEventListener('focusout', () => {
-      const enteredColor = Colors.createRGB(divInputBoxR.value, `${this.colorPicked.rgb.g}`, `${this.colorPicked.rgb.b}`)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxR.value = this.colorPicked.rgb.r
-      }
-    })
-    divInputBoxR.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createRGB(divInputBoxR.value, `${this.colorPicked.rgb.g}`, `${this.colorPicked.rgb.b}`)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxR.value = this.colorPicked.rgb.r
-        }
-      }
-    })
+    const updateRGB = (index, value, divInputBox) => {
+      const color = Colors.createRGB(
+        String(index === 0 ? divInputBox.value : this.colorPicked.rgb.r),
+        String(index === 1 ? divInputBox.value : this.colorPicked.rgb.g),
+        String(index === 2 ? divInputBox.value : this.colorPicked.rgb.b),
+      )
+      color !== null && Colors.notEqual(color, this.colorPicked) ? this.updatePage(color) : divInputBox.value = String(value)
+    }
 
-    const divInputBoxG = document.createElement('input')
-    divInputBoxG.className = 'box'
-    divInputBoxG.type = 'text'
-    divInputBoxG.maxLength = '3'
-    divInputBoxG.style.width = '50px'
-    divInputBoxG.value = this.colorPicked.rgb.g
-    divInputBoxG.addEventListener('focusout', () => {
-      const enteredColor = Colors.createRGB(`${this.colorPicked.rgb.r}`, divInputBoxG.value, `${this.colorPicked.rgb.b}`)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxG.value = this.colorPicked.rgb.g
-      }
-    })
-    divInputBoxG.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createRGB(`${this.colorPicked.rgb.r}`, divInputBoxG.value, `${this.colorPicked.rgb.b}`)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxG.value = this.colorPicked.rgb.g
-        }
-      }
-    })
+    const updateHSL = (index, value, divInputBox) => {
+      const color = Colors.createHSL(
+        String(index === 0 ? divInputBox.value : this.colorPicked.hsl.h),
+        String(index === 1 ? divInputBox.value : this.colorPicked.hsl.s),
+        String(index === 2 ? divInputBox.value : this.colorPicked.hsl.l),
+      )
+      color !== null && Colors.notEqual(color, this.colorPicked) ? this.updatePage(color) : divInputBox.value = String(value)
+    }
 
-    const divInputBoxB = document.createElement('input')
-    divInputBoxB.className = 'box'
-    divInputBoxB.type = 'text'
-    divInputBoxB.maxLength = '3'
-    divInputBoxB.style.width = '50px'
-    divInputBoxB.value = this.colorPicked.rgb.b
-    divInputBoxB.addEventListener('focusout', () => {
-      const enteredColor = Colors.createRGB(`${this.colorPicked.rgb.r}`, `${this.colorPicked.rgb.g}`, divInputBoxB.value)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxB.value = this.colorPicked.rgb.b
-      }
-    })
-    divInputBoxB.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createRGB(`${this.colorPicked.rgb.r}`, `${this.colorPicked.rgb.g}`, divInputBoxB.value)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxB.value = this.colorPicked.rgb.b
-        }
-      }
-    })
+    const updateHSV = (index, value, divInputBox) => {
+      const color = Colors.createHSV(
+        String(index === 0 ? divInputBox.value : this.colorPicked.hsv.h),
+        String(index === 1 ? divInputBox.value : this.colorPicked.hsv.s),
+        String(index === 2 ? divInputBox.value : this.colorPicked.hsv.v),
+      )
+      color !== null && Colors.notEqual(color, this.colorPicked) ? this.updatePage(color) : divInputBox.value = String(value)
+    }
 
-    const divInputBoxHSLH = document.createElement('input')
-    divInputBoxHSLH.className = 'box'
-    divInputBoxHSLH.type = 'text'
-    divInputBoxHSLH.maxLength = '3'
-    divInputBoxHSLH.style.width = '50px'
-    divInputBoxHSLH.value = Math.round(this.colorPicked.hsl.h)
-    divInputBoxHSLH.addEventListener('focusout', () => {
-      const enteredColor = Colors.createHSL(divInputBoxHSLH.value, `${this.colorPicked.hsl.s}`, `${this.colorPicked.hsl.l}`)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxHSLH.value = Math.round(this.colorPicked.hsl.h)
-      }
-    })
-    divInputBoxHSLH.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createHSL(divInputBoxHSLH.value, `${this.colorPicked.hsl.s}`, `${this.colorPicked.hsl.l}`)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxHSLH.value = Math.round(this.colorPicked.hsl.h)
-        }
-      }
-    })
+    const updateCMYK = (index, value, divInputBox) => {
+      const color = Colors.createCMYK(
+        String(index === 0 ? divInputBox.value : this.colorPicked.cmyk.c),
+        String(index === 1 ? divInputBox.value : this.colorPicked.cmyk.m),
+        String(index === 2 ? divInputBox.value : this.colorPicked.cmyk.y),
+        String(index === 3 ? divInputBox.value : this.colorPicked.cmyk.k),
+      )
+      color !== null && Colors.notEqual(color, this.colorPicked) ? this.updatePage(color) : divInputBox.value = String(value)
+    }
 
-    const divInputBoxHSLS = document.createElement('input')
-    divInputBoxHSLS.className = 'box'
-    divInputBoxHSLS.type = 'text'
-    divInputBoxHSLS.maxLength = '3'
-    divInputBoxHSLS.style.width = '50px'
-    divInputBoxHSLS.value = Math.round(this.colorPicked.hsl.s)
-    divInputBoxHSLS.addEventListener('focusout', () => {
-      const enteredColor = Colors.createHSL(`${this.colorPicked.hsl.h}`, divInputBoxHSLS.value, `${this.colorPicked.hsl.l}`)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxHSLS.value = Math.round(this.colorPicked.hsl.s)
-      }
-    })
-    divInputBoxHSLS.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createHSL(`${this.colorPicked.hsl.h}`, divInputBoxHSLS.value, `${this.colorPicked.hsl.l}`)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxHSLS.value = Math.round(this.colorPicked.hsl.s)
-        }
-      }
-    })
+    const divInputBox = document.createElement('input')
+    divInputBox.className = 'box'
+    divInputBox.type = 'text'
+    divInputBox.maxLength = '7'
+    divInputBox.style.width = '107px'
+    divInputBox.value = this.colorPicked.formattedHex
+    divInputBox.addEventListener('focusout', (event) => { updateHex(this.colorPicked.formattedHex, divInputBox) })
+    divInputBox.addEventListener('keypress', (event) => { if (event.key === 'Enter') { updateHex(this.colorPicked.formattedHex, divInputBox) } })
 
-    const divInputBoxHSLL = document.createElement('input')
-    divInputBoxHSLL.className = 'box'
-    divInputBoxHSLL.type = 'text'
-    divInputBoxHSLL.maxLength = '3'
-    divInputBoxHSLL.style.width = '50px'
-    divInputBoxHSLL.value = Math.round(this.colorPicked.hsl.l)
-    divInputBoxHSLL.addEventListener('focusout', () => {
-      const enteredColor = Colors.createHSL(`${this.colorPicked.hsl.h}`, `${this.colorPicked.hsl.s}`, divInputBoxHSLL.value)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxHSLL.value = Math.round(this.colorPicked.hsl.l)
-      }
-    })
-    divInputBoxHSLL.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createHSL(`${this.colorPicked.hsl.h}`, `${this.colorPicked.hsl.s}`, divInputBoxHSLL.value)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxHSLL.value = Math.round(this.colorPicked.hsl.l)
-        }
-      }
-    })
-
-    const divInputBoxHSVH = document.createElement('input')
-    divInputBoxHSVH.className = 'box'
-    divInputBoxHSVH.type = 'text'
-    divInputBoxHSVH.maxLength = '3'
-    divInputBoxHSVH.style.width = '50px'
-    divInputBoxHSVH.value = Math.round(this.colorPicked.hsv.h)
-    divInputBoxHSVH.addEventListener('focusout', () => {
-      const enteredColor = Colors.createHSV(divInputBoxHSVH.value, `${this.colorPicked.hsv.s}`, `${this.colorPicked.hsv.v}`)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxHSVH.value = Math.round(this.colorPicked.hsv.h)
-      }
-    })
-    divInputBoxHSVH.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createHSV(divInputBoxHSVH.value, `${this.colorPicked.hsv.s}`, `${this.colorPicked.hsv.v}`)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxHSVH.value = Math.round(this.colorPicked.hsv.h)
-        }
-      }
-    })
-
-    const divInputBoxHSVS = document.createElement('input')
-    divInputBoxHSVS.className = 'box'
-    divInputBoxHSVS.type = 'text'
-    divInputBoxHSVS.maxLength = '3'
-    divInputBoxHSVS.style.width = '50px'
-    divInputBoxHSVS.value = Math.round(this.colorPicked.hsv.s)
-    divInputBoxHSVS.addEventListener('focusout', () => {
-      const enteredColor = Colors.createHSV(`${this.colorPicked.hsv.h}`, divInputBoxHSVS.value, `${this.colorPicked.hsv.v}`)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxHSVS.value = Math.round(this.colorPicked.hsv.s)
-      }
-    })
-    divInputBoxHSVS.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createHSV(`${this.colorPicked.hsv.h}`, divInputBoxHSVS.value, `${this.colorPicked.hsv.v}`)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxHSVS.value = Math.round(this.colorPicked.hsv.s)
-        }
-      }
-    })
-
-    const divInputBoxHSVV = document.createElement('input')
-    divInputBoxHSVV.className = 'box'
-    divInputBoxHSVV.type = 'text'
-    divInputBoxHSVV.maxLength = '3'
-    divInputBoxHSVV.style.width = '50px'
-    divInputBoxHSVV.value = Math.round(this.colorPicked.hsv.v)
-    divInputBoxHSVV.addEventListener('focusout', () => {
-      const enteredColor = Colors.createHSV(`${this.colorPicked.hsv.h}`, `${this.colorPicked.hsv.s}`, divInputBoxHSVV.value)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxHSVV.value = Math.round(this.colorPicked.hsv.v)
-      }
-    })
-    divInputBoxHSVV.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createHSV(`${this.colorPicked.hsv.h}`, `${this.colorPicked.hsv.s}`, divInputBoxHSVV.value)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxHSVV.value = Math.round(this.colorPicked.hsv.v)
-        }
-      }
-    })
-
-    const divInputBoxC = document.createElement('input')
-    divInputBoxC.className = 'box'
-    divInputBoxC.type = 'text'
-    divInputBoxC.maxLength = '3'
-    divInputBoxC.style.width = '50px'
-    divInputBoxC.value = Math.round(this.colorPicked.cmyk.c)
-    divInputBoxC.addEventListener('focusout', () => {
-      const enteredColor = Colors.createCMYK(divInputBoxC.value, `${this.colorPicked.cmyk.m}`, `${this.colorPicked.cmyk.y}`, `${this.colorPicked.cmyk.k}`)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxC.value = Math.round(this.colorPicked.cmyk.c)
-      }
-    })
-    divInputBoxC.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createCMYK(divInputBoxC.value, `${this.colorPicked.cmyk.m}`, `${this.colorPicked.cmyk.y}`, `${this.colorPicked.cmyk.k}`)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxC.value = Math.round(this.colorPicked.cmyk.c)
-        }
-      }
-    })
-
-    const divInputBoxM = document.createElement('input')
-    divInputBoxM.className = 'box'
-    divInputBoxM.type = 'text'
-    divInputBoxM.maxLength = '3'
-    divInputBoxM.style.width = '50px'
-    divInputBoxM.value = Math.round(this.colorPicked.cmyk.m)
-    divInputBoxM.addEventListener('focusout', () => {
-      const enteredColor = Colors.createCMYK(`${this.colorPicked.cmyk.c}`, divInputBoxM.value, `${this.colorPicked.cmyk.y}`, `${this.colorPicked.cmyk.k}`)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxM.value = Math.round(this.colorPicked.cmyk.m)
-      }
-    })
-    divInputBoxM.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createCMYK(`${this.colorPicked.cmyk.c}`, divInputBoxM.value, `${this.colorPicked.cmyk.y}`, `${this.colorPicked.cmyk.k}`)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxM.value = Math.round(this.colorPicked.cmyk.m)
-        }
-      }
-    })
-
-    const divInputBoxY = document.createElement('input')
-    divInputBoxY.className = 'box'
-    divInputBoxY.type = 'text'
-    divInputBoxY.maxLength = '3'
-    divInputBoxY.style.width = '50px'
-    divInputBoxY.value = Math.round(this.colorPicked.cmyk.y)
-    divInputBoxY.addEventListener('focusout', () => {
-      const enteredColor = Colors.createCMYK(`${this.colorPicked.cmyk.c}`, `${this.colorPicked.cmyk.m}`, divInputBoxY.value, `${this.colorPicked.cmyk.k}`)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxY.value = Math.round(this.colorPicked.cmyk.y)
-      }
-    })
-    divInputBoxY.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createCMYK(`${this.colorPicked.cmyk.c}`, `${this.colorPicked.cmyk.m}`, divInputBoxY.value, `${this.colorPicked.cmyk.k}`)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxY.value = Math.round(this.colorPicked.cmyk.y)
-        }
-      }
-    })
-
-    const divInputBoxK = document.createElement('input')
-    divInputBoxK.className = 'box'
-    divInputBoxK.type = 'text'
-    divInputBoxK.maxLength = '3'
-    divInputBoxK.style.width = '50px'
-    divInputBoxK.value = Math.round(this.colorPicked.cmyk.k)
-    divInputBoxK.addEventListener('focusout', () => {
-      const enteredColor = Colors.createCMYK(`${this.colorPicked.cmyk.c}`, `${this.colorPicked.cmyk.m}`, `${this.colorPicked.cmyk.y}`, divInputBoxK.value)
-      if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-        this.updatePage(enteredColor)
-      } else {
-        divInputBoxK.value = Math.round(this.colorPicked.cmyk.k)
-      }
-    })
-    divInputBoxK.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const enteredColor = Colors.createCMYK(`${this.colorPicked.cmyk.c}`, `${this.colorPicked.cmyk.m}`, `${this.colorPicked.cmyk.y}`, divInputBoxK.value)
-        if (enteredColor !== null && Colors.notEqual(enteredColor, this.colorPicked)) {
-          this.updatePage(enteredColor)
-        } else {
-          divInputBoxK.value = Math.round(this.colorPicked.cmyk.k)
-        }
-      }
-    })
-
-    const cmykBoxRow = document.createElement('div')
-    cmykBoxRow.className = 'input-row'
-    cmykBoxRow.style.display = 'none'
-    cmykBoxRow.appendChild(createH4('cmyk:'))
-    cmykBoxRow.appendChild(divInputBoxC)
-    cmykBoxRow.appendChild(divInputBoxM)
-    cmykBoxRow.appendChild(divInputBoxY)
-    cmykBoxRow.appendChild(divInputBoxK)
-
-    const hsvBoxRow = document.createElement('div')
-    hsvBoxRow.className = 'input-row'
-    hsvBoxRow.style.display = 'none'
-    hsvBoxRow.appendChild(createH4('hsv :'))
-    hsvBoxRow.appendChild(divInputBoxHSVH)
-    hsvBoxRow.appendChild(divInputBoxHSVS)
-    hsvBoxRow.appendChild(divInputBoxHSVV)
-
-    const hslBoxRow = document.createElement('div')
-    hslBoxRow.className = 'input-row'
-    hslBoxRow.style.display = 'none'
-    hslBoxRow.appendChild(createH4('hsl :'))
-    hslBoxRow.appendChild(divInputBoxHSLH)
-    hslBoxRow.appendChild(divInputBoxHSLS)
-    hslBoxRow.appendChild(divInputBoxHSLL)
-
-    const rgbBoxRow = document.createElement('div')
-    rgbBoxRow.className = 'input-row'
-    rgbBoxRow.style.display = 'none'
-    rgbBoxRow.appendChild(createH4('rgb :'))
-    rgbBoxRow.appendChild(divInputBoxR)
-    rgbBoxRow.appendChild(divInputBoxG)
-    rgbBoxRow.appendChild(divInputBoxB)
+    const buttonToggleInputs = document.createElement('button')
+    buttonToggleInputs.className = 'theme'
+    buttonToggleInputs.innerText = this.buttonToggleInputsText
 
     const hexBoxRow = document.createElement('div')
     hexBoxRow.className = 'input-row'
     hexBoxRow.appendChild(createH4('hex :'))
-    hexBoxRow.appendChild(divInputBoxHex)
-    hexBoxRow.appendChild(this.createButtonColorInputs([rgbBoxRow, hslBoxRow, hsvBoxRow, cmykBoxRow]))
+    hexBoxRow.appendChild(divInputBox)
+    hexBoxRow.appendChild(buttonToggleInputs)
 
+    const divInputRows = []
     const divInputColumn = document.createElement('div')
     divInputColumn.className = 'input-column'
     divInputColumn.appendChild(hexBoxRow)
-    divInputColumn.appendChild(rgbBoxRow)
-    divInputColumn.appendChild(hslBoxRow)
-    divInputColumn.appendChild(hsvBoxRow)
-    divInputColumn.appendChild(cmykBoxRow)
+    for (let [colorFormat, callable] of [['rgb', updateRGB], ['hsl', updateHSL], ['hsv', updateHSV], ['cmyk', updateCMYK]]) {
+      const divInputRow = document.createElement('div')
+      divInputRow.className = 'input-row'
+      divInputRow.style.display = this.buttonToggleInputsText === 'Show' ? 'none' : 'flex'
+      divInputRow.appendChild(createH4(`${colorFormat.padEnd(4, ' ')}:`))
+      Object.entries(this.colorPicked[colorFormat]).forEach(([key, value], index) => {
+        const divInputBox = document.createElement('input')
+        divInputBox.className = 'box'
+        divInputBox.type = 'text'
+        divInputBox.maxLength = '3'
+        divInputBox.style.width = '50px'
+        divInputBox.value = String(Math.round(value))
+        divInputBox.addEventListener('focusout', (event) => { callable(index, Math.round(value), divInputBox) })
+        divInputBox.addEventListener('keypress', (event) => { if (event.key === 'Enter') { callable(index, Math.round(value), divInputBox) } })
+        divInputRow.appendChild(divInputBox)
+      })
+      divInputColumn.appendChild(divInputRow)
+      divInputRows.push(divInputRow)
+    }
     divInputColumn.appendChild(this.colorPicker.createColorPickerButton(this.colorPicked, (color) => { this.updatePage(color) }))
     divInputColumn.appendChild(this.imagePicker.createImagePickerButton(this.colorPicked, (color) => { this.updatePage(color) }))
 
+    buttonToggleInputs.addEventListener('click', (event) => {
+      this.buttonToggleInputsText = this.buttonToggleInputsText === 'Show' ? 'Hide' : 'Show'
+      buttonToggleInputs.innerText = this.buttonToggleInputsText
+      divInputRows.forEach((divInputRow) => { divInputRow.style.display = this.buttonToggleInputsText === 'Show' ? 'none' : 'flex' })
+    })
+
     return divInputColumn
   }
+
   createInputRangeSlider(min, max, step, text, value, row, slider) {
     const h4Slider = createH4(`${text}: ${value}`)
 
