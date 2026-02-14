@@ -227,45 +227,17 @@ class ColorPickerPage {
   }
 
   createDivInputColumn() {
-    const updateHex = (value, divInputBox) => {
+    const inputHex = (value, divInputBox) => {
       const color = Colors.createHex(divInputBox.value)
       color !== null && Colors.notEqual(color, this.colorPicked) ? this.updatePage(color) : divInputBox.value = String(value)
     }
 
-    const updateRGB = (index, value, divInputBox) => {
-      const color = Colors.createRGB(
-        String(index === 0 ? divInputBox.value : this.colorPicked.rgb.r),
-        String(index === 1 ? divInputBox.value : this.colorPicked.rgb.g),
-        String(index === 2 ? divInputBox.value : this.colorPicked.rgb.b),
-      )
-      color !== null && Colors.notEqual(color, this.colorPicked) ? this.updatePage(color) : divInputBox.value = String(value)
-    }
-
-    const updateHSL = (index, value, divInputBox) => {
-      const color = Colors.createHSL(
-        String(index === 0 ? divInputBox.value : this.colorPicked.hsl.h),
-        String(index === 1 ? divInputBox.value : this.colorPicked.hsl.s),
-        String(index === 2 ? divInputBox.value : this.colorPicked.hsl.l),
-      )
-      color !== null && Colors.notEqual(color, this.colorPicked) ? this.updatePage(color) : divInputBox.value = String(value)
-    }
-
-    const updateHSV = (index, value, divInputBox) => {
-      const color = Colors.createHSV(
-        String(index === 0 ? divInputBox.value : this.colorPicked.hsv.h),
-        String(index === 1 ? divInputBox.value : this.colorPicked.hsv.s),
-        String(index === 2 ? divInputBox.value : this.colorPicked.hsv.v),
-      )
-      color !== null && Colors.notEqual(color, this.colorPicked) ? this.updatePage(color) : divInputBox.value = String(value)
-    }
-
-    const updateCMYK = (index, value, divInputBox) => {
-      const color = Colors.createCMYK(
-        String(index === 0 ? divInputBox.value : this.colorPicked.cmyk.c),
-        String(index === 1 ? divInputBox.value : this.colorPicked.cmyk.m),
-        String(index === 2 ? divInputBox.value : this.colorPicked.cmyk.y),
-        String(index === 3 ? divInputBox.value : this.colorPicked.cmyk.k),
-      )
+    const inputColor = (colorFormat, colorComponent, value, colorCallable, divInputBox) => {
+      const colorComponents = []
+      Object.keys(this.colorPicked[colorFormat]).forEach(key => {
+        colorComponents.push(String(colorComponent === key ? divInputBox.value : this.colorPicked[colorFormat][key]))
+      })
+      const color = colorCallable(...colorComponents)
       color !== null && Colors.notEqual(color, this.colorPicked) ? this.updatePage(color) : divInputBox.value = String(value)
     }
 
@@ -275,8 +247,8 @@ class ColorPickerPage {
     divInputBox.maxLength = '7'
     divInputBox.style.width = '107px'
     divInputBox.value = this.colorPicked.formattedHex
-    divInputBox.addEventListener('focusout', (event) => { updateHex(this.colorPicked.formattedHex, divInputBox) })
-    divInputBox.addEventListener('keypress', (event) => { if (event.key === 'Enter') { updateHex(this.colorPicked.formattedHex, divInputBox) } })
+    divInputBox.addEventListener('focusout', event => { inputHex(this.colorPicked.formattedHex, divInputBox) })
+    divInputBox.addEventListener('keypress', event => { if (event.key === 'Enter') { inputHex(this.colorPicked.formattedHex, divInputBox) } })
 
     const buttonToggleInputs = document.createElement('button')
     buttonToggleInputs.className = 'theme'
@@ -292,32 +264,32 @@ class ColorPickerPage {
     const divInputColumn = document.createElement('div')
     divInputColumn.className = 'input-column'
     divInputColumn.appendChild(hexBoxRow)
-    for (let [colorFormat, callable] of [['rgb', updateRGB], ['hsl', updateHSL], ['hsv', updateHSV], ['cmyk', updateCMYK]]) {
+    for (let [colorFormat, colorCallable] of [['rgb', Colors.createRGB], ['hsl', Colors.createHSL], ['hsv', Colors.createHSV], ['cmyk', Colors.createCMYK]]) {
       const divInputRow = document.createElement('div')
       divInputRow.className = 'input-row'
       divInputRow.style.display = this.buttonToggleInputsText === 'Show' ? 'none' : 'flex'
       divInputRow.appendChild(createH4(`${colorFormat.padEnd(4, ' ')}:`))
-      Object.entries(this.colorPicked[colorFormat]).forEach(([key, value], index) => {
+      Object.entries(this.colorPicked[colorFormat]).forEach(([colorComponent, value]) => {
         const divInputBox = document.createElement('input')
         divInputBox.className = 'box'
         divInputBox.type = 'text'
         divInputBox.maxLength = '3'
         divInputBox.style.width = '50px'
         divInputBox.value = String(Math.round(value))
-        divInputBox.addEventListener('focusout', (event) => { callable(index, Math.round(value), divInputBox) })
-        divInputBox.addEventListener('keypress', (event) => { if (event.key === 'Enter') { callable(index, Math.round(value), divInputBox) } })
+        divInputBox.addEventListener('focusout', event => { inputColor(colorFormat, colorComponent, Math.round(value), colorCallable, divInputBox) })
+        divInputBox.addEventListener('keypress', event => { if (event.key === 'Enter') { inputColor(colorFormat, colorComponent, Math.round(value), colorCallable, divInputBox) } })
         divInputRow.appendChild(divInputBox)
       })
       divInputColumn.appendChild(divInputRow)
       divInputRows.push(divInputRow)
     }
-    divInputColumn.appendChild(this.colorPicker.createColorPickerButton(this.colorPicked, (color) => { this.updatePage(color) }))
-    divInputColumn.appendChild(this.imagePicker.createImagePickerButton(this.colorPicked, (color) => { this.updatePage(color) }))
+    divInputColumn.appendChild(this.colorPicker.createColorPickerButton(this.colorPicked, color => { this.updatePage(color) }))
+    divInputColumn.appendChild(this.imagePicker.createImagePickerButton(this.colorPicked, color => { this.updatePage(color) }))
 
-    buttonToggleInputs.addEventListener('click', (event) => {
+    buttonToggleInputs.addEventListener('click', event => {
       this.buttonToggleInputsText = this.buttonToggleInputsText === 'Show' ? 'Hide' : 'Show'
       buttonToggleInputs.innerText = this.buttonToggleInputsText
-      divInputRows.forEach((divInputRow) => { divInputRow.style.display = this.buttonToggleInputsText === 'Show' ? 'none' : 'flex' })
+      divInputRows.forEach(divInputRow => { divInputRow.style.display = this.buttonToggleInputsText === 'Show' ? 'none' : 'flex' })
     })
 
     return divInputColumn
