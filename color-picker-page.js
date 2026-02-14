@@ -93,9 +93,7 @@ class ColorPickerPage {
     variationsColumn.className = 'inner-column'
     variationsColumn.appendChild(createH2('Variations'))
     variationsColumn.appendChild(createH3('Hue'))
-    hueSliders.forEach(hueSlider => {
-      variationsColumn.appendChild(hueSlider)
-    })
+    hueSliders.forEach(hueSlider => { variationsColumn.appendChild(hueSlider) })
     variationsColumn.appendChild(hueRow)
     variationsColumn.appendChild(createH3('Saturation'))
     variationsColumn.appendChild(saturationSlider)
@@ -107,18 +105,17 @@ class ColorPickerPage {
     const harmoniesColumn = document.createElement('div')
     harmoniesColumn.className = 'inner-column'
     harmoniesColumn.appendChild(createH2('Harmonies'))
-    harmoniesColumn.appendChild(createH3('Complementary'))
-    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.complementary(this.colorPicked)))
-    harmoniesColumn.appendChild(createH3('Split Complementary'))
-    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.splitComplementary(this.colorPicked)))
-    harmoniesColumn.appendChild(createH3('Analogous'))
-    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.analogous(this.colorPicked)))
-    harmoniesColumn.appendChild(createH3('Triadic'))
-    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.triadic(this.colorPicked)))
-    harmoniesColumn.appendChild(createH3('Tetradic'))
-    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.tetradic(this.colorPicked)))
-    harmoniesColumn.appendChild(createH3('Square'))
-    harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), Colors.square(this.colorPicked)))
+    for (let [colorHarmony, colorCallable] of [
+      ['Complementary', Colors.complementary],
+      ['Split Complementary', Colors.splitComplementary],
+      ['Analogous', Colors.analogous],
+      ['Triadic', Colors.triadic],
+      ['Tetradic', Colors.tetradic],
+      ['Square', Colors.square]
+    ]) {
+      harmoniesColumn.appendChild(createH3(colorHarmony))
+      harmoniesColumn.appendChild(this.buildColorRow(this.createDivColorRowSmall(), colorCallable(this.colorPicked)))
+    }
 
     const palettesColumn = document.createElement('div')
     palettesColumn.className = 'inner-column'
@@ -128,7 +125,7 @@ class ColorPickerPage {
     const historyColumn = document.createElement('div')
     historyColumn.className = 'inner-column'
     historyColumn.appendChild(createH2('History'))
-    historyColumn.appendChild(this.buildColorRow(this.createDivColorRow(), this.getHistoryColors()))
+    historyColumn.appendChild(this.buildColorRow(this.createDivColorRow(), colors))
 
     const header = document.getElementById('header')
     header.replaceChildren()
@@ -143,9 +140,7 @@ class ColorPickerPage {
     outerColumn.appendChild(palettesColumn)
     outerColumn.appendChild(historyColumn)
 
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }, 10)
+    setTimeout(() => { window.scrollTo({ top: 0, behavior: 'smooth' }) }, 10)
   }
 
   getHistoryColors() {
@@ -255,7 +250,12 @@ class ColorPickerPage {
     const divInputColumn = document.createElement('div')
     divInputColumn.className = 'input-column'
     divInputColumn.appendChild(hexBoxRow)
-    for (let [colorFormat, colorCallable] of [['rgb', Colors.createRGB], ['hsl', Colors.createHSL], ['hsv', Colors.createHSV], ['cmyk', Colors.createCMYK]]) {
+    for (let [colorFormat, colorCallable] of [
+      ['rgb', Colors.createRGB],
+      ['hsl', Colors.createHSL],
+      ['hsv', Colors.createHSV],
+      ['cmyk', Colors.createCMYK]
+    ]) {
       const divInputRow = document.createElement('div')
       divInputRow.className = 'input-row'
       divInputRow.style.display = this.buttonToggleInputsText === 'Show' ? 'none' : 'flex'
