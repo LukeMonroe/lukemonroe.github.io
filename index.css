@@ -125,6 +125,7 @@ div.color {
     flex: 1 1 0;
     gap: 5px;
     height: 200px;
+    width: 100%;
 }
 
 div.cp-color {
@@ -397,10 +398,6 @@ select:hover {
     div.color-row-small {
         flex-direction: column;
         height: 400px;
-    }
-
-    div.color {
-        width: 100%;
     }
 
     div.cp-color {

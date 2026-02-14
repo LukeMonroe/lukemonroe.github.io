@@ -13,6 +13,7 @@ class ColorPickerPage {
     this.imagePicker = imagePicker
     this.colorPicked = null
     this.buttonToggleInputsText = 'Show'
+    this.mediaQueryLayoutVertical = window.matchMedia('(max-width: 600px)')
   }
 
   createDivColorRow() {
@@ -175,6 +176,7 @@ class ColorPickerPage {
     const likeColor = createDivColorIconHeart(color)
     const divColor = document.createElement('div')
     divColor.className = 'color'
+    divColor.style.flex = picked ? 'auto' : '1 1 0'
     divColor.style.backgroundColor = color.formattedHex
     divColor.style.color = color.formattedText
     divColor.appendChild(createDivColorText(color.formattedHex))
@@ -192,36 +194,25 @@ class ColorPickerPage {
       divColor.appendChild(divMarker)
     }
 
-    divColor.style.flex = picked ? 'auto' : '1 1 0'
-    divColor.addEventListener('mouseenter', () => {
-      const children = divColor.children
-      for (let index = 0; index < children.length; index++) {
-        children[index].style.display = 'block'
+    const expandDivColor = expand => {
+      if (expand) {
+        Array.from(divColor.children).forEach(child => { child.style.display = 'block' })
+        divColor.style.flex = 'auto'
+        divColor.style.width = this.mediaQueryLayoutVertical.matches ? '100%' : '300px'
+        divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
+        divMarker.style.display = 'none'
+        likeColor.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
+      } else {
+        Array.from(divColor.children).forEach(child => { child.style.display = 'none' })
+        divColor.style.flex = picked ? 'auto' : '1 1 0'
+        divColor.style.width = '100%'
+        divColor.style.boxShadow = 'none'
+        divMarker.style.display = 'block'
       }
-      divColor.style.flex = 'auto'
-      divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
-      divMarker.style.display = 'none'
-      likeColor.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
-    })
-    divColor.addEventListener('mouseleave', () => {
-      const children = divColor.children
-      for (let index = 0; index < children.length; index++) {
-        children[index].style.display = 'none'
-      }
-      divColor.style.flex = picked ? 'auto' : '1 1 0'
-      divColor.style.boxShadow = 'none'
-      divMarker.style.display = 'block'
-    })
-    divColor.addEventListener('click', () => {
-      const children = divColor.children
-      for (let index = 0; index < children.length; index++) {
-        children[index].style.display = 'block'
-      }
-      divColor.style.flex = 'auto'
-      divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
-      divMarker.style.display = 'none'
-      likeColor.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
-    })
+    }
+    divColor.addEventListener('mouseenter', event => { expandDivColor(true) })
+    divColor.addEventListener('mouseleave', event => { expandDivColor(false) })
+    divColor.addEventListener('click', event => { expandDivColor(true) })
 
     return divColor
   }
