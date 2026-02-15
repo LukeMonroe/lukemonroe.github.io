@@ -361,6 +361,11 @@ select {
     padding: 10px 20px;
 }
 
+select.inverted {
+    background-color: var(--color);
+    color: var(--background-color);
+}
+
 select:hover {
     animation: jiggle 0.20s 1;
 }

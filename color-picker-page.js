@@ -18,6 +18,9 @@ class ColorPickerPage {
     this.lightnessSliderValue = 8
     this.buttonToggleInputsText = 'Show'
     this.mediaQueryLayoutVertical = window.matchMedia('(max-width: 600px)')
+    this.colorPickerPageData = { colorsToLoad: 'colorsDefault', colorsLoadable: { colorsDefault: { title: 'Color 01', colors: [Colors.random()] } } }
+    this.colorPickerPageData = localStorage.getItem('colorPickerPageData') !== null ? JSON.parse(localStorage.getItem('colorPickerPageData')) : this.colorPickerPageData
+    localStorage.setItem('colorPickerPageData', JSON.stringify(this.colorPickerPageData))
   }
 
   createDivColorRow() {
@@ -57,21 +60,90 @@ class ColorPickerPage {
     return divColorIcon
   }
 
+  createSelectColor() {
+    const selectColor = document.createElement('select')
+    selectColor.className = 'inverted'
+    selectColor.style.width = '100%'
+    for (let colorLoadable in this.colorPickerPageData.colorsLoadable) {
+      const optionColor = document.createElement('option')
+      optionColor.textContent = this.colorPickerPageData.colorsLoadable[colorLoadable].title
+      selectColor.appendChild(optionColor)
+    }
+    selectColor.value = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].title
+    selectColor.addEventListener('change', event => {
+      for (let colorLoadable in this.colorPickerPageData.colorsLoadable) {
+        if (this.colorPickerPageData.colorsLoadable[colorLoadable].title === selectColor.value) {
+          this.colorPickerPageData.colorsToLoad = colorLoadable
+          this.updatePage(null)
+          break
+        }
+      }
+    })
+
+    const buttonAddColor = document.createElement('button')
+    buttonAddColor.className = 'theme'
+    buttonAddColor.innerHTML = '&nbsp;' // Need this for padding.
+    buttonAddColor.style.display = Object.keys(this.colorPickerPageData.colorsLoadable).length >= 8 ? 'none' : 'block'
+    buttonAddColor.style.backgroundColor = this.colorPicked.formattedHex
+    buttonAddColor.style.backgroundImage = getBackgroundImage(this.colorPicked, 'plus')
+    buttonAddColor.style.backgroundPosition = 'center'
+    buttonAddColor.style.backgroundRepeat = 'no-repeat'
+    buttonAddColor.style.backgroundSize = '24px 24px'
+    buttonAddColor.style.border = '1px solid var(--color)'
+    buttonAddColor.addEventListener('click', event => {
+      const length = Object.keys(this.colorPickerPageData.colorsLoadable).length + 1
+      if (length <= 8) {
+        this.colorPickerPageData.colorsToLoad = `colors${Date.now()}`
+        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad] = { title: `Color ${String(length).padStart(2, '0')}`, colors: [Colors.random()] }
+        this.updatePage(null)
+      }
+    })
+
+    const buttonRemoveColor = document.createElement('button')
+    buttonRemoveColor.className = 'theme'
+    buttonRemoveColor.innerHTML = '&nbsp;' // Need this for padding.
+    buttonRemoveColor.style.display = Object.keys(this.colorPickerPageData.colorsLoadable).length === 1 || this.colorPickerPageData.colorsToLoad === 'colorsDefault' ? 'none' : 'block'
+    buttonRemoveColor.style.backgroundColor = this.colorPicked.formattedHex
+    buttonRemoveColor.style.backgroundImage = getBackgroundImage(this.colorPicked, 'exit')
+    buttonRemoveColor.style.backgroundPosition = 'center'
+    buttonRemoveColor.style.backgroundRepeat = 'no-repeat'
+    buttonRemoveColor.style.backgroundSize = '23px 23px'
+    buttonRemoveColor.style.border = '1px solid var(--color)'
+    buttonRemoveColor.addEventListener('click', event => {
+      const length = Object.keys(this.colorPickerPageData.colorsLoadable).length - 1
+      if (length >= 1 && this.colorPickerPageData.colorsToLoad !== 'colorsDefault') {
+        var index = Math.max(0, Object.keys(this.colorPickerPageData.colorsLoadable).indexOf(this.colorPickerPageData.colorsToLoad) - 1)
+        delete this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad]
+        this.colorPickerPageData.colorsToLoad = Object.keys(this.colorPickerPageData.colorsLoadable)[index]
+        index = 1
+        for (let colorLoadable in this.colorPickerPageData.colorsLoadable) {
+          this.colorPickerPageData.colorsLoadable[colorLoadable].title = `Color ${String(index++).padStart(2, '0')}`
+        }
+        this.updatePage(null)
+      }
+    })
+
+    const divInputRow = document.createElement('div')
+    divInputRow.className = 'input-row'
+    divInputRow.appendChild(selectColor)
+    divInputRow.appendChild(buttonAddColor)
+    divInputRow.appendChild(buttonRemoveColor)
+
+    return divInputRow
+  }
+
   updatePage(color) {
-    const colors = this.getHistoryColors()
-    colors.push(color)
-    this.setHistoryColors(colors)
+    if (color !== undefined && color !== null) {
+      this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].colors.push(color)
+    }
+    localStorage.setItem('colorPickerPageData', JSON.stringify(this.colorPickerPageData))
     this.createPage()
   }
 
   createPage() {
     localStorage.setItem('tool', 'colorPicker')
 
-    const colors = this.getHistoryColors()
-    if (colors.length === 0) {
-      colors.push(Colors.random())
-      this.setHistoryColors(colors)
-    }
+    const colors = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].colors
     this.colorPicked = colors[colors.length - 1]
     document.documentElement.style.setProperty('--thumb-color', this.colorPicked.formattedHex)
 
@@ -150,26 +222,6 @@ class ColorPickerPage {
     outerColumn.appendChild(historyColumn)
 
     setTimeout(() => { window.scrollTo({ top: 0, behavior: 'smooth' }) }, 10)
-  }
-
-  getHistoryColors() {
-    const colors = []
-    let index = 0
-    while (localStorage.getItem(`historyColor${index}`) !== null) {
-      colors.push(Colors.createHex(localStorage.getItem(`historyColor${index++}`)))
-    }
-
-    return colors
-  }
-
-  setHistoryColors(colors) {
-    let pos = 0
-    for (let index = (colors.length > 8 ? colors.length - 8 : 0); index < colors.length; index++) {
-      localStorage.setItem(`historyColor${pos++}`, colors[index].formattedHex)
-    }
-    for (let index = (colors.length > 8 ? 8 : colors.length); index < 16; index++) {
-      localStorage.removeItem(`historyColor${index}`)
-    }
   }
 
   createDivColor(color, picked) {
@@ -285,6 +337,7 @@ class ColorPickerPage {
     }
     divInputColumn.appendChild(this.colorPicker.createColorPickerButton(this.colorPicked, color => { this.updatePage(color) }))
     divInputColumn.appendChild(this.imagePicker.createImagePickerButton(this.colorPicked, color => { this.updatePage(color) }))
+    divInputColumn.appendChild(this.createSelectColor())
 
     buttonToggleInputs.addEventListener('click', event => {
       this.buttonToggleInputsText = this.buttonToggleInputsText === 'Show' ? 'Hide' : 'Show'
