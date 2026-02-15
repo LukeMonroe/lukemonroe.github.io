@@ -34,26 +34,6 @@ class GradientPickerPageNew extends ColorPickerPage {
     header.appendChild(createH1('Gradient Picker New'))
   }
 
-  getHistoryColors() {
-    const colors = []
-    let index = 0
-    while (localStorage.getItem(`historyColorNew${index}`) !== null) {
-      colors.push(Colors.createHex(localStorage.getItem(`historyColorNew${index++}`)))
-    }
-
-    return colors
-  }
-
-  setHistoryColors(colors) {
-    let pos = 0
-    for (let index = (colors.length > 8 ? colors.length - 8 : 0); index < colors.length; index++) {
-      localStorage.setItem(`historyColorNew${pos++}`, colors[index].formattedHex)
-    }
-    for (let index = (colors.length > 8 ? 8 : colors.length); index < 16; index++) {
-      localStorage.removeItem(`historyColorNew${index}`)
-    }
-  }
-
   createDivGradientIconCheckmark(colors) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
