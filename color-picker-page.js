@@ -173,10 +173,7 @@ class ColorPickerPage {
   }
 
   createDivColor(color, picked) {
-    const divMarker = document.createElement('div')
-    divMarker.className = 'marker'
-    divMarker.style.backgroundColor = color.formattedText
-
+    var divMarker = null
     const likeColor = createDivColorIconHeart(color)
     const divColor = document.createElement('div')
     divColor.className = 'color'
@@ -195,6 +192,9 @@ class ColorPickerPage {
     divColor.appendChild(this.createDivColorIconCheckmark(color))
     divColor.appendChild(this.colorPicker.createColorPickerIcon(color, (color) => { this.updatePage(color) }))
     if (Colors.equal(color, this.colorPicked)) {
+      divMarker = document.createElement('div')
+      divMarker.className = 'marker'
+      divMarker.style.backgroundColor = color.formattedText
       divColor.appendChild(divMarker)
     }
 
@@ -204,14 +204,14 @@ class ColorPickerPage {
         divColor.style.flex = 'auto'
         divColor.style.width = this.mediaQueryLayoutVertical.matches ? '100%' : '300px'
         divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
-        divMarker.style.display = 'none'
+        if (divMarker !== null) { divMarker.style.display = 'none' }
         likeColor.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
       } else {
         Array.from(divColor.children).forEach(child => { child.style.display = 'none' })
         divColor.style.flex = picked ? 'auto' : '1 1 0'
         divColor.style.width = '100%'
         divColor.style.boxShadow = 'none'
-        divMarker.style.display = 'block'
+        if (divMarker !== null) { divMarker.style.display = 'block' }
       }
     }
     divColor.addEventListener('mouseenter', event => { expandDivColor(true) })
