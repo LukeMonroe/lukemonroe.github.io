@@ -20,7 +20,7 @@ class ColorPickerPage {
       lightnessSliderValue: 8,
       buttonToggleInputsText: 'Show',
       colorsToLoad: 'colorsDefault',
-      colorsLoadable: { colorsDefault: { title: 'Color 01', colors: [Colors.random()] } }
+      colorsLoadable: { colorsDefault: { title: 'Tab 01', colors: [Colors.random()] } }
     }
     this.colorPickerPageData = localStorage.getItem('colorPickerPageData') !== null ? JSON.parse(localStorage.getItem('colorPickerPageData')) : this.colorPickerPageData
     this.updateStorage()
@@ -100,11 +100,12 @@ class ColorPickerPage {
     buttonAddColor.style.display = Object.keys(this.colorPickerPageData.colorsLoadable).length >= 8 ? 'none' : 'block'
     buttonAddColor.style.backgroundColor = this.colorPicked.formattedHex
     buttonAddColor.style.backgroundImage = getBackgroundImage(this.colorPicked, 'plus')
+    buttonAddColor.title = 'Add Tab' // Switch to createDivTooltip().
     buttonAddColor.addEventListener('click', event => {
       const length = Object.keys(this.colorPickerPageData.colorsLoadable).length + 1
       if (length <= 8) {
         this.colorPickerPageData.colorsToLoad = `colors${Date.now()}`
-        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad] = { title: `Color ${String(length).padStart(2, '0')}`, colors: [Colors.random()] }
+        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad] = { title: `Tab ${String(length).padStart(2, '0')}`, colors: [Colors.random()] }
         this.updatePage(null)
       }
     })
@@ -115,6 +116,7 @@ class ColorPickerPage {
     buttonRemoveColor.style.display = Object.keys(this.colorPickerPageData.colorsLoadable).length === 1 || this.colorPickerPageData.colorsToLoad === 'colorsDefault' ? 'none' : 'block'
     buttonRemoveColor.style.backgroundColor = this.colorPicked.formattedHex
     buttonRemoveColor.style.backgroundImage = getBackgroundImage(this.colorPicked, 'exit')
+    buttonRemoveColor.title = 'Remove Tab' // Switch to createDivTooltip().
     buttonRemoveColor.addEventListener('click', event => {
       const length = Object.keys(this.colorPickerPageData.colorsLoadable).length - 1
       if (length >= 1 && this.colorPickerPageData.colorsToLoad !== 'colorsDefault') {
@@ -123,7 +125,7 @@ class ColorPickerPage {
         this.colorPickerPageData.colorsToLoad = Object.keys(this.colorPickerPageData.colorsLoadable)[index]
         index = 1
         for (let colorLoadable in this.colorPickerPageData.colorsLoadable) {
-          this.colorPickerPageData.colorsLoadable[colorLoadable].title = `Color ${String(index++).padStart(2, '0')}`
+          this.colorPickerPageData.colorsLoadable[colorLoadable].title = `Tab ${String(index++).padStart(2, '0')}`
         }
         this.updatePage(null)
       }
