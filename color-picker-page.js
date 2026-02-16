@@ -85,6 +85,72 @@ class ColorPickerPage {
     return divColorIcon
   }
 
+  createSelectColorItemRow() {
+    const selectColor = document.createElement('select')
+    selectColor.className = 'inverted'
+    selectColor.style.width = '100%'
+    for (let itemLoadable in this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable) {
+      const optionItem = document.createElement('option')
+      optionItem.textContent = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[itemLoadable].title
+      selectColor.appendChild(optionItem)
+    }
+    selectColor.value = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad].title
+    selectColor.addEventListener('change', event => {
+      for (let itemLoadable in this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable) {
+        if (this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[itemLoadable].title === selectColor.value) {
+          this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad = itemLoadable
+          this.updatePage(null)
+          break
+        }
+      }
+    })
+
+    const buttonAddColor = document.createElement('button')
+    buttonAddColor.className = 'theme-icon'
+    buttonAddColor.innerHTML = '&nbsp;' // Need this for padding.
+    buttonAddColor.style.display = Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable).length >= 8 ? 'none' : 'block'
+    buttonAddColor.style.backgroundColor = this.colorPicked.formattedHex
+    buttonAddColor.style.backgroundImage = getBackgroundImage(this.colorPicked, 'plus')
+    buttonAddColor.title = 'Add Color' // Switch to createDivTooltip().
+    buttonAddColor.addEventListener('click', event => {
+      const length = Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable).length + 1
+      if (length <= 8) {
+        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad = `items${Date.now()}`
+        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad] = { title: `Color ${String(length).padStart(2, '0')}`, colors: [Colors.random()] }
+        this.updatePage(null)
+      }
+    })
+
+    const buttonRemoveColor = document.createElement('button')
+    buttonRemoveColor.className = 'theme-icon'
+    buttonRemoveColor.innerHTML = '&nbsp;' // Need this for padding.
+    buttonRemoveColor.style.display = Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable).length === 1 || this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad === 'itemsDefault' ? 'none' : 'block'
+    buttonRemoveColor.style.backgroundColor = this.colorPicked.formattedHex
+    buttonRemoveColor.style.backgroundImage = getBackgroundImage(this.colorPicked, 'exit')
+    buttonRemoveColor.title = 'Remove Color' // Switch to createDivTooltip().
+    buttonRemoveColor.addEventListener('click', event => {
+      const length = Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable).length - 1
+      if (length >= 1 && this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad !== 'itemsDefault') {
+        var index = Math.max(0, Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable).indexOf(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad) - 1)
+        delete this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad]
+        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad = Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable)[index]
+        index = 1
+        for (let itemLoadable in this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable) {
+          this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[itemLoadable].title = `Color ${String(index++).padStart(2, '0')}`
+        }
+        this.updatePage(null)
+      }
+    })
+
+    const divInputRow = document.createElement('div')
+    divInputRow.className = 'input-row'
+    divInputRow.appendChild(selectColor)
+    divInputRow.appendChild(buttonAddColor)
+    divInputRow.appendChild(buttonRemoveColor)
+
+    return divInputRow
+  }
+
   createSelectColorRow() {
     const selectColor = document.createElement('select')
     selectColor.className = 'inverted'
@@ -358,6 +424,7 @@ class ColorPickerPage {
     }
     divInputColumn.appendChild(this.colorPicker.createColorPickerButton(this.colorPicked, color => { this.updatePage(color) }))
     divInputColumn.appendChild(this.imagePicker.createImagePickerButton(this.colorPicked, color => { this.updatePage(color) }))
+    divInputColumn.appendChild(this.createSelectColorItemRow())
     divInputColumn.appendChild(this.createSelectColorRow())
 
     buttonToggleInputs.addEventListener('click', event => {
