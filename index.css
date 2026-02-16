@@ -86,7 +86,8 @@ div.inner-row {
     max-width: 1800px;
 }
 
-div.color-row {
+div.color-row,
+div.color-row-reverse {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -391,6 +392,11 @@ select:hover {
 
     div.color-row {
         flex-direction: column;
+        height: 600px;
+    }
+
+    div.color-row-reverse {
+        flex-direction: column-reverse;
         height: 600px;
     }
 

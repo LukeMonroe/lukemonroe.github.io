@@ -30,6 +30,13 @@ class ColorPickerPage {
     return row
   }
 
+  createDivColorRowReverse() {
+    const row = document.createElement('div')
+    row.className = 'color-row-reverse'
+
+    return row
+  }
+
   createDivColorRowSmall() {
     const row = document.createElement('div')
     row.className = 'color-row-small'
@@ -135,6 +142,7 @@ class ColorPickerPage {
   updatePage(color) {
     if (color !== undefined && color !== null) {
       this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].colors.push(color)
+      this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].colors = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].colors.slice(-20)
     }
     localStorage.setItem('colorPickerPageData', JSON.stringify(this.colorPickerPageData))
     this.createPage()
@@ -206,7 +214,7 @@ class ColorPickerPage {
     const historyColumn = document.createElement('div')
     historyColumn.className = 'inner-column'
     historyColumn.appendChild(createH2('History'))
-    historyColumn.appendChild(this.buildColorRow(this.createDivColorRow(), colors))
+    historyColumn.appendChild(this.buildColorRow(this.createDivColorRowReverse(), colors))
 
     const header = document.getElementById('header')
     header.replaceChildren()
