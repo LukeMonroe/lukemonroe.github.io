@@ -67,7 +67,7 @@ class ColorPickerPage {
     return divColorIcon
   }
 
-  createSelectColor() {
+  createSelectColorRow() {
     const selectColor = document.createElement('select')
     selectColor.className = 'inverted'
     selectColor.style.width = '100%'
@@ -88,15 +88,11 @@ class ColorPickerPage {
     })
 
     const buttonAddColor = document.createElement('button')
-    buttonAddColor.className = 'theme'
+    buttonAddColor.className = 'theme-icon'
     buttonAddColor.innerHTML = '&nbsp;' // Need this for padding.
     buttonAddColor.style.display = Object.keys(this.colorPickerPageData.colorsLoadable).length >= 8 ? 'none' : 'block'
     buttonAddColor.style.backgroundColor = this.colorPicked.formattedHex
     buttonAddColor.style.backgroundImage = getBackgroundImage(this.colorPicked, 'plus')
-    buttonAddColor.style.backgroundPosition = 'center'
-    buttonAddColor.style.backgroundRepeat = 'no-repeat'
-    buttonAddColor.style.backgroundSize = '24px 24px'
-    buttonAddColor.style.border = '1px solid var(--color)'
     buttonAddColor.addEventListener('click', event => {
       const length = Object.keys(this.colorPickerPageData.colorsLoadable).length + 1
       if (length <= 8) {
@@ -107,15 +103,11 @@ class ColorPickerPage {
     })
 
     const buttonRemoveColor = document.createElement('button')
-    buttonRemoveColor.className = 'theme'
+    buttonRemoveColor.className = 'theme-icon'
     buttonRemoveColor.innerHTML = '&nbsp;' // Need this for padding.
     buttonRemoveColor.style.display = Object.keys(this.colorPickerPageData.colorsLoadable).length === 1 || this.colorPickerPageData.colorsToLoad === 'colorsDefault' ? 'none' : 'block'
     buttonRemoveColor.style.backgroundColor = this.colorPicked.formattedHex
     buttonRemoveColor.style.backgroundImage = getBackgroundImage(this.colorPicked, 'exit')
-    buttonRemoveColor.style.backgroundPosition = 'center'
-    buttonRemoveColor.style.backgroundRepeat = 'no-repeat'
-    buttonRemoveColor.style.backgroundSize = '23px 23px'
-    buttonRemoveColor.style.border = '1px solid var(--color)'
     buttonRemoveColor.addEventListener('click', event => {
       const length = Object.keys(this.colorPickerPageData.colorsLoadable).length - 1
       if (length >= 1 && this.colorPickerPageData.colorsToLoad !== 'colorsDefault') {
@@ -308,6 +300,7 @@ class ColorPickerPage {
     const buttonToggleInputs = document.createElement('button')
     buttonToggleInputs.className = 'theme'
     buttonToggleInputs.innerText = this.buttonToggleInputsText
+    buttonToggleInputs.style.width = '100%'
 
     const hexBoxRow = document.createElement('div')
     hexBoxRow.className = 'input-row'
@@ -345,7 +338,7 @@ class ColorPickerPage {
     }
     divInputColumn.appendChild(this.colorPicker.createColorPickerButton(this.colorPicked, color => { this.updatePage(color) }))
     divInputColumn.appendChild(this.imagePicker.createImagePickerButton(this.colorPicked, color => { this.updatePage(color) }))
-    divInputColumn.appendChild(this.createSelectColor())
+    divInputColumn.appendChild(this.createSelectColorRow())
 
     buttonToggleInputs.addEventListener('click', event => {
       this.buttonToggleInputsText = this.buttonToggleInputsText === 'Show' ? 'Hide' : 'Show'
