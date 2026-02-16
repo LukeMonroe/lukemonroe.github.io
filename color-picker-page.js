@@ -20,7 +20,18 @@ class ColorPickerPage {
       lightnessSliderValue: 8,
       buttonToggleInputsText: 'Show',
       colorsToLoad: 'colorsDefault',
-      colorsLoadable: { colorsDefault: { title: 'Tab 01', colors: [Colors.random()] } }
+      colorsLoadable: {
+        colorsDefault: {
+          title: 'Tab 01',
+          itemsToLoad: 'itemsDefault',
+          itemsLoadable: {
+            itemsDefault: {
+              title: 'Color 01',
+              colors: [Colors.random()]
+            }
+          }
+        }
+      }
     }
     this.colorPickerPageData = localStorage.getItem('colorPickerPageData') !== null ? JSON.parse(localStorage.getItem('colorPickerPageData')) : this.colorPickerPageData
     this.updateStorage()
@@ -105,7 +116,7 @@ class ColorPickerPage {
       const length = Object.keys(this.colorPickerPageData.colorsLoadable).length + 1
       if (length <= 8) {
         this.colorPickerPageData.colorsToLoad = `colors${Date.now()}`
-        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad] = { title: `Tab ${String(length).padStart(2, '0')}`, colors: [Colors.random()] }
+        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad] = { title: `Tab ${String(length).padStart(2, '0')}`, itemsToLoad: 'itemsDefault', itemsLoadable: { itemsDefault: { title: 'Color 01', colors: [Colors.random()] } } }
         this.updatePage(null)
       }
     })
@@ -142,8 +153,8 @@ class ColorPickerPage {
 
   updatePage(color) {
     if (color !== undefined && color !== null) {
-      this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].colors.push(color)
-      this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].colors = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].colors.slice(-20)
+      this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad].colors.push(color)
+      this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad].colors = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad].colors.slice(-20)
     }
     this.updateStorage()
     this.createPage()
@@ -152,7 +163,7 @@ class ColorPickerPage {
   createPage() {
     localStorage.setItem('tool', 'colorPicker')
 
-    const colors = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].colors
+    const colors = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad].colors
     this.colorPicked = colors[colors.length - 1]
     document.documentElement.style.setProperty('--thumb-color', this.colorPicked.formattedHex)
 
