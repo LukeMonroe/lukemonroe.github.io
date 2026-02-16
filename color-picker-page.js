@@ -12,14 +12,21 @@ class ColorPickerPage {
     this.colorPicker = colorPicker
     this.imagePicker = imagePicker
     this.colorPicked = null
-    this.hueSeparationSliderValue = 12
-    this.hueDegreeSliderValue = 180
-    this.saturationSliderValue = 8
-    this.lightnessSliderValue = 8
-    this.buttonToggleInputsText = 'Show'
     this.mediaQueryLayoutVertical = window.matchMedia('(max-width: 600px)')
-    this.colorPickerPageData = { colorsToLoad: 'colorsDefault', colorsLoadable: { colorsDefault: { title: 'Color 01', colors: [Colors.random()] } } }
+    this.colorPickerPageData = {
+      hueSeparationSliderValue: 12,
+      hueDegreeSliderValue: 180,
+      saturationSliderValue: 8,
+      lightnessSliderValue: 8,
+      buttonToggleInputsText: 'Show',
+      colorsToLoad: 'colorsDefault',
+      colorsLoadable: { colorsDefault: { title: 'Color 01', colors: [Colors.random()] } }
+    }
     this.colorPickerPageData = localStorage.getItem('colorPickerPageData') !== null ? JSON.parse(localStorage.getItem('colorPickerPageData')) : this.colorPickerPageData
+    this.updateStorage()
+  }
+
+  updateStorage() {
     localStorage.setItem('colorPickerPageData', JSON.stringify(this.colorPickerPageData))
   }
 
@@ -136,7 +143,7 @@ class ColorPickerPage {
       this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].colors.push(color)
       this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].colors = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].colors.slice(-20)
     }
-    localStorage.setItem('colorPickerPageData', JSON.stringify(this.colorPickerPageData))
+    this.updateStorage()
     this.createPage()
   }
 
@@ -147,16 +154,16 @@ class ColorPickerPage {
     this.colorPicked = colors[colors.length - 1]
     document.documentElement.style.setProperty('--thumb-color', this.colorPicked.formattedHex)
 
-    const hueArgs = () => { return [this.colorPicked, this.hueDegreeSliderValue, this.hueSeparationSliderValue] }
+    const hueArgs = () => { return [this.colorPicked, this.colorPickerPageData.hueDegreeSliderValue, this.colorPickerPageData.hueSeparationSliderValue] }
     const hueRow = this.createDivColorRow()
     const hueSeparationSlider = this.createInputRangeSlider('hueSeparationSliderValue', 'Separation', hueRow, Colors.hues, hueArgs, 1, 90, 1)
     const hueDegreeSlider = this.createInputRangeSlider('hueDegreeSliderValue', 'Degrees', hueRow, Colors.hues, hueArgs, 1, 360, 1)
 
-    const saturationArgs = () => { return [this.colorPicked, this.saturationSliderValue] }
+    const saturationArgs = () => { return [this.colorPicked, this.colorPickerPageData.saturationSliderValue] }
     const saturationRow = this.createDivColorRow()
     const saturationSlider = this.createInputRangeSlider('saturationSliderValue', 'Separation', saturationRow, Colors.saturations, saturationArgs, 1, 20, 1)
 
-    const lightnessArgs = () => { return [this.colorPicked, this.lightnessSliderValue] }
+    const lightnessArgs = () => { return [this.colorPicked, this.colorPickerPageData.lightnessSliderValue] }
     const lightnessRow = this.createDivColorRow()
     const lightnessSlider = this.createInputRangeSlider('lightnessSliderValue', 'Separation', lightnessRow, Colors.lightnesses, lightnessArgs, 1, 20, 1)
 
@@ -299,7 +306,7 @@ class ColorPickerPage {
 
     const buttonToggleInputs = document.createElement('button')
     buttonToggleInputs.className = 'theme'
-    buttonToggleInputs.innerText = this.buttonToggleInputsText
+    buttonToggleInputs.innerText = this.colorPickerPageData.buttonToggleInputsText
     buttonToggleInputs.style.width = '100%'
 
     const hexBoxRow = document.createElement('div')
@@ -320,7 +327,7 @@ class ColorPickerPage {
     ]) {
       const divInputRow = document.createElement('div')
       divInputRow.className = 'input-row'
-      divInputRow.style.display = this.buttonToggleInputsText === 'Show' ? 'none' : 'flex'
+      divInputRow.style.display = this.colorPickerPageData.buttonToggleInputsText === 'Show' ? 'none' : 'flex'
       divInputRow.appendChild(createH4(`${colorFormat.padEnd(4, ' ')}:`))
       Object.entries(this.colorPicked[colorFormat]).forEach(([colorComponent, value]) => {
         const divInputBox = document.createElement('input')
@@ -341,16 +348,17 @@ class ColorPickerPage {
     divInputColumn.appendChild(this.createSelectColorRow())
 
     buttonToggleInputs.addEventListener('click', event => {
-      this.buttonToggleInputsText = this.buttonToggleInputsText === 'Show' ? 'Hide' : 'Show'
-      buttonToggleInputs.innerText = this.buttonToggleInputsText
-      divInputRows.forEach(divInputRow => { divInputRow.style.display = this.buttonToggleInputsText === 'Show' ? 'none' : 'flex' })
+      this.colorPickerPageData.buttonToggleInputsText = this.colorPickerPageData.buttonToggleInputsText === 'Show' ? 'Hide' : 'Show'
+      buttonToggleInputs.innerText = this.colorPickerPageData.buttonToggleInputsText
+      divInputRows.forEach(divInputRow => { divInputRow.style.display = this.colorPickerPageData.buttonToggleInputsText === 'Show' ? 'none' : 'flex' })
+      this.updateStorage()
     })
 
     return divInputColumn
   }
 
   createInputRangeSlider(property, label, row, callable, callableArgs, min, max, step) {
-    const h4Slider = createH4(`${label}: ${this[property]}`)
+    const h4Slider = createH4(`${label}: ${this.colorPickerPageData[property]}`)
 
     const inputRangeSlider = document.createElement('input')
     inputRangeSlider.className = 'slider'
@@ -358,11 +366,12 @@ class ColorPickerPage {
     inputRangeSlider.min = min
     inputRangeSlider.max = max
     inputRangeSlider.step = step
-    inputRangeSlider.value = this[property]
+    inputRangeSlider.value = this.colorPickerPageData[property]
     inputRangeSlider.addEventListener('input', event => {
-      this[property] = inputRangeSlider.value
-      h4Slider.innerText = `${label}: ${this[property]}`
+      this.colorPickerPageData[property] = inputRangeSlider.value
+      h4Slider.innerText = `${label}: ${this.colorPickerPageData[property]}`
       this.buildColorRow(row, callable(...callableArgs()))
+      this.updateStorage()
     })
     this.buildColorRow(row, callable(...callableArgs()))
 
