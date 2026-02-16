@@ -4,22 +4,30 @@ function createDivTooltip(divParent, innerText) {
   divTooltip.innerText = innerText
 
   var mouseOver = false
-  divParent.appendChild(divTooltip)
-  divParent.addEventListener('mouseenter', () => {
+  divParent.addEventListener('mouseenter', event => {
     mouseOver = true
-    setTimeout(function () {
+    setTimeout(() => {
       if (mouseOver) {
         divTooltip.style.display = 'block'
+        if (!divParent.contains(divTooltip)) {
+          divParent.appendChild(divTooltip)
+        }
       }
     }, 600)
   })
-  divParent.addEventListener('mouseleave', () => {
+  divParent.addEventListener('mouseleave', event => {
     mouseOver = false
     divTooltip.style.display = 'none'
+    if (divParent.contains(divTooltip)) {
+      divParent.removeChild(divTooltip)
+    }
   })
-  divParent.addEventListener('click', () => {
+  divParent.addEventListener('click', event => {
     mouseOver = false
     divTooltip.style.display = 'none'
+    if (divParent.contains(divTooltip)) {
+      divParent.removeChild(divTooltip)
+    }
   })
 }
 
