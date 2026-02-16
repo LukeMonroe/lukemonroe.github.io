@@ -12,6 +12,7 @@ function createDivColorIconFullscreen(color) {
   createDivTooltip(divColorIcon, 'fullscreen')
   divColorIcon.addEventListener('click', () => {
     document.body.appendChild(createDivColorFullscreen(color))
+    document.body.style.overflow = 'hidden'
   })
 
   return divColorIcon
@@ -35,6 +36,7 @@ function createDivColorFullscreen(color) {
   divColorFullscreen.appendChild(createDivColorIconFullscreenExit(color, divColorFullscreen))
   divColorFullscreen.addEventListener('dblclick', () => {
     document.body.removeChild(divColorFullscreen)
+    document.body.style.overflow = 'auto'
   })
   const children = divColorFullscreen.children
   for (let index = 0; index < children.length; index++) {
@@ -53,6 +55,7 @@ function createDivColorIconFullscreenExit(color, divColorFullscreen) {
   createDivTooltip(divColorIcon, 'fullscreen')
   divColorIcon.addEventListener('click', () => {
     document.body.removeChild(divColorFullscreen)
+    document.body.style.overflow = 'auto'
   })
 
   return divColorIcon
@@ -67,6 +70,7 @@ function createDivGradientIconFullscreen(gradient, type, value, position) {
   createDivTooltip(divGradientIcon, 'fullscreen')
   divGradientIcon.addEventListener('click', () => {
     document.body.appendChild(createDivGradientFullscreen(gradient, type, value, position))
+    document.body.style.overflow = 'hidden'
   })
 
   return divGradientIcon
@@ -90,6 +94,7 @@ function createDivGradientFullscreen(gradient, type, value, position) {
   divGradientFullscreen.appendChild(createDivGradientIconFullscreenExit(gradient, divGradientFullscreen))
   divGradientFullscreen.addEventListener('dblclick', () => {
     document.body.removeChild(divGradientFullscreen)
+    document.body.style.overflow = 'auto'
   })
   const children = divGradientFullscreen.children
   for (let index = 0; index < children.length; index++) {
@@ -108,6 +113,7 @@ function createDivGradientIconFullscreenExit(gradient, divGradientFullscreen) {
   createDivTooltip(divGradientIcon, 'fullscreen')
   divGradientIcon.addEventListener('click', () => {
     document.body.removeChild(divGradientFullscreen)
+    document.body.style.overflow = 'auto'
   })
 
   return divGradientIcon
@@ -122,6 +128,7 @@ function createDivGradientIconFullscreenNew(colors, type, value, position) {
   createDivTooltip(divGradientIcon, 'fullscreen')
   divGradientIcon.addEventListener('click', () => {
     document.body.appendChild(createDivGradientFullscreenNew(colors, type, value, position))
+    document.body.style.overflow = 'hidden'
   })
 
   return divGradientIcon
@@ -142,6 +149,7 @@ function createDivGradientFullscreenNew(colors, type, value, position) {
   divGradientFullscreen.appendChild(createDivGradientIconFullscreenExitNew(colors, divGradientFullscreen))
   divGradientFullscreen.addEventListener('dblclick', () => {
     document.body.removeChild(divGradientFullscreen)
+    document.body.style.overflow = 'auto'
   })
   const children = divGradientFullscreen.children
   for (let index = 0; index < children.length; index++) {
@@ -160,6 +168,7 @@ function createDivGradientIconFullscreenExitNew(colors, divGradientFullscreen) {
   createDivTooltip(divGradientIcon, 'fullscreen')
   divGradientIcon.addEventListener('click', () => {
     document.body.removeChild(divGradientFullscreen)
+    document.body.style.overflow = 'auto'
   })
 
   return divGradientIcon
