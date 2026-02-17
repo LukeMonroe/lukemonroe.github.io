@@ -23,6 +23,8 @@ class ColorPickerPage {
       colorsLoadable: {
         colorsDefault: {
           title: 'Tab 01',
+          gradientDegreeSliderValue: 0,
+          gradientPercentSliderValue: 0,
           itemsToLoad: 'itemsDefault',
           itemsLoadable: {
             itemsDefault: {
@@ -182,7 +184,7 @@ class ColorPickerPage {
       const length = Object.keys(this.colorPickerPageData.colorsLoadable).length + 1
       if (length <= 8) {
         this.colorPickerPageData.colorsToLoad = `colors${Date.now()}`
-        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad] = { title: `Tab ${String(length).padStart(2, '0')}`, itemsToLoad: 'itemsDefault', itemsLoadable: { itemsDefault: { title: 'Color 01', colors: [Colors.random()] } } }
+        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad] = { title: `Tab ${String(length).padStart(2, '0')}`, gradientDegreeSliderValue: 0, gradientPercentSliderValue: 0, itemsToLoad: 'itemsDefault', itemsLoadable: { itemsDefault: { title: 'Color 01', colors: [Colors.random()] } } }
         this.updatePage(null)
       }
     })
@@ -239,27 +241,48 @@ class ColorPickerPage {
     this.colorPicked = colors[colors.length - 1]
     document.documentElement.style.setProperty('--thumb-color', this.colorPicked.formattedHex)
 
-    const hueArgs = () => { return [this.colorPicked, this.colorPickerPageData.hueDegreeSliderValue, this.colorPickerPageData.hueSeparationSliderValue] }
     const hueRow = this.createDivColorRow()
-    const hueSeparationSlider = this.createInputRangeSlider('hueSeparationSliderValue', 'Separation', hueRow, Colors.hues, hueArgs, 1, 90, 1)
-    const hueDegreeSlider = this.createInputRangeSlider('hueDegreeSliderValue', 'Degrees', hueRow, Colors.hues, hueArgs, 1, 360, 1)
+    const hueCallable = () => { this.buildColorRow(hueRow, Colors.hues(this.colorPicked, this.colorPickerPageData.hueDegreeSliderValue, this.colorPickerPageData.hueSeparationSliderValue)) }
+    const hueSeparationSlider = this.createInputRangeSlider(this.colorPickerPageData, 'hueSeparationSliderValue', 'Separation', hueCallable, 1, 90, 1)
+    const hueDegreeSlider = this.createInputRangeSlider(this.colorPickerPageData, 'hueDegreeSliderValue', 'Degrees', hueCallable, 0, 360, 1)
 
-    const saturationArgs = () => { return [this.colorPicked, this.colorPickerPageData.saturationSliderValue] }
     const saturationRow = this.createDivColorRow()
-    const saturationSlider = this.createInputRangeSlider('saturationSliderValue', 'Separation', saturationRow, Colors.saturations, saturationArgs, 1, 20, 1)
+    const saturationCallable = () => { this.buildColorRow(saturationRow, Colors.saturations(this.colorPicked, this.colorPickerPageData.saturationSliderValue)) }
+    const saturationSlider = this.createInputRangeSlider(this.colorPickerPageData, 'saturationSliderValue', 'Separation', saturationCallable, 1, 20, 1)
 
-    const lightnessArgs = () => { return [this.colorPicked, this.colorPickerPageData.lightnessSliderValue] }
     const lightnessRow = this.createDivColorRow()
-    const lightnessSlider = this.createInputRangeSlider('lightnessSliderValue', 'Separation', lightnessRow, Colors.lightnesses, lightnessArgs, 1, 20, 1)
+    const lightnessCallable = () => { this.buildColorRow(lightnessRow, Colors.lightnesses(this.colorPicked, this.colorPickerPageData.lightnessSliderValue)) }
+    const lightnessSlider = this.createInputRangeSlider(this.colorPickerPageData, 'lightnessSliderValue', 'Separation', lightnessCallable, 1, 20, 1)
 
-    const divColorPicked = items.length === 1 ? this.createDivColor(this.colorPicked, true) : this.createDivGradient(items, true)
+    var divColorPicked = items.length === 1 ? this.createDivColor(this.colorPicked, true) : this.createDivGradient(items, true)
     divColorPicked.style.height = '400px'
     divColorPicked.style.maxWidth = '800px'
+
+    const divInputColumn = this.createDivInputColumn()
 
     const colorRow = document.createElement('div')
     colorRow.className = 'inner-row'
     colorRow.appendChild(divColorPicked)
-    colorRow.appendChild(this.createDivInputColumn())
+    colorRow.appendChild(divInputColumn)
+
+    const gradientCallable = () => {
+      if (items.length > 1) {
+        divColorPicked = this.createDivGradient(items, true)
+        divColorPicked.style.height = '400px'
+        divColorPicked.style.maxWidth = '800px'
+
+        colorRow.replaceChildren()
+        colorRow.appendChild(divColorPicked)
+        colorRow.appendChild(divInputColumn)
+      }
+    }
+    const gradientDegreesSlider = this.createInputRangeSlider(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad], 'gradientDegreeSliderValue', 'Degrees', gradientCallable, 0, 360, 1)
+    const gradientPercentSlider = this.createInputRangeSlider(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad], 'gradientPercentSliderValue', 'Percent', gradientCallable, 0, 100, 1)
+
+    const gradientColumn = document.createElement('div')
+    gradientColumn.className = 'inner-column'
+    gradientColumn.appendChild(gradientDegreesSlider)
+    gradientColumn.appendChild(gradientPercentSlider)
 
     const variationsColumn = document.createElement('div')
     variationsColumn.className = 'inner-column'
@@ -303,11 +326,14 @@ class ColorPickerPage {
     const header = document.getElementById('header')
     header.replaceChildren()
     header.appendChild(this.buttonNavigation)
-    header.appendChild(createH1('Color Picker'))
+    header.appendChild(createH1(`${items.length === 1 ? 'Color' : 'Gradient'} Picker`))
 
     const outerColumn = document.getElementById('outer-column')
     outerColumn.replaceChildren()
     outerColumn.appendChild(colorRow)
+    if (items.length > 1) {
+      outerColumn.appendChild(gradientColumn)
+    }
     outerColumn.appendChild(variationsColumn)
     outerColumn.appendChild(harmoniesColumn)
     outerColumn.appendChild(palettesColumn)
@@ -332,9 +358,9 @@ class ColorPickerPage {
   }
 
   createDivGradient(colors, picked) {
-    const type = 'linear'
-    const value = '90deg'
-    const position = '0%'
+    const degrees = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientDegreeSliderValue
+    const percent = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientPercentSliderValue
+    const background = `linear-gradient(${degrees}deg, ${colors.map((color, index) => `${color.formattedHex}${index === 0 ? ` ${percent}%` : ''}`).join(', ')})`
 
     const divColors = colors.map(color => this.createDivColor(color, false))
     divColors.forEach(divColor => { divColor.style.display = 'none' })
@@ -344,10 +370,12 @@ class ColorPickerPage {
     divGradient.className = 'color'
     divGradient.style.display = 'flex'
     divGradient.style.backgroundColor = colors[0].formattedHex
-    divGradient.style.background = `${type}-gradient(${value}, ${colors.map((color, index) => `${color.formattedHex} ${Math.round((index / (colors.length - 1)) * 100)}%`).join(', ')})`
+    // divGradient.style.background = `${type}-gradient(${value}, ${colors.map((color, index) => `${color.formattedHex} ${Math.round((index / (colors.length - 1)) * 100)}%`).join(', ')})`
+    divGradient.style.background = background
     divGradient.style.color = colors[0].formattedText
     divGradient.style.flex = '1 1 0'
     divGradient.style.height = '400px'
+    divGradient.appendChild(createDivColorText(background))
     // colors.forEach(color => { divGradient.appendChild(createDivColorText(color.formattedHex)) })
     // divGradient.appendChild(likeGradient)
     // divGradient.appendChild(createDivGradientIconFullscreenNew(colors, type, value, position))
@@ -519,8 +547,8 @@ class ColorPickerPage {
     return divInputColumn
   }
 
-  createInputRangeSlider(property, label, row, callable, callableArgs, min, max, step) {
-    const h4Slider = createH4(`${label}: ${this.colorPickerPageData[property]}`)
+  createInputRangeSlider(object, property, label, callable, min, max, step) {
+    const h4Slider = createH4(`${label}: ${object[property]}`)
 
     const inputRangeSlider = document.createElement('input')
     inputRangeSlider.className = 'slider'
@@ -528,14 +556,14 @@ class ColorPickerPage {
     inputRangeSlider.min = min
     inputRangeSlider.max = max
     inputRangeSlider.step = step
-    inputRangeSlider.value = this.colorPickerPageData[property]
+    inputRangeSlider.value = object[property]
     inputRangeSlider.addEventListener('input', event => {
-      this.colorPickerPageData[property] = inputRangeSlider.value
-      h4Slider.innerText = `${label}: ${this.colorPickerPageData[property]}`
-      this.buildColorRow(row, callable(...callableArgs()))
+      object[property] = inputRangeSlider.value
+      h4Slider.innerText = `${label}: ${object[property]}`
+      callable()
       this.updateStorage()
     })
-    this.buildColorRow(row, callable(...callableArgs()))
+    callable()
 
     const divSlider = document.createElement('div')
     divSlider.className = 'slider'
