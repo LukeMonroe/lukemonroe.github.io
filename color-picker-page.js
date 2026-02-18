@@ -23,6 +23,7 @@ class ColorPickerPage {
       colorsLoadable: {
         colorsDefault: {
           title: 'Tab 01',
+          gradientTypeValue: 'Linear',
           gradientDegreeSliderValue: 0,
           gradientPercentSliderValue: [0],
           itemsToLoad: 'itemsDefault',
@@ -186,7 +187,7 @@ class ColorPickerPage {
       const length = Object.keys(this.colorPickerPageData.colorsLoadable).length + 1
       if (length <= 8) {
         this.colorPickerPageData.colorsToLoad = `colors${Date.now()}`
-        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad] = { title: `Tab ${String(length).padStart(2, '0')}`, gradientDegreeSliderValue: 0, gradientPercentSliderValue: [0], itemsToLoad: 'itemsDefault', itemsLoadable: { itemsDefault: { title: 'Color 01', colors: [Colors.random()] } } }
+        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad] = { title: `Tab ${String(length).padStart(2, '0')}`, gradientTypeValue: 'Linear', gradientDegreeSliderValue: 0, gradientPercentSliderValue: [0], itemsToLoad: 'itemsDefault', itemsLoadable: { itemsDefault: { title: 'Color 01', colors: [Colors.random()] } } }
         this.updatePage(null)
       }
     })
@@ -282,14 +283,27 @@ class ColorPickerPage {
       }
     }
     const gradientDegreesSlider = this.createInputRangeSlider(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad], 'gradientDegreeSliderValue', 'Degrees', gradientCallable, 0, 360, 1, null)
+    gradientDegreesSlider.style.display = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue === 'Linear' ? 'flex' : 'none'
     const gradientPercentSliders = []
     items.forEach((item, index) => {
       const gradientPercentSlider = this.createInputRangeSlider(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad], 'gradientPercentSliderValue', `Percent (${titles[index]})`, gradientCallable, 0, 100, 1, index)
       gradientPercentSliders.push(gradientPercentSlider)
     })
 
+    const buttonToggleGradientType = document.createElement('button')
+    buttonToggleGradientType.className = 'theme'
+    buttonToggleGradientType.innerText = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue
+    buttonToggleGradientType.addEventListener('click', event => {
+      this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue === 'Linear' ? 'Radial' : 'Linear'
+      buttonToggleGradientType.innerText = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue
+      gradientDegreesSlider.style.display = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue === 'Linear' ? 'flex' : 'none'
+      gradientCallable()
+      this.updateStorage()
+    })
+
     const gradientColumn = document.createElement('div')
     gradientColumn.className = 'inner-column'
+    gradientColumn.appendChild(buttonToggleGradientType)
     gradientColumn.appendChild(gradientDegreesSlider)
     gradientPercentSliders.forEach(gradientPercentSlider => { gradientColumn.appendChild(gradientPercentSlider) })
 
@@ -367,9 +381,10 @@ class ColorPickerPage {
   }
 
   createDivGradient(colors, picked) {
+    const type = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue.toLowerCase()
     const degrees = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientDegreeSliderValue
     const percents = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientPercentSliderValue
-    const background = `linear-gradient(${degrees}deg, ${colors.map((color, index) => `${color.formattedHex} ${percents[index]}%`).join(', ')})`
+    const background = `${type}-gradient(${type === 'linear' ? `${degrees}deg` : 'circle'}, ${colors.map((color, index) => `${color.formattedHex} ${percents[index]}%`).join(', ')})`
 
     const divColors = colors.map(color => this.createDivColor(color, false))
     divColors.forEach(divColor => { divColor.style.display = 'none' })
