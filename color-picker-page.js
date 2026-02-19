@@ -120,7 +120,7 @@ class ColorPickerPage {
       if (length <= 8) {
         this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad = `items${Date.now()}`
         this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad] = { title: `Color ${String(length).padStart(2, '0')}`, colors: [Colors.random()] }
-        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientPercentSliderValue.push(0)
+        this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientPercentSliderValue.push(100)
         this.updatePage(null)
       }
     })
@@ -286,13 +286,16 @@ class ColorPickerPage {
     gradientDegreesSlider.style.display = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue === 'Linear' ? 'flex' : 'none'
     const gradientPercentSliders = []
     items.forEach((item, index) => {
-      const gradientPercentSlider = this.createInputRangeSlider(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad], 'gradientPercentSliderValue', `Percent (${titles[index]})`, gradientCallable, 0, 100, 1, index)
+      document.documentElement.style.setProperty(`--thumb-color-${index}`, item.formattedHex)
+      const gradientPercentSlider = this.createInputRangeSlider(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad], 'gradientPercentSliderValue', 'Percent', gradientCallable, 0, 100, 1, index)
       gradientPercentSliders.push(gradientPercentSlider)
     })
 
     const buttonToggleGradientType = document.createElement('button')
     buttonToggleGradientType.className = 'theme'
     buttonToggleGradientType.innerText = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue
+    buttonToggleGradientType.style.maxWidth = '300px'
+    buttonToggleGradientType.style.width = '80%'
     buttonToggleGradientType.addEventListener('click', event => {
       this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue === 'Linear' ? 'Radial' : 'Linear'
       buttonToggleGradientType.innerText = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue
@@ -303,6 +306,7 @@ class ColorPickerPage {
 
     const gradientColumn = document.createElement('div')
     gradientColumn.className = 'inner-column'
+    gradientColumn.appendChild(createH2('Gradient'))
     gradientColumn.appendChild(buttonToggleGradientType)
     gradientColumn.appendChild(gradientDegreesSlider)
     gradientPercentSliders.forEach(gradientPercentSlider => { gradientColumn.appendChild(gradientPercentSlider) })
@@ -575,7 +579,7 @@ class ColorPickerPage {
     const h4Slider = createH4(`${label}: ${index === null ? object[property] : object[property][index]}`)
 
     const inputRangeSlider = document.createElement('input')
-    inputRangeSlider.className = 'slider'
+    inputRangeSlider.className = index === null ? 'slider' : `slider-${index}`
     inputRangeSlider.type = 'range'
     inputRangeSlider.min = min
     inputRangeSlider.max = max
