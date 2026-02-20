@@ -448,12 +448,12 @@ class ColorPickerPage {
     return divColorRow
   }
 
-  createDivColor(color, picked) {
+  createDivColor(color, picked, explore = false) {
     var divMarker = null
     const likeColor = createDivColorIconHeart(color)
     const divColor = document.createElement('div')
     divColor.className = 'color'
-    divColor.style.flex = picked ? 'auto' : '1 1 0'
+    divColor.style.flex = explore ? 'none' : picked ? 'auto' : '1 1 0'
     divColor.style.backgroundColor = color.formattedHex
     divColor.style.color = color.formattedText
     divColor.appendChild(createDivColorText(color.formattedHex))
@@ -467,7 +467,7 @@ class ColorPickerPage {
     divColor.appendChild(createDivColorIconFullscreen(color))
     divColor.appendChild(this.createDivColorIconCheckmark(color))
     divColor.appendChild(this.colorPicker.createColorPickerIcon(color, (color) => { this.updatePage(color) }))
-    if (Colors.equal(color, this.colorPicked)) {
+    if (!explore && Colors.equal(color, this.colorPicked)) {
       divMarker = document.createElement('div')
       divMarker.className = 'marker'
       divMarker.style.backgroundColor = color.formattedText
@@ -477,14 +477,14 @@ class ColorPickerPage {
     const expandDivColor = expand => {
       if (expand) {
         Array.from(divColor.children).forEach(child => { child.style.display = 'block' })
-        divColor.style.flex = 'auto'
-        divColor.style.width = this.mediaQueryLayoutVertical.matches ? '100%' : '300px'
+        divColor.style.flex = explore ? 'none' : 'auto'
+        divColor.style.width = explore ? '100%' : this.mediaQueryLayoutVertical.matches ? '100%' : '300px'
         divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
         if (divMarker !== null) { divMarker.style.display = 'none' }
         likeColor.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
       } else {
         Array.from(divColor.children).forEach(child => { child.style.display = 'none' })
-        divColor.style.flex = picked ? 'auto' : '1 1 0'
+        divColor.style.flex = explore ? 'none' : picked ? 'auto' : '1 1 0'
         divColor.style.width = '100%'
         divColor.style.boxShadow = 'none'
         if (divMarker !== null) { divMarker.style.display = 'block' }

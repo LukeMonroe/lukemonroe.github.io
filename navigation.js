@@ -5,6 +5,7 @@ class SideNavigation {
   constructor() {
     this.colorPickerPage = null
     this.gradientPickerPage = null
+    this.exploreColorsPage = null
     this.favoritesPage = null
     this.themes = new Themes()
     this.themes.setTheme()
@@ -23,7 +24,7 @@ class SideNavigation {
     sideNavigation.className = 'side-navigation'
 
     const aColors = this.createA('javascript:void(0);', 'Color Picker')
-    aColors.addEventListener('click', () => {
+    aColors.addEventListener('click', event => {
       sideNavigation.style.width = '0px'
       const tool = localStorage.getItem('tool')
       if (tool !== 'colorPicker') {
@@ -32,7 +33,7 @@ class SideNavigation {
     })
 
     const aGradients = this.createA('javascript:void(0);', 'Gradient Picker')
-    aGradients.addEventListener('click', () => {
+    aGradients.addEventListener('click', event => {
       sideNavigation.style.width = '0px'
       const tool = localStorage.getItem('tool')
       if (tool !== 'gradientPicker') {
@@ -40,8 +41,17 @@ class SideNavigation {
       }
     })
 
+    const aExploreColors = this.createA('javascript:void(0);', 'Explore Colors')
+    aExploreColors.addEventListener('click', event => {
+      sideNavigation.style.width = '0px'
+      const tool = localStorage.getItem('tool')
+      if (tool !== 'exploreColors') {
+        this.exploreColorsPage.createPage()
+      }
+    })
+
     const aFavorites = this.createA('javascript:void(0);', 'Favorites')
-    aFavorites.addEventListener('click', () => {
+    aFavorites.addEventListener('click', event => {
       sideNavigation.style.width = '0px'
       const tool = localStorage.getItem('tool')
       if (tool !== 'favorites') {
@@ -56,6 +66,7 @@ class SideNavigation {
     sideNavigation.appendChild(selectTheme)
     sideNavigation.appendChild(aColors)
     sideNavigation.appendChild(aGradients)
+    sideNavigation.appendChild(aExploreColors)
     sideNavigation.appendChild(aFavorites)
     document.body.appendChild(sideNavigation)
 
