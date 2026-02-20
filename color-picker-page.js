@@ -384,13 +384,13 @@ class ColorPickerPage {
     return divColorIcon
   }
 
-  createDivGradient(colors, picked) {
+  createDivGradient(colors, picked, explore = false) {
     const type = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue.toLowerCase()
     const degrees = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientDegreeSliderValue
     const percents = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientPercentSliderValue
     const background = `${type}-gradient(${type === 'linear' ? `${degrees}deg` : 'circle'}, ${colors.map((color, index) => `${color.formattedHex} ${percents[index]}%`).join(', ')})`
 
-    const divColors = colors.map(color => this.createDivColor(color, false))
+    const divColors = colors.map(color => this.createDivColor(color, false, explore, true))
     divColors.forEach(divColor => { divColor.style.display = 'none' })
 
     // const likeGradient = createDivGradientIconHeart(colors)
@@ -448,12 +448,12 @@ class ColorPickerPage {
     return divColorRow
   }
 
-  createDivColor(color, picked, explore = false) {
+  createDivColor(color, picked, explore = false, gradientColor = false) {
     var divMarker = null
     const likeColor = createDivColorIconHeart(color)
     const divColor = document.createElement('div')
     divColor.className = 'color'
-    divColor.style.flex = explore ? 'none' : picked ? 'auto' : '1 1 0'
+    divColor.style.flex = explore && !gradientColor ? 'none' : picked ? 'auto' : '1 1 0'
     divColor.style.backgroundColor = color.formattedHex
     divColor.style.color = color.formattedText
     divColor.appendChild(createDivColorText(color.formattedHex))
@@ -477,14 +477,14 @@ class ColorPickerPage {
     const expandDivColor = expand => {
       if (expand) {
         Array.from(divColor.children).forEach(child => { child.style.display = 'block' })
-        divColor.style.flex = explore ? 'none' : 'auto'
-        divColor.style.width = explore ? '100%' : this.mediaQueryLayoutVertical.matches ? '100%' : '300px'
+        divColor.style.flex = explore && !gradientColor ? 'none' : 'auto'
+        divColor.style.width = explore && !gradientColor ? '100%' : this.mediaQueryLayoutVertical.matches ? '100%' : '300px'
         divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
         if (divMarker !== null) { divMarker.style.display = 'none' }
         likeColor.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
       } else {
         Array.from(divColor.children).forEach(child => { child.style.display = 'none' })
-        divColor.style.flex = explore ? 'none' : picked ? 'auto' : '1 1 0'
+        divColor.style.flex = explore && !gradientColor ? 'none' : picked ? 'auto' : '1 1 0'
         divColor.style.width = '100%'
         divColor.style.boxShadow = 'none'
         if (divMarker !== null) { divMarker.style.display = 'block' }

@@ -6,6 +6,7 @@ class SideNavigation {
     this.colorPickerPage = null
     this.gradientPickerPage = null
     this.exploreColorsPage = null
+    this.exploreGradientsPage = null
     this.favoritesPage = null
     this.themes = new Themes()
     this.themes.setTheme()
@@ -50,6 +51,15 @@ class SideNavigation {
       }
     })
 
+    const aExploreGradients = this.createA('javascript:void(0);', 'Explore Gradients')
+    aExploreGradients.addEventListener('click', event => {
+      sideNavigation.style.width = '0px'
+      const tool = localStorage.getItem('tool')
+      if (tool !== 'exploreGradients') {
+        this.exploreGradientsPage.createPage()
+      }
+    })
+
     const aFavorites = this.createA('javascript:void(0);', 'Favorites')
     aFavorites.addEventListener('click', event => {
       sideNavigation.style.width = '0px'
@@ -67,6 +77,7 @@ class SideNavigation {
     sideNavigation.appendChild(aColors)
     sideNavigation.appendChild(aGradients)
     sideNavigation.appendChild(aExploreColors)
+    sideNavigation.appendChild(aExploreGradients)
     sideNavigation.appendChild(aFavorites)
     document.body.appendChild(sideNavigation)
 
