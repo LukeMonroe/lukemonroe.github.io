@@ -7,10 +7,12 @@ import { createDivColorIconFullscreen } from './fullscreen.js'
 
 class ColorPickerPage {
 
-  constructor(buttonNavigation, colorPicker, imagePicker) {
+  constructor(buttonNavigation, colorPicker, imagePicker, gradientPage) {
     this.buttonNavigation = buttonNavigation
     this.colorPicker = colorPicker
     this.imagePicker = imagePicker
+    this.gradientPage = gradientPage
+    this.pickerPageDataKey = gradientPage ? 'gradientPickerPageData' : 'colorPickerPageData'
     this.colorPicked = null
     this.mediaQueryLayoutVertical = window.matchMedia('(max-width: 600px)')
     this.colorPickerPageData = {
@@ -36,12 +38,12 @@ class ColorPickerPage {
         }
       }
     }
-    this.colorPickerPageData = localStorage.getItem('colorPickerPageData') !== null ? JSON.parse(localStorage.getItem('colorPickerPageData')) : this.colorPickerPageData
+    this.colorPickerPageData = localStorage.getItem(this.pickerPageDataKey) !== null ? JSON.parse(localStorage.getItem(this.pickerPageDataKey)) : this.colorPickerPageData
     this.updateStorage()
   }
 
   updateStorage() {
-    localStorage.setItem('colorPickerPageData', JSON.stringify(this.colorPickerPageData))
+    localStorage.setItem(this.pickerPageDataKey, JSON.stringify(this.colorPickerPageData))
   }
 
   createDivColorRow() {
@@ -232,7 +234,7 @@ class ColorPickerPage {
   }
 
   createPage() {
-    localStorage.setItem('tool', 'colorPicker')
+    localStorage.setItem('tool', `${this.gradientPage ? 'gradient' : 'color'}Picker`)
 
     const titles = []
     const items = []
@@ -353,7 +355,7 @@ class ColorPickerPage {
     const header = document.getElementById('header')
     header.replaceChildren()
     header.appendChild(this.buttonNavigation)
-    header.appendChild(createH1(`${items.length === 1 ? 'Color' : 'Gradient'} Picker`))
+    header.appendChild(createH1(`${this.gradientPage ? 'Gradient' : 'Color'} Picker`))
 
     const outerColumn = document.getElementById('outer-column')
     outerColumn.replaceChildren()

@@ -1,5 +1,4 @@
 import { ColorPickerPage } from './color-picker-page.js'
-import { GradientPickerPage } from './gradient-picker-page.js'
 import { ExploreColorsPage } from './explore-colors-page.js'
 import { ExploreGradientsPage } from './explore-gradient-page.js'
 import { FavoritesPage } from './favorites-page.js'
@@ -14,8 +13,8 @@ const buttonNavigation = sideNavigation.createButtonNavigation()
 const colorPicker = new ColorPicker()
 const imagePicker = new ImagePicker()
 
-const colorPickerPage = new ColorPickerPage(buttonNavigation, colorPicker, imagePicker)
-const gradientPickerPage = new GradientPickerPage(buttonNavigation, colorPicker)
+const colorPickerPage = new ColorPickerPage(buttonNavigation, colorPicker, imagePicker, false)
+const gradientPickerPage = new ColorPickerPage(buttonNavigation, colorPicker, imagePicker, true)
 const exploreColorsPage = new ExploreColorsPage(buttonNavigation, colorPickerPage)
 const exploreGradientsPage = new ExploreGradientsPage(buttonNavigation, colorPickerPage)
 const favoritesPage = new FavoritesPage(buttonNavigation, colorPicker)
