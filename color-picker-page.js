@@ -38,6 +38,10 @@ class ColorPickerPage {
         }
       }
     }
+    if (this.gradientPage) {
+      this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[`items${Date.now()}`] = { title: 'Color 02', colors: [Colors.random()] }
+      this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientPercentSliderValue.push(100)
+    }
     this.colorPickerPageData = localStorage.getItem(this.pickerPageDataKey) !== null ? JSON.parse(localStorage.getItem(this.pickerPageDataKey)) : this.colorPickerPageData
     this.updateStorage()
   }
@@ -113,13 +117,13 @@ class ColorPickerPage {
     const buttonAddColor = document.createElement('button')
     buttonAddColor.className = 'theme-icon'
     buttonAddColor.innerHTML = '&nbsp;' // Need this for padding.
-    buttonAddColor.style.display = Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable).length >= 8 ? 'none' : 'block'
+    buttonAddColor.style.display = Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable).length >= (this.gradientPage ? 8 : 1) ? 'none' : 'block'
     buttonAddColor.style.backgroundColor = this.colorPicked.formattedHex
     buttonAddColor.style.backgroundImage = getBackgroundImage(this.colorPicked, 'plus')
     buttonAddColor.title = 'Add Color' // Switch to createDivTooltip().
     buttonAddColor.addEventListener('click', event => {
       const length = Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable).length + 1
-      if (length <= 8) {
+      if (length <= (this.gradientPage ? 8 : 1)) {
         this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad = `items${Date.now()}`
         this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad] = { title: `Color ${String(length).padStart(2, '0')}`, colors: [Colors.random()] }
         this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientPercentSliderValue.push(100)
@@ -130,13 +134,13 @@ class ColorPickerPage {
     const buttonRemoveColor = document.createElement('button')
     buttonRemoveColor.className = 'theme-icon'
     buttonRemoveColor.innerHTML = '&nbsp;' // Need this for padding.
-    buttonRemoveColor.style.display = Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable).length === 1 || this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad === 'itemsDefault' ? 'none' : 'block'
+    buttonRemoveColor.style.display = Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable).length === (this.gradientPage ? 2 : 1) || this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad === 'itemsDefault' ? 'none' : 'block'
     buttonRemoveColor.style.backgroundColor = this.colorPicked.formattedHex
     buttonRemoveColor.style.backgroundImage = getBackgroundImage(this.colorPicked, 'exit')
     buttonRemoveColor.title = 'Remove Color' // Switch to createDivTooltip().
     buttonRemoveColor.addEventListener('click', event => {
       const length = Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable).length - 1
-      if (length >= 1 && this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad !== 'itemsDefault') {
+      if (length >= (this.gradientPage ? 2 : 1) && this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad !== 'itemsDefault') {
         var index = Math.max(0, Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable).indexOf(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad) - 1)
         delete this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad]
         this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad = Object.keys(this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable)[index]
@@ -190,6 +194,10 @@ class ColorPickerPage {
       if (length <= 8) {
         this.colorPickerPageData.colorsToLoad = `colors${Date.now()}`
         this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad] = { title: `Tab ${String(length).padStart(2, '0')}`, gradientTypeValue: 'Linear', gradientDegreeSliderValue: 0, gradientPercentSliderValue: [0], itemsToLoad: 'itemsDefault', itemsLoadable: { itemsDefault: { title: 'Color 01', colors: [Colors.random()] } } }
+        if (this.gradientPage) {
+          this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[`items${Date.now()}`] = { title: 'Color 02', colors: [Colors.random()] }
+          this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientPercentSliderValue.push(100)
+        }
         this.updatePage(null)
       }
     })
@@ -564,7 +572,9 @@ class ColorPickerPage {
     }
     divInputColumn.appendChild(this.colorPicker.createColorPickerButton(this.colorPicked, color => { this.updatePage(color) }))
     divInputColumn.appendChild(this.imagePicker.createImagePickerButton(this.colorPicked, color => { this.updatePage(color) }))
-    divInputColumn.appendChild(this.createSelectColorItemRow())
+    if (this.gradientPage) {
+      divInputColumn.appendChild(this.createSelectColorItemRow())
+    }
     divInputColumn.appendChild(this.createSelectColorRow())
 
     buttonToggleInputs.addEventListener('click', event => {

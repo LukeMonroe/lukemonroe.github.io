@@ -1,5 +1,5 @@
 import { Colors } from './colors.js'
-import { createH1 } from './text.js'
+import { createH1, createH3 } from './text.js'
 
 class ExploreGradientsPage {
 
@@ -11,10 +11,17 @@ class ExploreGradientsPage {
   createPage() {
     localStorage.setItem('tool', 'exploreGradients')
 
+    const length = Object.keys(this.colorPickerPage.colorPickerPageData.colorsLoadable[this.colorPickerPage.colorPickerPageData.colorsToLoad].itemsLoadable).length
+
     const divGradientGrid = document.createElement('div')
     divGradientGrid.className = 'color-grid'
     for (let index = 0; index < 48; index++) {
-      const divColor = this.colorPickerPage.createDivGradient([Colors.random(), Colors.random()], true, true)
+      const colors = []
+      for (let index = 0; index < length; index++) {
+        colors.push(Colors.random())
+      }
+
+      const divColor = this.colorPickerPage.createDivGradient(colors, true, true)
       divColor.style.height = '400px'
       divColor.style.maxWidth = '400px'
       divGradientGrid.appendChild(divColor)
@@ -23,6 +30,7 @@ class ExploreGradientsPage {
     const exploreGradientsColumn = document.createElement('div')
     exploreGradientsColumn.style.maxWidth = 'none'
     exploreGradientsColumn.className = 'inner-column'
+    exploreGradientsColumn.appendChild(createH3('Gradient Picker Settings Apply'))
     exploreGradientsColumn.appendChild(divGradientGrid)
 
     const header = document.getElementById('header')
@@ -41,7 +49,12 @@ class ExploreGradientsPage {
         setTimeout(() => {
           if (timeout === true) {
             for (let index = 0; index < 48; index++) {
-              const divColor = this.colorPickerPage.createDivGradient([Colors.random(), Colors.random()], true, true)
+              const colors = []
+              for (let index = 0; index < length; index++) {
+                colors.push(Colors.random())
+              }
+
+              const divColor = this.colorPickerPage.createDivGradient(colors, true, true)
               divColor.style.height = '400px'
               divColor.style.maxWidth = '400px'
               divGradientGrid.appendChild(divColor)
