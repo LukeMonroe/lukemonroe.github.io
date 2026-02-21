@@ -24,13 +24,21 @@ function isGradientLiked(background, colors) {
 
 function setLikedColors(color) {
   const favoritesPageData = localStorage.getItem('favoritesPageData') !== null ? JSON.parse(localStorage.getItem('favoritesPageData')) : { colors: [], gradients: [] }
-  isColorLiked(color) ? null : favoritesPageData.colors.push(color)
+  if (isColorLiked(color)) {
+    favoritesPageData.colors.splice(favoritesPageData.colors.findIndex(likedColor => Colors.equal(likedColor, color)), 1)
+  } else {
+    favoritesPageData.colors.push(color)
+  }
   localStorage.setItem('favoritesPageData', JSON.stringify(favoritesPageData))
 }
 
 function setLikedGradients(background, colors) {
   const favoritesPageData = localStorage.getItem('favoritesPageData') !== null ? JSON.parse(localStorage.getItem('favoritesPageData')) : { colors: [], gradients: [] }
-  isGradientLiked(background, colors) ? null : favoritesPageData.gradients.push({ background: background, colors: colors })
+  if (isGradientLiked(background, colors)) {
+    favoritesPageData.gradients.splice(favoritesPageData.gradients.findIndex(likedGradient => likedGradient.background === background), 1)
+  } else {
+    favoritesPageData.gradients.push({ background: background, colors: colors })
+  }
   localStorage.setItem('favoritesPageData', JSON.stringify(favoritesPageData))
 }
 
@@ -47,8 +55,8 @@ function createDivColorIconHeart(divColor, color) {
     divColorIcon.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
   }
   const toggleBackgroundImage = (divColorIcon, color) => {
-    divColorIcon.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-empty') : getBackgroundImage(color, 'heart-filled')
     setLikedColors(color)
+    currentBackgroundImage(divColorIcon, color)
   }
 
   const divColorIcon = document.createElement('div')
@@ -69,8 +77,8 @@ function createDivGradientIconHeart(divGradient, background, colors) {
     divGradientIcon.style.backgroundImage = isGradientLiked(background, colors) ? getBackgroundImage(colors[0], 'heart-filled') : getBackgroundImage(colors[0], 'heart-empty')
   }
   const toggleBackgroundImage = (divGradientIcon, background, colors) => {
-    divGradientIcon.style.backgroundImage = isGradientLiked(background, colors) ? getBackgroundImage(colors[0], 'heart-empty') : getBackgroundImage(colors[0], 'heart-filled')
     setLikedGradients(background, colors)
+    currentBackgroundImage(divGradientIcon, background, colors)
   }
 
   const divGradientIcon = document.createElement('div')
