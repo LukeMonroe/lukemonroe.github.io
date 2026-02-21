@@ -14,14 +14,14 @@ class FavoritesPage {
 
     const divFavoritesGrid = document.createElement('div')
     divFavoritesGrid.className = 'color-grid'
-    getLikedColors().forEach(color => {
-      const divColor = this.colorPickerPage.createDivColor(color, false, true)
+    getLikedColors().forEach(likedColor => {
+      const divColor = this.colorPickerPage.createDivColor(likedColor, false, true)
       divColor.style.height = '400px'
       divColor.style.maxWidth = '400px'
       divFavoritesGrid.appendChild(divColor)
     })
-    getLikedGradients().forEach(colors => {
-      const divGradient = this.gradientPickerPage.createDivGradient(colors, true, true)
+    getLikedGradients().forEach(likedGradient => {
+      const divGradient = this.gradientPickerPage.createDivGradient(likedGradient.colors, true, true, likedGradient.background)
       divGradient.style.height = '400px'
       divGradient.style.maxWidth = '400px'
       divFavoritesGrid.appendChild(divGradient)

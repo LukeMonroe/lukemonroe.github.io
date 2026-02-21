@@ -12,9 +12,9 @@ function isColorLiked(color) {
   return false
 }
 
-function isGradientLiked(colors) {
+function isGradientLiked(background, colors) {
   for (let likedGradient of getLikedGradients()) {
-    if (likedGradient.every((likedColor, index) => likedGradient.length === colors.length && Colors.equal(likedColor, colors[index]))) {
+    if (likedGradient.background === background) {
       return true
     }
   }
@@ -22,38 +22,24 @@ function isGradientLiked(colors) {
   return false
 }
 
-function updateLikedColors(color) {
+function setLikedColors(color) {
   const favoritesPageData = localStorage.getItem('favoritesPageData') !== null ? JSON.parse(localStorage.getItem('favoritesPageData')) : { colors: [], gradients: [] }
   isColorLiked(color) ? null : favoritesPageData.colors.push(color)
-  setLikedColors(favoritesPageData)
-}
-
-function updateLikedGradients(background, colors) {
-  const favoritesPageData = localStorage.getItem('favoritesPageData') !== null ? JSON.parse(localStorage.getItem('favoritesPageData')) : { colors: [], gradients: [] }
-  isGradientLiked(colors) ? null : favoritesPageData.gradients.push(colors)
-  setLikedGradients(favoritesPageData)
-}
-
-function setLikedColors(favoritesPageData) {
   localStorage.setItem('favoritesPageData', JSON.stringify(favoritesPageData))
 }
 
-function setLikedGradients(favoritesPageData) {
+function setLikedGradients(background, colors) {
+  const favoritesPageData = localStorage.getItem('favoritesPageData') !== null ? JSON.parse(localStorage.getItem('favoritesPageData')) : { colors: [], gradients: [] }
+  isGradientLiked(background, colors) ? null : favoritesPageData.gradients.push({ background: background, colors: colors })
   localStorage.setItem('favoritesPageData', JSON.stringify(favoritesPageData))
 }
 
 function getLikedColors() {
-  const favoritesPageData = localStorage.getItem('favoritesPageData') !== null ? JSON.parse(localStorage.getItem('favoritesPageData')) : { colors: [], gradients: [] }
-  setLikedColors(favoritesPageData)
-
-  return favoritesPageData.colors
+  return (localStorage.getItem('favoritesPageData') !== null ? JSON.parse(localStorage.getItem('favoritesPageData')) : { colors: [], gradients: [] }).colors
 }
 
 function getLikedGradients() {
-  const favoritesPageData = localStorage.getItem('favoritesPageData') !== null ? JSON.parse(localStorage.getItem('favoritesPageData')) : { colors: [], gradients: [] }
-  setLikedGradients(favoritesPageData)
-
-  return favoritesPageData.gradients
+  return (localStorage.getItem('favoritesPageData') !== null ? JSON.parse(localStorage.getItem('favoritesPageData')) : { colors: [], gradients: [] }).gradients
 }
 
 function createDivColorIconHeart(divColor, color) {
@@ -62,7 +48,7 @@ function createDivColorIconHeart(divColor, color) {
   }
   const toggleBackgroundImage = (divColorIcon, color) => {
     divColorIcon.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-empty') : getBackgroundImage(color, 'heart-filled')
-    updateLikedColors(color)
+    setLikedColors(color)
   }
 
   const divColorIcon = document.createElement('div')
@@ -79,23 +65,23 @@ function createDivColorIconHeart(divColor, color) {
 }
 
 function createDivGradientIconHeart(divGradient, background, colors) {
-  const currentBackgroundImage = (divGradientIcon, colors) => {
-    divGradientIcon.style.backgroundImage = isGradientLiked(colors) ? getBackgroundImage(colors[0], 'heart-filled') : getBackgroundImage(colors[0], 'heart-empty')
+  const currentBackgroundImage = (divGradientIcon, background, colors) => {
+    divGradientIcon.style.backgroundImage = isGradientLiked(background, colors) ? getBackgroundImage(colors[0], 'heart-filled') : getBackgroundImage(colors[0], 'heart-empty')
   }
   const toggleBackgroundImage = (divGradientIcon, background, colors) => {
-    divGradientIcon.style.backgroundImage = isGradientLiked(colors) ? getBackgroundImage(colors[0], 'heart-empty') : getBackgroundImage(colors[0], 'heart-filled')
-    updateLikedGradients(background, colors)
+    divGradientIcon.style.backgroundImage = isGradientLiked(background, colors) ? getBackgroundImage(colors[0], 'heart-empty') : getBackgroundImage(colors[0], 'heart-filled')
+    setLikedGradients(background, colors)
   }
 
   const divGradientIcon = document.createElement('div')
   divGradientIcon.className = 'color-icon'
   divGradientIcon.style.top = '10px'
   divGradientIcon.style.left = '10px'
-  currentBackgroundImage(divGradientIcon, colors)
+  currentBackgroundImage(divGradientIcon, background, colors)
   createDivTooltip(divGradientIcon, 'favorite')
   divGradientIcon.addEventListener('click', event => { toggleBackgroundImage(divGradientIcon, background, colors) })
-  divGradient.addEventListener('mouseenter', event => { currentBackgroundImage(divGradientIcon, colors) })
-  divGradient.addEventListener('click', event => { currentBackgroundImage(divGradientIcon, colors) })
+  divGradient.addEventListener('mouseenter', event => { currentBackgroundImage(divGradientIcon, background, colors) })
+  divGradient.addEventListener('click', event => { currentBackgroundImage(divGradientIcon, background, colors) })
 
   return divGradientIcon
 }

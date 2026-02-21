@@ -394,11 +394,11 @@ class ColorPickerPage {
     return divColorIcon
   }
 
-  createDivGradient(colors, picked, explore = false) {
+  createDivGradient(colors, picked, explore = false, background = null) {
     const type = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue.toLowerCase()
     const degrees = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientDegreeSliderValue
     const percents = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientPercentSliderValue
-    const background = `${type}-gradient(${type === 'linear' ? `${degrees}deg` : 'circle'}, ${colors.map((color, index) => `${color.formattedHex} ${percents[index]}%`).join(', ')})`
+    background = background === null ? `${type}-gradient(${type === 'linear' ? `${degrees}deg` : 'circle'}, ${colors.map((color, index) => `${color.formattedHex} ${percents[index]}%`).join(', ')})` : background
 
     const divColors = colors.map(color => this.createDivColor(color, false, explore, true))
     divColors.forEach(divColor => { divColor.style.display = 'none' })
