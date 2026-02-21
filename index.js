@@ -17,7 +17,7 @@ const colorPickerPage = new ColorPickerPage(buttonNavigation, colorPicker, image
 const gradientPickerPage = new ColorPickerPage(buttonNavigation, colorPicker, imagePicker, true)
 const exploreColorsPage = new ExploreColorsPage(buttonNavigation, colorPickerPage)
 const exploreGradientsPage = new ExploreGradientsPage(buttonNavigation, gradientPickerPage)
-const favoritesPage = new FavoritesPage(buttonNavigation, colorPicker)
+const favoritesPage = new FavoritesPage(buttonNavigation, colorPickerPage, gradientPickerPage)
 
 sideNavigation.colorPickerPage = colorPickerPage
 sideNavigation.gradientPickerPage = gradientPickerPage

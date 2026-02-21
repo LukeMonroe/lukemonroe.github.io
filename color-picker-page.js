@@ -1,9 +1,9 @@
 import { Colors } from './colors.js'
-import { createDivColorIconHeart, isColorLiked } from './favorites.js'
+import { createDivColorIconHeart, createDivGradientIconHeart, isColorLiked, isGradientLiked } from './favorites.js'
 import { getBackgroundImage } from './images.js'
 import { createDivTooltip } from './tooltips.js'
 import { createH1, createH2, createH3, createH4, createDivColorText } from './text.js'
-import { createDivColorIconFullscreen } from './fullscreen.js'
+import { createDivColorIconFullscreen, createDivGradientIconFullscreen } from './fullscreen.js'
 
 class ColorPickerPage {
 
@@ -403,27 +403,25 @@ class ColorPickerPage {
     const divColors = colors.map(color => this.createDivColor(color, false, explore, true))
     divColors.forEach(divColor => { divColor.style.display = 'none' })
 
-    // const likeGradient = createDivGradientIconHeart(colors)
+    const likeGradient = createDivGradientIconHeart(colors)
     const divGradient = document.createElement('div')
     divGradient.className = 'color'
     divGradient.style.display = 'flex'
     divGradient.style.backgroundColor = colors[0].formattedHex
-    // divGradient.style.background = `${type}-gradient(${value}, ${colors.map((color, index) => `${color.formattedHex} ${Math.round((index / (colors.length - 1)) * 100)}%`).join(', ')})`
     divGradient.style.background = background
     divGradient.style.color = colors[0].formattedText
     divGradient.style.flex = '1 1 0'
     divGradient.style.height = '400px'
     divGradient.appendChild(createDivColorText(background))
-    // colors.forEach(color => { divGradient.appendChild(createDivColorText(color.formattedHex)) })
-    // divGradient.appendChild(likeGradient)
-    // divGradient.appendChild(createDivGradientIconFullscreenNew(colors, type, value, position))
+    divGradient.appendChild(likeGradient)
+    divGradient.appendChild(createDivGradientIconFullscreen(background, colors))
     divGradient.appendChild(this.createDivColorIconCornerTriangle(colors[0], divGradient, divColors))
 
     divGradient.addEventListener('mouseenter', event => {
       Array.from(divGradient.children).forEach(child => { child.style.display = 'block' })
       divGradient.style.flex = 'auto'
       divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
-      // likeGradient.style.backgroundImage = isGradientLiked(colors) ? getBackgroundImage(colors[0], 'heart-filled') : getBackgroundImage(colors[0], 'heart-empty')
+      likeGradient.style.backgroundImage = isGradientLiked(colors) ? getBackgroundImage(colors[0], 'heart-filled') : getBackgroundImage(colors[0], 'heart-empty')
     })
     divGradient.addEventListener('mouseleave', event => {
       Array.from(divGradient.children).forEach(child => { child.style.display = 'none' })
@@ -434,7 +432,7 @@ class ColorPickerPage {
       Array.from(divGradient.children).forEach(child => { child.style.display = 'block' })
       divGradient.style.flex = 'auto'
       divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
-      // likeGradient.style.backgroundImage = isGradientLiked(colors) ? getBackgroundImage(colors[0], 'heart-filled') : getBackgroundImage(colors[0], 'heart-empty')
+      likeGradient.style.backgroundImage = isGradientLiked(colors) ? getBackgroundImage(colors[0], 'heart-filled') : getBackgroundImage(colors[0], 'heart-empty')
     })
 
     const divColorRow = this.createDivColorRowReverse()
