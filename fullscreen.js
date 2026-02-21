@@ -32,7 +32,7 @@ function createDivColorFullscreen(color) {
   divColorFullscreen.appendChild(createDivColorText(color.formattedCMYK))
   divColorFullscreen.appendChild(createDivColorText(color.formattedCRWhite))
   divColorFullscreen.appendChild(createDivColorText(color.formattedCRBlack))
-  divColorFullscreen.appendChild(createDivColorIconHeart(color))
+  divColorFullscreen.appendChild(createDivColorIconHeart(divColorFullscreen, color))
   divColorFullscreen.appendChild(createDivColorIconFullscreenExit(color, divColorFullscreen))
   divColorFullscreen.addEventListener('dblclick', () => {
     document.body.removeChild(divColorFullscreen)
@@ -85,7 +85,7 @@ function createDivGradientFullscreen(background, colors) {
   divGradientFullscreen.style.height = '100%'
   divGradientFullscreen.style.width = '100%'
   divGradientFullscreen.appendChild(createDivColorText(background))
-  divGradientFullscreen.appendChild(createDivGradientIconHeart(colors))
+  divGradientFullscreen.appendChild(createDivGradientIconHeart(divGradientFullscreen, background, colors))
   divGradientFullscreen.appendChild(createDivGradientIconFullscreenExit(colors, divGradientFullscreen))
   divGradientFullscreen.addEventListener('dblclick', () => {
     document.body.removeChild(divGradientFullscreen)

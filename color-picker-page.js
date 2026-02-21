@@ -1,5 +1,5 @@
 import { Colors } from './colors.js'
-import { createDivColorIconHeart, createDivGradientIconHeart, isColorLiked, isGradientLiked } from './favorites.js'
+import { createDivColorIconHeart, createDivGradientIconHeart } from './favorites.js'
 import { getBackgroundImage } from './images.js'
 import { createDivTooltip } from './tooltips.js'
 import { createH1, createH2, createH3, createH4, createDivColorText } from './text.js'
@@ -403,7 +403,6 @@ class ColorPickerPage {
     const divColors = colors.map(color => this.createDivColor(color, false, explore, true))
     divColors.forEach(divColor => { divColor.style.display = 'none' })
 
-    const likeGradient = createDivGradientIconHeart(colors)
     const divGradient = document.createElement('div')
     divGradient.className = 'color'
     divGradient.style.display = 'flex'
@@ -413,7 +412,7 @@ class ColorPickerPage {
     divGradient.style.flex = '1 1 0'
     divGradient.style.height = '400px'
     divGradient.appendChild(createDivColorText(background))
-    divGradient.appendChild(likeGradient)
+    divGradient.appendChild(createDivGradientIconHeart(divGradient, background, colors))
     divGradient.appendChild(createDivGradientIconFullscreen(background, colors))
     divGradient.appendChild(this.createDivColorIconCornerTriangle(colors[0], divGradient, divColors))
 
@@ -421,7 +420,6 @@ class ColorPickerPage {
       Array.from(divGradient.children).forEach(child => { child.style.display = 'block' })
       divGradient.style.flex = 'auto'
       divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
-      likeGradient.style.backgroundImage = isGradientLiked(colors) ? getBackgroundImage(colors[0], 'heart-filled') : getBackgroundImage(colors[0], 'heart-empty')
     })
     divGradient.addEventListener('mouseleave', event => {
       Array.from(divGradient.children).forEach(child => { child.style.display = 'none' })
@@ -432,7 +430,6 @@ class ColorPickerPage {
       Array.from(divGradient.children).forEach(child => { child.style.display = 'block' })
       divGradient.style.flex = 'auto'
       divGradient.style.boxShadow = `2px 2px ${divGradient.style.color} inset, -2px -2px ${divGradient.style.color} inset`
-      likeGradient.style.backgroundImage = isGradientLiked(colors) ? getBackgroundImage(colors[0], 'heart-filled') : getBackgroundImage(colors[0], 'heart-empty')
     })
 
     const divColorRow = this.createDivColorRowReverse()
@@ -458,7 +455,6 @@ class ColorPickerPage {
 
   createDivColor(color, picked, explore = false, gradientColor = false) {
     var divMarker = null
-    const likeColor = createDivColorIconHeart(color)
     const divColor = document.createElement('div')
     divColor.className = 'color'
     divColor.style.flex = explore && !gradientColor ? 'none' : picked ? 'auto' : '1 1 0'
@@ -471,7 +467,7 @@ class ColorPickerPage {
     divColor.appendChild(createDivColorText(color.formattedCMYK))
     divColor.appendChild(createDivColorText(color.formattedCRWhite))
     divColor.appendChild(createDivColorText(color.formattedCRBlack))
-    divColor.appendChild(likeColor)
+    divColor.appendChild(createDivColorIconHeart(divColor, color))
     divColor.appendChild(createDivColorIconFullscreen(color))
     divColor.appendChild(this.createDivColorIconCheckmark(color))
     divColor.appendChild(this.colorPicker.createColorPickerIcon(color, (color) => { this.updatePage(color) }))
@@ -489,7 +485,6 @@ class ColorPickerPage {
         divColor.style.width = explore && !gradientColor ? '100%' : this.mediaQueryLayoutVertical.matches ? '100%' : '300px'
         divColor.style.boxShadow = `2px 2px ${divColor.style.color} inset, -2px -2px ${divColor.style.color} inset`
         if (divMarker !== null) { divMarker.style.display = 'none' }
-        likeColor.style.backgroundImage = isColorLiked(color) ? getBackgroundImage(color, 'heart-filled') : getBackgroundImage(color, 'heart-empty')
       } else {
         Array.from(divColor.children).forEach(child => { child.style.display = 'none' })
         divColor.style.flex = explore && !gradientColor ? 'none' : picked ? 'auto' : '1 1 0'

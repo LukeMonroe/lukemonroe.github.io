@@ -86,7 +86,7 @@ class ImagePicker {
     this.divColor.appendChild(createDivColorText(color.formattedCMYK))
     this.divColor.appendChild(createDivColorText(color.formattedCRWhite))
     this.divColor.appendChild(createDivColorText(color.formattedCRBlack))
-    this.divColor.appendChild(createDivColorIconHeart(color))
+    this.divColor.appendChild(createDivColorIconHeart(this.divColor, color))
     this.divColor.appendChild(createDivColorIconFullscreen(color))
     this.divColor.appendChild(this.createDivColorIconCheckmark(color))
     this.divColor.appendChild(this.createDivColorIconEyedropper(color))
