@@ -94,6 +94,34 @@ class ColorPickerPage {
     return divColorIcon
   }
 
+  createDivColorIconDownload(color) {
+    const divColorIcon = document.createElement('div')
+    divColorIcon.className = 'color-icon'
+    divColorIcon.style.backgroundImage = getBackgroundImage(color, 'arrow')
+    divColorIcon.style.bottom = '10px'
+    divColorIcon.style.right = '10px'
+    createDivTooltip(divColorIcon, 'download')
+    divColorIcon.addEventListener('click', () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = 1000
+      canvas.height = 1000
+
+      const context = canvas.getContext('2d')
+      context.fillStyle = color.formattedHex
+      context.fillRect(0, 0, canvas.width, canvas.height)
+
+      const link = document.createElement('a')
+      link.href = canvas.toDataURL('image/png')
+      link.download = `color-${color.formattedHex}.png`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(link.href)
+    })
+
+    return divColorIcon
+  }
+
   createSelectColorItemRow() {
     const selectColor = document.createElement('select')
     selectColor.className = 'inverted'
@@ -469,7 +497,7 @@ class ColorPickerPage {
     divColor.appendChild(createDivColorText(color.formattedCRBlack))
     divColor.appendChild(createDivColorIconHeart(divColor, color))
     divColor.appendChild(createDivColorIconFullscreen(color))
-    divColor.appendChild(this.createDivColorIconCheckmark(color))
+    divColor.appendChild(picked ? this.createDivColorIconDownload(color) : this.createDivColorIconCheckmark(color))
     divColor.appendChild(this.colorPicker.createColorPickerIcon(color, (color) => { this.updatePage(color) }))
     if (!explore && Colors.equal(color, this.colorPicked)) {
       divMarker = document.createElement('div')
