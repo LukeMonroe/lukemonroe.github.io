@@ -94,6 +94,20 @@ class ColorPickerPage {
     return divColorIcon
   }
 
+  createDivGradientIconCheckmark(colors) {
+    const divColorIcon = document.createElement('div')
+    divColorIcon.className = 'color-icon'
+    divColorIcon.style.backgroundImage = getBackgroundImage(colors[colors.length - 1], 'checkmark')
+    divColorIcon.style.bottom = '10px'
+    divColorIcon.style.right = '10px'
+    createDivTooltip(divColorIcon, 'load')
+    divColorIcon.addEventListener('click', () => {
+      alert('Not implemented... lols')
+    })
+
+    return divColorIcon
+  }
+
   createDivColorIconDownload(color) {
     const divColorIcon = document.createElement('div')
     divColorIcon.className = 'color-icon'
@@ -113,6 +127,45 @@ class ColorPickerPage {
       const link = document.createElement('a')
       link.href = canvas.toDataURL('image/png')
       link.download = `color-${color.formattedHex}.png`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(link.href)
+    })
+
+    return divColorIcon
+  }
+
+  createDivGradientIconDownload(colors) {
+    const divColorIcon = document.createElement('div')
+    divColorIcon.className = 'color-icon'
+    divColorIcon.style.backgroundImage = getBackgroundImage(colors[colors.length - 1], 'arrow')
+    divColorIcon.style.bottom = '10px'
+    divColorIcon.style.right = '10px'
+    createDivTooltip(divColorIcon, 'download')
+    divColorIcon.addEventListener('click', () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = 1000
+      canvas.height = 1000
+
+      const type = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientTypeValue.toLowerCase()
+      const degrees = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientDegreeSliderValue
+      const percents = this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientPercentSliderValue
+
+      const context = canvas.getContext('2d')
+      var gradient = null
+      if (type === 'linear') {
+        gradient = context.createLinearGradient(0, Math.cos(degrees * Math.PI / 180) * canvas.width, Math.sin(degrees * Math.PI / 180) * canvas.height, 0)
+      } else {
+        gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width * 0.68)
+      }
+      colors.forEach((color, index) => { gradient.addColorStop(percents[index] / 100, color.formattedHex) })
+      context.fillStyle = gradient
+      context.fillRect(0, 0, canvas.width, canvas.height)
+
+      const link = document.createElement('a')
+      link.href = canvas.toDataURL('image/png')
+      link.download = `color-${colors.map(color => color.formattedHex).join('-')}.png`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -442,6 +495,7 @@ class ColorPickerPage {
     divGradient.appendChild(createDivColorText(background))
     divGradient.appendChild(createDivGradientIconHeart(divGradient, background, colors))
     divGradient.appendChild(createDivGradientIconFullscreen(background, colors))
+    divGradient.appendChild(picked && !explore ? this.createDivGradientIconDownload(colors) : this.createDivGradientIconCheckmark(colors))
     divGradient.appendChild(this.createDivColorIconCornerTriangle(colors[0], divGradient, divColors))
 
     divGradient.addEventListener('mouseenter', event => {
