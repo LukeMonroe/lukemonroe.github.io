@@ -5,6 +5,7 @@ class SideNavigation {
   constructor() {
     this.colorPickerPage = null
     this.gradientPickerPage = null
+    this.palettePickerPage = null
     this.exploreColorsPage = null
     this.exploreGradientsPage = null
     this.favoritesPage = null
@@ -42,6 +43,15 @@ class SideNavigation {
       }
     })
 
+    const aPalettes = this.createA('javascript:void(0);', 'Palette Picker')
+    aPalettes.addEventListener('click', event => {
+      sideNavigation.style.width = '0px'
+      const tool = localStorage.getItem('tool')
+      if (tool !== 'palettePicker') {
+        this.palettePickerPage.createPage()
+      }
+    })
+
     const aExploreColors = this.createA('javascript:void(0);', 'Explore Colors')
     aExploreColors.addEventListener('click', event => {
       sideNavigation.style.width = '0px'
@@ -76,6 +86,7 @@ class SideNavigation {
     sideNavigation.appendChild(selectTheme)
     sideNavigation.appendChild(aColors)
     sideNavigation.appendChild(aGradients)
+    sideNavigation.appendChild(aPalettes)
     sideNavigation.appendChild(aExploreColors)
     sideNavigation.appendChild(aExploreGradients)
     sideNavigation.appendChild(aFavorites)

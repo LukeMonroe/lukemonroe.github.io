@@ -536,7 +536,7 @@ class ColorPickerPage {
     return divColorRow
   }
 
-  createDivColor(color, picked, explore = false, gradientColor = false) {
+  createDivColor(color, picked, explore = false, gradientColor = false, loadIcon = true, callable = null) {
     var divMarker = null
     const divColor = document.createElement('div')
     divColor.className = 'color'
@@ -552,8 +552,10 @@ class ColorPickerPage {
     divColor.appendChild(createDivColorText(color.formattedCRBlack))
     divColor.appendChild(createDivColorIconHeart(divColor, color))
     divColor.appendChild(createDivColorIconFullscreen(color))
-    divColor.appendChild(picked ? this.createDivColorIconDownload(color) : this.createDivColorIconCheckmark(color))
-    divColor.appendChild(this.colorPicker.createColorPickerIcon(color, (color) => { this.updatePage(color) }))
+    if (loadIcon) {
+      divColor.appendChild(picked ? this.createDivColorIconDownload(color) : this.createDivColorIconCheckmark(color))
+    }
+    divColor.appendChild(this.colorPicker.createColorPickerIcon(color, (color) => { callable === null ? this.updatePage(color) : callable(color) }))
     if (!explore && Colors.equal(color, this.colorPicked)) {
       divMarker = document.createElement('div')
       divMarker.className = 'marker'
