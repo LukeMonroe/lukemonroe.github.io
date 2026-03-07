@@ -276,7 +276,8 @@ class ColorPickerPage {
         this.colorPickerPageData.colorsToLoad = `colors${Date.now()}`
         this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad] = { title: `Tab ${String(length).padStart(2, '0')}`, gradientTypeValue: 'Linear', gradientDegreeSliderValue: 0, gradientPercentSliderValue: [0], itemsToLoad: 'itemsDefault', itemsLoadable: { itemsDefault: { title: 'Color 01', colors: [Colors.random()] } } }
         if (this.gradientPage) {
-          this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[`items${Date.now()}`] = { title: 'Color 02', colors: [Colors.random()] }
+          this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad = `items${Date.now()}`
+          this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsLoadable[this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].itemsToLoad] = { title: 'Color 02', colors: [Colors.random()] }
           this.colorPickerPageData.colorsLoadable[this.colorPickerPageData.colorsToLoad].gradientPercentSliderValue.push(100)
         }
         this.updatePage(null)
